@@ -20,7 +20,6 @@ public class Wishlist {
     @OneToOne
     private User user;
 
-
     @ManyToMany
     private Set<Product> products;
 }
