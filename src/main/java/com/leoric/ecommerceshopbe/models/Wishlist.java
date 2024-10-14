@@ -1,14 +1,14 @@
 package com.leoric.ecommerceshopbe.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Wishlist {
@@ -18,14 +18,9 @@ public class Wishlist {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
+
     @ManyToMany
-    @JoinTable(
-            name = "wishlist_product",
-            joinColumns = @JoinColumn(name = "wishlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
     private Set<Product> products;
 }

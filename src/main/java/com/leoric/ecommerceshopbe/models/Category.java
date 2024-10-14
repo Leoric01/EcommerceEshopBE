@@ -1,12 +1,13 @@
 package com.leoric.ecommerceshopbe.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
@@ -14,8 +15,16 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
 
+    @NotNull
+    @Column(unique = true)
+    private String categoryId;
+
+    //    @JoinColumn(name = "parent_category_id")
     @ManyToOne
-    @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
+
+    @NotNull
+    private Integer level;
 }

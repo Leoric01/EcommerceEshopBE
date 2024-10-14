@@ -1,12 +1,12 @@
 package com.leoric.ecommerceshopbe.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class VerificationCode {
@@ -14,12 +14,14 @@ public class VerificationCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String otp;
+    private String email;
 
+    //    @JoinColumn(name = "user_id")
     @OneToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
+    //    @JoinColumn(name = "seller_id")
     @OneToOne
-    @JoinColumn(name = "seller_id")
     private Seller seller;
 }

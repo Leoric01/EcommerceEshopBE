@@ -1,11 +1,11 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,22 +14,28 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String password;
+    private String fullName;
+    private String email;
+    private String mobile;
+    private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
     @OneToMany(mappedBy = "user")
-    private List<Address> addresses;
+    private Set<Address> addresses = new HashSet<>();
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "user_coupon",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "coupon_id")
     )
-    private Set<Coupon> coupons;
+    private Set<Coupon> usedCoupons;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;

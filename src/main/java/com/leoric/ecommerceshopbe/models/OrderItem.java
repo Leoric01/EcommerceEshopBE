@@ -1,12 +1,13 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem {
@@ -15,12 +16,19 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //    @JoinColumn(name = "order_id")
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "order_id")
     private Order order;
 
+    //    @JoinColumn(name = "product_id")
     @ManyToOne
-    @JoinColumn(name = "product_id")
     private Product product;
+
+    private String size;
+    private int quantity;
+    private Integer mrpPrice;
+    private Integer sellingPrice;
+    private Long userId;
 
 }

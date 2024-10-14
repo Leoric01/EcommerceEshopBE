@@ -1,14 +1,14 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
+import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Seller {
@@ -17,19 +17,30 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    private String sellerName;
 
-    @OneToMany(mappedBy = "seller")
-    private List<Product> products;
+    private String mobile;
 
-    @OneToMany(mappedBy = "seller")
-    private List<Transaction> transactions;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    @OneToOne(mappedBy = "seller", cascade = CascadeType.ALL)
-    private VerificationCode verificationCode;
+    private String password;
 
-    @OneToOne(mappedBy = "seller", cascade = CascadeType.ALL)
-    private SellerReport sellerReport;
+    @Embedded
+    private BusinessDetails businessDetails = new BusinessDetails();
+
+    @Embedded
+    private BankDetails bankDetails = new BankDetails();
+
+    //    @JoinColumn(name = "address_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address pickupAddress = new Address();
+
+    private String GSTIN;
+
+    private USER_ROLE role = USER_ROLE.ROLE_SELLER;
+
+    private boolean isEmailVerified = false;
+    private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
+
 }

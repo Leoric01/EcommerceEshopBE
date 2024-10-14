@@ -1,12 +1,14 @@
 package com.leoric.ecommerceshopbe.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transaction {
@@ -15,15 +17,17 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //    @JoinColumn(name = "user_id")
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private User customer;
 
+    //    @JoinColumn(name = "seller_id")
     @ManyToOne
-    @JoinColumn(name = "seller_id")
     private Seller seller;
 
+    //    @JoinColumn(name = "order_id")
     @OneToOne
-    @JoinColumn(name = "order_id")
     private Order order;
+
+    private LocalDateTime date = LocalDateTime.now();
 }

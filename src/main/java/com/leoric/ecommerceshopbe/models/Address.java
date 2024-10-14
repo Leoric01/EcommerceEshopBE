@@ -1,12 +1,12 @@
 package com.leoric.ecommerceshopbe.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
@@ -14,6 +14,14 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String name;
+    private String address;
+    private String locality;
+    private String city;
+    private String state;
+    private String pinCode;
+    private String mobile;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
