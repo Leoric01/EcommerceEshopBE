@@ -1,14 +1,21 @@
-# Set your entity and repository folder paths
-$entityPackage = "com.leoric.ecommerceshopbe.models"
-$repositoryPackage = "com.leoric.ecommerceshopbe.repositories"
-$entityFolderPath = "C:\Users\trogl\Documents\Git\EcommerceShopBe\E-CommerceShopBE\src\main\java\com\leoric\ecommerceshopbe\models"
-$repositoryFolderPath = "C:\Users\trogl\Documents\Git\EcommerceShopBe\E-CommerceShopBE\src\main\java\com\leoric\ecommerceshopbe\repositories"
+# Set your main package (root package for the project)
+$mainPackage = "com.leoric.ecommerceshopbe"
 
-# List of entities for which you want to generate repositories
+# Get the root directory where the script is located (project root)
+$rootPath = $PSScriptRoot
+
+# Set relative paths for the entity and repository directories
+$entityPackage = "$mainPackage.models"
+$repositoryPackage = "$mainPackage.repositories"
+$entityFolderPath = Join-Path $rootPath "src\main\java\$( $mainPackage -replace '\.', '\\' )\models"
+$repositoryFolderPath = Join-Path $rootPath "src\main\java\$( $mainPackage -replace '\.', '\\' )\repositories"
+
+# Get all Java files in the models directory (extract the base filenames)
 $entities = Get-ChildItem -Path $entityFolderPath -Filter "*.java" | ForEach-Object {
     $_.BaseName
 }
-# Loop through each entity and generate repository files
+
+# Loop through each entity (Java class) and generate repository files
 foreach ($entity in $entities)
 {
     $fileName = "${repositoryFolderPath}\${entity}Repository.java"
