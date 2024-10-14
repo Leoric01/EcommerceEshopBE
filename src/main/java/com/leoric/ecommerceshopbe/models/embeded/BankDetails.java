@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.models;
+package com.leoric.ecommerceshopbe.models.embeded;
 
 import lombok.Data;
 

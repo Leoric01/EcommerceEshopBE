@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.models;
 
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
 import com.leoric.ecommerceshopbe.models.constants.PaymentStatus;
+import com.leoric.ecommerceshopbe.models.embeded.PaymentDetails;
 import jakarta.persistence.*;
 import lombok.*;
 

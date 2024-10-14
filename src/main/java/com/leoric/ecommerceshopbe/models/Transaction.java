@@ -17,11 +17,11 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id")
     @ManyToOne
     private User customer;
 
-    //    @JoinColumn(name = "seller_id")
+    @JoinColumn(name = "seller_id")
     @ManyToOne
     private Seller seller;
 

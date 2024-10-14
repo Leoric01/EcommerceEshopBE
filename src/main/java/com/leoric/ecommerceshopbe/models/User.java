@@ -30,11 +30,11 @@ public class User {
 
     @ManyToMany
     @JsonIgnore
-    @JoinTable(
-            name = "user_coupon",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "coupon_id")
-    )
+//    @JoinTable(
+//            name = "user_coupon",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "coupon_id")
+//    )
     private Set<Coupon> usedCoupons;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -46,7 +46,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "customer")
     private List<Transaction> transactions;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

@@ -2,6 +2,8 @@ package com.leoric.ecommerceshopbe.models;
 
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
+import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
+import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
 import jakarta.persistence.*;
 import lombok.*;
 
