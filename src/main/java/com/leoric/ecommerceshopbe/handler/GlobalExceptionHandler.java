@@ -21,6 +21,14 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(OtpVerificationException.class)
+    public ResponseEntity<Result<Void>> handleOtpVerificationException(OtpVerificationException exp) {
+        log.warn("OTP verification failed: {}", exp.getMessage());
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
+    }
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<Result<Void>> handleLockedException(LockedException exp) {
         log.warn("Account locked: {}", exp.getMessage());

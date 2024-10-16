@@ -6,15 +6,12 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class SignupRequest {
-    private String fullName;
+public class SignInRequest {
     @NotEmpty(message = "Email name is mandatory")
     @NotBlank(message = "Email name is mandatory")
     @Email(message = "Email is not in valid format")
     private String email;
-    private String otp;
-
-//    @NotEmpty(message = "Password name is mandatory")
-//    @NotBlank(message = "Password name is mandatory")
-//    private String password;
+    @NotEmpty(message = "Password name is mandatory")
+    @NotBlank(message = "Password name is mandatory")
+    private String password;
 }

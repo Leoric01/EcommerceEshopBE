@@ -2,7 +2,7 @@ package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.UserRepository;
-import com.leoric.ecommerceshopbe.requests.LoginDTOreq;
+import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
 import com.leoric.ecommerceshopbe.response.common.Result;
@@ -28,15 +28,15 @@ public class AuthController {
     public ResponseEntity<Result<String>> createUserHandler(@RequestBody @Valid SignupRequest req) {
         authService.register(req);
 
-        Result<String> response = Result.success("User registered successfully!");
+        Result<String> response = Result.success("User registered successfully!", HttpStatus.CREATED.value());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Result<AuthenticationResponse>> login(@RequestBody LoginDTOreq req) {
+    public ResponseEntity<Result<AuthenticationResponse>> login(@RequestBody @Valid SignInRequest req) {
         AuthenticationResponse authResponse = authService.signIn(req);
 
-        Result<AuthenticationResponse> response = Result.success(authResponse, "Login successful");
+        Result<AuthenticationResponse> response = Result.success(authResponse, "Login successful", HttpStatus.OK.value());
         return ResponseEntity.ok().body(response);
     }
 
@@ -44,7 +44,7 @@ public class AuthController {
     public ResponseEntity<Result<List<User>>> allUsers() {
         List<User> users = userRepository.findAll();
 
-        Result<List<User>> response = Result.success(users, "User list fetched successfully");
+        Result<List<User>> response = Result.success(users, "User list fetched successfully", HttpStatus.OK.value());
         return ResponseEntity.ok().body(response);
     }
 }

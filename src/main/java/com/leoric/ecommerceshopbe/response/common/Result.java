@@ -1,38 +1,51 @@
 package com.leoric.ecommerceshopbe.response.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Result<T> {
-    private boolean success;  // true for successful operations, false for failures
-    private Integer code;     // HTTP status code
-    private String message;   // Message to provide more info about the result
-    private T data;           // Data related to the response (if any)
+    private boolean success;
+    private Integer code;
+    private String message;
+    private T data;
 
-    public Result(boolean success, Integer code, String message, T data) {
-        this.success = success;
-        this.code = code;
-        this.message = message;
-        this.data = data;
+    public static <T> Result<T> success(String message, Integer code) {
+        return Result.<T>builder()
+                .success(true)
+                .code(code)
+                .message(message)
+                .build();
     }
 
-    // Success methods
-    public static <T> Result<T> success(T data, String message) {
-        return new Result<>(true, 200, message, data);
+    public static <T> Result<T> success(T data, String message, Integer code) {
+        return Result.<T>builder()
+                .success(true)
+                .code(code)
+                .message(message)
+                .data(data)
+                .build();
     }
 
-    public static <T> Result<T> success(String message) {
-        return new Result<>(true, 200, message, null);
-    }
-
-    // Failure methods
     public static <T> Result<T> failure(Integer code, String message, T data) {
-        return new Result<>(false, code, message, data);
+        return Result.<T>builder()
+                .success(false)
+                .code(code)
+                .message(message)
+                .data(data)
+                .build();
     }
 
     public static <T> Result<T> failure(Integer code, String message) {
-        return new Result<>(false, code, message, null);
+        return Result.<T>builder()
+                .success(false)
+                .code(code)
+                .message(message)
+                .build();
     }
 }

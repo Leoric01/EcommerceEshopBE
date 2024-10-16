@@ -20,7 +20,7 @@ public enum BusinessErrorCodes {
 
     BusinessErrorCodes(int code, HttpStatus httpStatus, String description) {
         this.code = code;
-        this.description = description;
         this.httpStatus = httpStatus;
+        this.description = description;
     }
 }
