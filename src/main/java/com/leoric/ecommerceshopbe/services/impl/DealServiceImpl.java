@@ -15,6 +15,11 @@ public class DealServiceImpl implements DealService {
     private final DealRepository dealRepository;
 
     @Override
+    public Deal createDeal(Deal deal) {
+        return null;
+    }
+
+    @Override
     public List<Deal> findAll() {
         return dealRepository.findAll();
     }

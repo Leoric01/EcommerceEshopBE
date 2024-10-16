@@ -7,6 +7,7 @@ import java.util.List;
 
 @Service
 public interface DealService {
+    Deal createDeal(Deal deal);
 
     List<Deal> findAll();
 
