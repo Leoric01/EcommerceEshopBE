@@ -8,6 +8,8 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.leoric.ecommerceshopbe.models.constants.PaymentOrderStatus.PENDING;
+
 @Entity
 @Getter
 @Setter
@@ -20,8 +22,9 @@ public class PaymentOrder {
     private Long id;
 
     private Long amount;
-
-    private PaymentOrderStatus status = PaymentOrderStatus.PENDING;
+    @Enumerated(EnumType.STRING)
+    private PaymentOrderStatus status = PENDING;
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private String paymentLinkId;
 

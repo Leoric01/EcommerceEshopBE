@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.security.auth.Subject;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -29,6 +30,7 @@ public class User implements UserDetails, Principal {
     private String password;
     private String fullName;
     private String mobile;
+    @Enumerated(EnumType.STRING)
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
     private boolean enabled = true;
     @OneToMany(mappedBy = "user")
@@ -64,6 +66,17 @@ public class User implements UserDetails, Principal {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
+    }
+
+    private boolean isSignedOut = false; // Indicates if the user has signed out
+    private LocalDateTime lastSignOut;
+
+    public boolean isSignedOut() {
+        return isSignedOut;
+    }
+
+    public void setSignedOut(boolean signedOut) {
+        isSignedOut = signedOut;
     }
 
     @Override

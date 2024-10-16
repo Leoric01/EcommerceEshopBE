@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.security;
 
+import com.leoric.ecommerceshopbe.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -65,7 +66,10 @@ public class JwtProvider {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractEmailFromJwt(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        User user = (User) userDetails;
+        return (username.equals(userDetails.getUsername())) &&
+               !isTokenExpired(token) &&
+               !user.isSignedOut();
     }
 
     private boolean isTokenExpired(String token) {

@@ -3,6 +3,7 @@ package com.leoric.ecommerceshopbe.services.impl;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User entity) {
-        return userRepository.save(entity);
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Override
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User with " + email + " email was not found"));
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

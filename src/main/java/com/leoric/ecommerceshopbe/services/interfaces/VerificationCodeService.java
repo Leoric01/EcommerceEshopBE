@@ -7,6 +7,9 @@ import java.util.List;
 
 @Service
 public interface VerificationCodeService {
+    void deleteByEmail(String email);
+
+    VerificationCode findByEmail(String email);
 
     List<VerificationCode> findAll();
 
@@ -15,4 +18,6 @@ public interface VerificationCodeService {
     VerificationCode save(VerificationCode entity);
 
     void deleteById(Long id);
+
+    boolean existsByEmail(String email);
 }

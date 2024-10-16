@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.handler;
 
 import com.leoric.ecommerceshopbe.response.common.Result;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -59,6 +60,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(UNAUTHORIZED)
                 .body(Result.failure(BAD_CREDENTIALS.getCode(), BAD_CREDENTIALS.getDescription()));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Result<Void>> handleEntityNotFound(BadCredentialsException exp) {
+        log.warn("Entity not found: {}", exp.getMessage());
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(Result.failure(ENTITY_NOT_FOUND.getCode(), ENTITY_NOT_FOUND.getDescription()));
     }
 
     @ExceptionHandler(MessagingException.class)

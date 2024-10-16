@@ -45,9 +45,11 @@ public class Order {
 
     private Integer totalSellingPrice;
     private Integer discount;
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private int totalItem;
-    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
     private LocalDateTime orderDate = LocalDateTime.now();
     private LocalDateTime deliverDate = orderDate.plusDays(7);
 }

@@ -46,9 +46,12 @@ public class Seller implements UserDetails, Principal {
 
     private String GSTIN;
 
+    @Enumerated(EnumType.STRING)
     private USER_ROLE role = USER_ROLE.ROLE_SELLER;
 
     private boolean isEmailVerified = false;
+
+    @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 
     @Override

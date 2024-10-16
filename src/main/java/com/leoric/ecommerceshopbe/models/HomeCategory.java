@@ -1,10 +1,7 @@
 package com.leoric.ecommerceshopbe.models;
 
 import com.leoric.ecommerceshopbe.models.constants.HomeCategorySection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -21,5 +18,6 @@ public class HomeCategory {
     private String name;
     private String image;
     private String categoryId;
+    @Enumerated(EnumType.STRING)
     private HomeCategorySection section;
 }

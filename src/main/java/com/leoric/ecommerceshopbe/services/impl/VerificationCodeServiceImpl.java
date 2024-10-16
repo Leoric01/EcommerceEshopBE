@@ -3,6 +3,7 @@ package com.leoric.ecommerceshopbe.services.impl;
 import com.leoric.ecommerceshopbe.models.VerificationCode;
 import com.leoric.ecommerceshopbe.repositories.VerificationCodeRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,18 @@ import java.util.List;
 public class VerificationCodeServiceImpl implements VerificationCodeService {
 
     private final VerificationCodeRepository verificationcodeRepository;
+
+
+    @Override
+    public void deleteByEmail(String email) {
+        verificationcodeRepository.deleteByEmail(email);
+    }
+
+    @Override
+    public VerificationCode findByEmail(String email) {
+        return verificationcodeRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Invalid or non-existent verification code related to " + email + " email"));
+    }
 
     @Override
     public List<VerificationCode> findAll() {
@@ -33,5 +46,10 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     @Override
     public void deleteById(Long id) {
         verificationcodeRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return verificationcodeRepository.existsByEmail(email);
     }
 }
