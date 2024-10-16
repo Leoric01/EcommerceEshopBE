@@ -30,6 +30,4 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-
-    // Getters and Setters
 }
