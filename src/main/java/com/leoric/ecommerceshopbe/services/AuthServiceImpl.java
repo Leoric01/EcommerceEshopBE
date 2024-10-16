@@ -47,7 +47,6 @@ public class AuthServiceImpl implements AuthService {
         Cart cart = new Cart();
         cart.setUser(user);
         cartRepository.save(cart);
-
     }
 
     @Override

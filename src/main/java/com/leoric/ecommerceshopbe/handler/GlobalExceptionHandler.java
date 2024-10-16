@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.handler;
 
+import com.leoric.ecommerceshopbe.response.common.Result;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,108 +22,70 @@ import static org.springframework.http.HttpStatus.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(LockedException.class)
-    public ResponseEntity<ExceptionResponse> handleException(LockedException exp) {
+    public ResponseEntity<Result<Void>> handleLockedException(LockedException exp) {
+        log.warn("Account locked: {}", exp.getMessage());
         return ResponseEntity
                 .status(UNAUTHORIZED)
-                .body(
-                        ExceptionResponse.builder()
-                                .businessErrorCode(ACCOUNT_LOCKED.getCode())
-                                .businessErrorDescription(ACCOUNT_LOCKED.getDescription())
-                                .error(exp.getMessage())
-                                .build()
-                );
+                .body(Result.failure(ACCOUNT_LOCKED.getCode(), ACCOUNT_LOCKED.getDescription()));
     }
 
     @ExceptionHandler(EmailAlreadyInUseException.class)
-    public ResponseEntity<ExceptionResponse> handleEmailAlreadyInUseException(EmailAlreadyInUseException ex) {
+    public ResponseEntity<Result<Void>> handleEmailAlreadyInUseException(EmailAlreadyInUseException ex) {
+        log.warn("Email already in use: {}", ex.getMessage());
         return ResponseEntity
                 .status(CONFLICT)
-                .body(
-                        ExceptionResponse.builder()
-                                .error(ex.getMessage())
-                                .build()
-                );
+                .body(Result.failure(CONFLICT.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ExceptionResponse> handleException(DisabledException exp) {
+    public ResponseEntity<Result<Void>> handleDisabledException(DisabledException exp) {
+        log.warn("Account disabled: {}", exp.getMessage());
         return ResponseEntity
                 .status(UNAUTHORIZED)
-                .body(
-                        ExceptionResponse.builder()
-                                .businessErrorCode(ACCOUNT_DISABLED.getCode())
-                                .businessErrorDescription(ACCOUNT_DISABLED.getDescription())
-                                .error(exp.getMessage())
-                                .build()
-                );
+                .body(Result.failure(ACCOUNT_DISABLED.getCode(), ACCOUNT_DISABLED.getDescription()));
     }
 
-
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ExceptionResponse> handleException() {
+    public ResponseEntity<Result<Void>> handleBadCredentialsException(BadCredentialsException exp) {
+        log.warn("Bad credentials: {}", exp.getMessage());
         return ResponseEntity
                 .status(UNAUTHORIZED)
-                .body(
-                        ExceptionResponse.builder()
-                                .businessErrorCode(BAD_CREDENTIALS.getCode())
-                                .businessErrorDescription(BAD_CREDENTIALS.getDescription())
-                                .error(BAD_CREDENTIALS.getDescription())
-                                .build()
-                );
+                .body(Result.failure(BAD_CREDENTIALS.getCode(), BAD_CREDENTIALS.getDescription()));
     }
 
     @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<ExceptionResponse> handleException(MessagingException exp) {
+    public ResponseEntity<Result<Void>> handleMessagingException(MessagingException exp) {
+        log.error("Messaging error: {}", exp.getMessage());
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
-                .body(
-                        ExceptionResponse.builder()
-                                .error(exp.getMessage())
-                                .build()
-                );
+                .body(Result.failure(INTERNAL_SERVER_ERROR.value(), exp.getMessage()));
     }
 
     @ExceptionHandler(OperationNotPermittedException.class)
-    public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedException exp) {
+    public ResponseEntity<Result<Void>> handleOperationNotPermittedException(OperationNotPermittedException exp) {
+        log.warn("Operation not permitted: {}", exp.getMessage());
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(
-                        ExceptionResponse.builder()
-                                .error(exp.getMessage())
-                                .build()
-                );
+                .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exp) {
+    public ResponseEntity<Result<Set<String>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exp) {
         Set<String> errors = new HashSet<>();
-        exp.getBindingResult().getAllErrors()
-                .forEach(error -> {
-                    String errorMessage = error.getDefaultMessage();
-                    errors.add(errorMessage);
-                });
-
+        exp.getBindingResult().getAllErrors().forEach(error -> errors.add(error.getDefaultMessage()));
+        log.warn("Validation errors: {}", errors);
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(
-                        ExceptionResponse.builder()
-                                .validationErrors(errors)
-                                .build()
-                );
+                .body(Result.failure(BAD_REQUEST.value(), "Validation failed", errors));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleException(Exception exp) {
-        //log the exception
-        log.info(exp.getMessage());
+    public ResponseEntity<Result<Void>> handleGenericException(Exception exp) {
+        // Log the exception with error level
+        log.error("Unexpected error occurred: {}", exp.getMessage(), exp);
 
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
-                .body(
-                        ExceptionResponse.builder()
-                                .businessErrorDescription("Internal error, please contact the admin")
-                                .error(exp.getMessage())
-                                .build()
-                );
+                .body(Result.failure(INTERNAL_SERVER_ERROR.value(), "Internal error, please contact the admin"));
     }
 }

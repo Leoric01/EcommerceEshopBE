@@ -6,6 +6,12 @@ import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
 import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.security.Principal;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,7 +19,7 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class Seller {
+public class Seller implements UserDetails, Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,4 +51,18 @@ public class Seller {
     private boolean isEmailVerified = false;
     private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
+    }
+
+    @Override
+    public String getName() {
+        return "";
+    }
 }
