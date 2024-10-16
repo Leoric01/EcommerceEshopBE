@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.Address;
-import com.leoric.ecommerceshopbe.services.AddressService;
+import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

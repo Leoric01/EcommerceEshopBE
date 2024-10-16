@@ -5,7 +5,7 @@ import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.requests.LoginDTOreq;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
-import com.leoric.ecommerceshopbe.services.impl.AuthService;
+import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +39,7 @@ public class AuthController {
 
     @GetMapping()
     public List<User> allUsers() {
-        List<User> users = userRepository.findAll();
-        return users;
+        return userRepository.findAll();
     }
 
 

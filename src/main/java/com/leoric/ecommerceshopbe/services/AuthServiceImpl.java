@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.services.impl;
+package com.leoric.ecommerceshopbe.services;
 
 import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
 import com.leoric.ecommerceshopbe.models.Cart;
@@ -9,6 +9,7 @@ import com.leoric.ecommerceshopbe.requests.LoginDTOreq;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
+import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

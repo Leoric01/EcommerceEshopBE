@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.services.impl;
+package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
 import com.leoric.ecommerceshopbe.requests.LoginDTOreq;
