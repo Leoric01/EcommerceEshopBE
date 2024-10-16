@@ -1,12 +1,13 @@
 package com.leoric.ecommerceshopbe.controllers;
 
-import com.leoric.ecommerceshopbe.models.User;
-import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
+import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
+import com.leoric.ecommerceshopbe.response.UserDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
+import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,8 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 public class AuthController {
 
-    private final UserRepository userRepository;
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/signout")
     public ResponseEntity<Result<Void>> signOut(Authentication connectedUser) {
@@ -51,11 +52,18 @@ public class AuthController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping()
-    public ResponseEntity<Result<List<User>>> allUsers() {
-        List<User> users = userRepository.findAll();
+    @PostMapping("/send/login-signup-otp")
+    public ResponseEntity<Result<VerificationCodeReq>> sentOtpHandler(@RequestBody @Valid VerificationCodeReq req) {
+        authService.sentLoginOtp(req);
 
-        Result<List<User>> response = Result.success(users, "User list fetched successfully", OK.value());
+        Result<VerificationCodeReq> response = Result.success(req, "Verification code otp was sent", CREATED.value());
+        return ResponseEntity.status(CREATED).body(response);
+    }
+    @GetMapping()
+    public ResponseEntity<Result<List<UserDto>>> allUsers() {
+        List<UserDto> users = userService.findAllUsersToDto();
+
+        Result<List<UserDto>> response = Result.success(users, "User list fetched successfully", OK.value());
         return ResponseEntity.ok().body(response);
     }
 }

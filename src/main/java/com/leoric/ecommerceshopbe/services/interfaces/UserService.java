@@ -1,6 +1,7 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.response.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    List<User> findAll();
+    List<UserDto> findAllUsersToDto();
 
     User findById(Long id);
 

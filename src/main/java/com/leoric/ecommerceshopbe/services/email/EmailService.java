@@ -5,7 +5,6 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ public class EmailService {
                                       String subject,
                                       String activationCode) {
         String templateName = EmailTemplateName.ACTIVATE_ACCOUNT.getName();
-        SimpleMailMessage message = new SimpleMailMessage();
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(
@@ -50,7 +48,7 @@ public class EmailService {
             helper.setSubject(subject + ": " + activationCode);
             String template = templateEngine.process(templateName, context);
             helper.setText(template, true);
-            mailSender.send(message);
+            mailSender.send(mimeMessage);
 
         } catch (MessagingException e) {
             throw new MailSendException("failed to send email", e);

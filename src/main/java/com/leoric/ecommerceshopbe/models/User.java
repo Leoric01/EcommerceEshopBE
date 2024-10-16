@@ -28,12 +28,19 @@ public class User implements UserDetails, Principal {
     @Column(unique = true)
     private String email;
     private String password;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String mobile;
+
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
+
+    @Builder.Default
     private boolean enabled = true;
+
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private Set<Address> addresses = new HashSet<>();
 
     @ManyToMany
@@ -68,7 +75,9 @@ public class User implements UserDetails, Principal {
         return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
     }
 
-    private boolean isSignedOut = false; // Indicates if the user has signed out
+    @Builder.Default
+    private boolean isSignedOut = false;
+
     private LocalDateTime lastSignOut;
 
     public boolean isSignedOut() {
@@ -112,7 +121,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public String getName() {
-        return "";
+        return this.firstName + " " + this.lastName;
     }
 
     @Override

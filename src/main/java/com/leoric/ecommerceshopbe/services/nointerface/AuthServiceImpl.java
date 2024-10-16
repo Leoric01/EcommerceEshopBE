@@ -1,13 +1,12 @@
 package com.leoric.ecommerceshopbe.services.nointerface;
 
-import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
-import com.leoric.ecommerceshopbe.handler.OtpVerificationException;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.models.VerificationCode;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
+import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.email.EmailService;
@@ -15,6 +14,7 @@ import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import com.leoric.ecommerceshopbe.utils.OtpUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,8 +46,34 @@ public class AuthServiceImpl implements AuthService {
     private int length;
 
     @Override
-    public void sentLoginOtp(String email) {
+    public void signup(SignupRequest request) {
+//        VerificationCode verificationCode = verificationCodeService.findByEmail(request.getEmail());
+//
+//        if (!verificationCode.getOtp().equals(request.getOtp())) {
+//            throw new OtpVerificationException("Invalid or expired OTP");
+//        }
+//
+//        if (userService.existsByEmail(request.getEmail())) {
+//            throw new EmailAlreadyInUseException("Email is already in use");
+//        }
+        User user = User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+//                .password(passwordEncoder.encode(request.getPassword()))
+                .role(ROLE_USER)
+                .build();
+        user.setEnabled(true);
+        user = userService.save(user);
+//        sendValidationEmail(user);
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cartRepository.save(cart);
+    }
+    @Override
+    public void sentLoginOtp(@Valid VerificationCodeReq req) {
         String SIGNING_PREFIX = "signing_";
+        String email = req.getEmail();
         if (email.startsWith(SIGNING_PREFIX)) {
             email = email.substring(SIGNING_PREFIX.length());
             User user = userService.findByEmail(email);
@@ -62,35 +88,9 @@ public class AuthServiceImpl implements AuthService {
             verificationCodeService.save(verificationCode);
 
             String subject = "LEORIC ESHOP OTP verification code";
-            emailService.sendVerificationEmail(email, user.getFullName(), subject, otp);
+            emailService.sendVerificationEmail(email, user.getName(), subject, otp);
         }
-
     }
-
-    public void signup(SignupRequest request) {
-        VerificationCode verificationCode = verificationCodeService.findByEmail(request.getEmail());
-
-        if (!verificationCode.getOtp().equals(request.getOtp())) {
-            throw new OtpVerificationException("Invalid or expired OTP");
-        }
-
-        if (userService.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyInUseException("Email is already in use");
-        }
-        User user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-//                .password(passwordEncoder.encode(request.getPassword()))
-                .role(ROLE_USER)
-                .build();
-        user.setEnabled(true);
-        user = userService.save(user);
-//        sendValidationEmail(user);
-        Cart cart = new Cart();
-        cart.setUser(user);
-        cartRepository.save(cart);
-    }
-
 
     @Override
     public AuthenticationResponse signIn(SignInRequest req) {
@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
         User user = (User) auth.getPrincipal();
         user.setSignedOut(false);
         userService.save(user);
-        claims.put("fullname", user.getFullName());
+        claims.put("fullname", user.getName());
         claims.put("email", user.getEmail());
         String jwtToken = jwtProvider.generateToken(claims, user);
         return AuthenticationResponse.builder()
