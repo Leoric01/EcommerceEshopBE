@@ -40,7 +40,7 @@ public class User implements UserDetails, Principal {
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 
     @Builder.Default
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     @OneToMany(mappedBy = "user")
     @Builder.Default

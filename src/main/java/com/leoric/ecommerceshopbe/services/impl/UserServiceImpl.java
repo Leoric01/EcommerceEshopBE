@@ -3,9 +3,11 @@ package com.leoric.ecommerceshopbe.services.impl;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.response.UserDto;
+import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,20 +17,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     @Override
     public List<UserDto> findAllUsersToDto() {
         List<User> usersList = userRepository.findAll();
         return usersList.stream()
-                .map(user -> {
-                    UserDto userDto = new UserDto();
-                    userDto.setId(user.getId());
-                    userDto.setName(user.getName());
-                    userDto.setEmail(user.getEmail());
-                    userDto.setMobile(user.getMobile());
-                    userDto.setRole(user.getRole().name());
-                    return userDto;
-                })
+                .map(this::getUserDto)
                 .toList();
     }
 
@@ -56,5 +51,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public User findUserByJwtToken(String jwtToken) {
+        String email = jwtProvider.extractEmailFromJwt(jwtToken);
+        return findByEmail(email);
+    }
+
+    @Override
+    public UserDto currentUser(Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        return getUserDto(user);
+    }
+
+    private UserDto getUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+        userDto.setMobile(user.getMobile());
+        userDto.setRole(user.getRole().name());
+        return userDto;
     }
 }

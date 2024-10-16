@@ -63,73 +63,34 @@ public class AuthServiceImpl implements AuthService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
-//                .password(passwordEncoder.encode(request.getPassword()))
                 .role(ROLE_USER)
                 .build();
-        user.setEnabled(true);
         user = userService.save(user);
-//        sendValidationEmail(user);
         Cart cart = new Cart();
         cart.setUser(user);
         cartRepository.save(cart);
     }
 
-    //    TODO this doesn't work, check difference
-//    @Override
-//    public void sentLoginOtp(@Valid VerificationCodeReq req) {
-//        String SIGNING_PREFIX = "signing_";
-//        String email = req.getEmail();
-//        if (email.startsWith(SIGNING_PREFIX)) {
-//            email = email.substring(SIGNING_PREFIX.length());
-//            User user = userService.findByEmail(email);
-//            boolean isExists = verificationCodeService.existsByEmail(email);
-//            if (isExists) {
-//                verificationCodeService.deleteByEmail(email);
-//            }
-//            String otp = OtpUtil.generateOtp(length);
-//            VerificationCode verificationCode = new VerificationCode();
-//            verificationCode.setEmail(email);
-//            verificationCode.setOtp(otp);
-//            verificationCodeService.save(verificationCode);
-//            user.setVerificationCode(verificationCode);
-//            userService.save(user);
-//            String subject = "LEORIC ESHOP OTP verification code";
-//            emailService.sendVerificationEmail(email, user.getName(), subject, otp);
-//        }
-//    }
     @Override
     public void sentLoginOtp(@Valid VerificationCodeReq req) {
         String SIGNING_PREFIX = "signing_";
         String email = req.getEmail();
         if (email.startsWith(SIGNING_PREFIX)) {
             email = email.substring(SIGNING_PREFIX.length());
-
-            // Fetch the user by email
             User user = userService.findByEmail(email);
-
-            // Check if a VerificationCode already exists for this email
             boolean isExists = verificationCodeService.existsByEmail(email);
             if (isExists) {
-                verificationCodeService.deleteByEmail(email); // Delete existing OTP
+                verificationCodeService.deleteByEmail(email);
             }
-
-            // Generate new OTP
             String otp = OtpUtil.generateOtp(length);
 
-            // Create and associate VerificationCode with User
             VerificationCode verificationCode = new VerificationCode();
             verificationCode.setEmail(email);
             verificationCode.setOtp(otp);
-            verificationCode.setUser(user); // Associate the VerificationCode with the User
-
-            // Save VerificationCode (this will also save the user_id in the VerificationCode table)
+            verificationCode.setUser(user);
             verificationCodeService.save(verificationCode);
-
-            // Set the verification code on the User object and save the User
-            user.setVerificationCode(verificationCode);
-            userService.save(user); // Save the user again (optional, but keeps consistency)
-
-            // Send the OTP email
+//            user.setVerificationCode(verificationCode);
+//            userService.save(user);
             String subject = "LEORIC ESHOP OTP verification code";
             emailService.sendVerificationEmail(email, user.getName(), subject, otp);
         }
@@ -145,6 +106,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Invalid OTP");
         }
         user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setEnabled(true);
         User savedUser = userService.save(user);
         return new UserDto(
                 savedUser.getId(),
