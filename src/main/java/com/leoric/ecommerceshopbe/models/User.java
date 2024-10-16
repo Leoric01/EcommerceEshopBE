@@ -30,7 +30,7 @@ public class User implements UserDetails, Principal {
     private String fullName;
     private String mobile;
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
-    private boolean enabled = false;
+    private boolean enabled = true;
     @OneToMany(mappedBy = "user")
     private Set<Address> addresses = new HashSet<>();
 

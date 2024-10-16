@@ -15,23 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.leoric.ecommerceshopbe.config.JWT_CONSTANT.getSecretKey;
-
 @Service
 public class JwtProvider {
 
-    private final String secretKey = getSecretKey();
+    @Value("${secret.key}")
+    private String secretKey;
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
-
-    public String extractEmailFromJwt(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -43,6 +33,15 @@ public class JwtProvider {
     ) {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
+    public String extractEmailFromJwt(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
 
     private String buildToken(
             Map<String, Object> extraClaims,
