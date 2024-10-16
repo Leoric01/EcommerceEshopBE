@@ -4,10 +4,12 @@ import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.models.VerificationCode;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
+import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
+import com.leoric.ecommerceshopbe.response.UserDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.email.EmailService;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
@@ -16,6 +18,7 @@ import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import com.leoric.ecommerceshopbe.utils.OtpUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,26 +73,86 @@ public class AuthServiceImpl implements AuthService {
         cart.setUser(user);
         cartRepository.save(cart);
     }
+
+    //    TODO this doesn't work, check difference
+//    @Override
+//    public void sentLoginOtp(@Valid VerificationCodeReq req) {
+//        String SIGNING_PREFIX = "signing_";
+//        String email = req.getEmail();
+//        if (email.startsWith(SIGNING_PREFIX)) {
+//            email = email.substring(SIGNING_PREFIX.length());
+//            User user = userService.findByEmail(email);
+//            boolean isExists = verificationCodeService.existsByEmail(email);
+//            if (isExists) {
+//                verificationCodeService.deleteByEmail(email);
+//            }
+//            String otp = OtpUtil.generateOtp(length);
+//            VerificationCode verificationCode = new VerificationCode();
+//            verificationCode.setEmail(email);
+//            verificationCode.setOtp(otp);
+//            verificationCodeService.save(verificationCode);
+//            user.setVerificationCode(verificationCode);
+//            userService.save(user);
+//            String subject = "LEORIC ESHOP OTP verification code";
+//            emailService.sendVerificationEmail(email, user.getName(), subject, otp);
+//        }
+//    }
     @Override
     public void sentLoginOtp(@Valid VerificationCodeReq req) {
         String SIGNING_PREFIX = "signing_";
         String email = req.getEmail();
         if (email.startsWith(SIGNING_PREFIX)) {
             email = email.substring(SIGNING_PREFIX.length());
+
+            // Fetch the user by email
             User user = userService.findByEmail(email);
+
+            // Check if a VerificationCode already exists for this email
             boolean isExists = verificationCodeService.existsByEmail(email);
             if (isExists) {
-                verificationCodeService.deleteByEmail(email);
+                verificationCodeService.deleteByEmail(email); // Delete existing OTP
             }
+
+            // Generate new OTP
             String otp = OtpUtil.generateOtp(length);
+
+            // Create and associate VerificationCode with User
             VerificationCode verificationCode = new VerificationCode();
             verificationCode.setEmail(email);
             verificationCode.setOtp(otp);
+            verificationCode.setUser(user); // Associate the VerificationCode with the User
+
+            // Save VerificationCode (this will also save the user_id in the VerificationCode table)
             verificationCodeService.save(verificationCode);
 
+            // Set the verification code on the User object and save the User
+            user.setVerificationCode(verificationCode);
+            userService.save(user); // Save the user again (optional, but keeps consistency)
+
+            // Send the OTP email
             String subject = "LEORIC ESHOP OTP verification code";
             emailService.sendVerificationEmail(email, user.getName(), subject, otp);
         }
+    }
+
+
+    @Override
+    public UserDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException {
+        VerificationCode verificationCode = verificationCodeService.findByEmail(req.getEmail());
+        User user = verificationCode.getUser();
+
+        if (!user.getVerificationCode().getOtp().equals(req.getOtp())) {
+            throw new BadRequestException("Invalid OTP");
+        }
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        User savedUser = userService.save(user);
+        return new UserDto(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getMobile(),
+                savedUser.getRole().name()
+        );
     }
 
     @Override

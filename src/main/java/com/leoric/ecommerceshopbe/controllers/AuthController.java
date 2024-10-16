@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.controllers;
 
+import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
@@ -11,6 +12,7 @@ import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -55,10 +57,20 @@ public class AuthController {
     @PostMapping("/send/login-signup-otp")
     public ResponseEntity<Result<VerificationCodeReq>> sentOtpHandler(@RequestBody @Valid VerificationCodeReq req) {
         authService.sentLoginOtp(req);
-
-        Result<VerificationCodeReq> response = Result.success(req, "Verification code otp was sent", CREATED.value());
+        // TODO CHANGE IT, THIS IS FOR DEVELOPMENT ONLY
+//        String code = userService.findByEmail(req.getEmail().substring(8)).getVerificationCode().getOtp();
+        Result<VerificationCodeReq> response = Result.success(req, "Verification code otp was sent value: \n ", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
+
+    @PostMapping("/set-pw")
+    public ResponseEntity<Result<UserDto>> setUpPassword(
+            @RequestBody @Valid SetupPwFromOtpReq req) throws BadRequestException {
+        UserDto userDto = authService.setupPwFromOtp(req);
+        Result<UserDto> response = Result.success(userDto, "Password set up successfully", CREATED.value());
+        return ResponseEntity.status(CREATED).body(response);
+    }
+
     @GetMapping()
     public ResponseEntity<Result<List<UserDto>>> allUsers() {
         List<UserDto> users = userService.findAllUsersToDto();

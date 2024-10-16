@@ -20,6 +20,7 @@ import java.util.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
+@Table(name = "users")
 public class User implements UserDetails, Principal {
 
     @Id
@@ -31,6 +32,8 @@ public class User implements UserDetails, Principal {
     private String firstName;
     private String lastName;
     private String mobile;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private VerificationCode verificationCode;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -67,13 +70,11 @@ public class User implements UserDetails, Principal {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Wishlist wishlist;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private VerificationCode verificationCode;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
     }
+
 
     @Builder.Default
     private boolean isSignedOut = false;
