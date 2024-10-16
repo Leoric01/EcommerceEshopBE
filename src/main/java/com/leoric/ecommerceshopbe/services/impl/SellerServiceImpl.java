@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
+import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +28,7 @@ public class SellerServiceImpl implements SellerService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
+    private final VerificationCodeService verificationCodeService;
 
     @Override
     public List<Seller> findAll() {
@@ -134,17 +136,26 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public void deleteSeller(Long id) {
-
+        sellerRepository.deleteById(id);
     }
 
     @Override
     public Seller verifyEmail(String email, String otp) {
-        return null;
+        Seller seller = getSellerByEmail(email);
+//        TODO otp not included, impl later
+//        VerificationCode verificationCode = verificationCodeService.findByEmail(email);
+//        if (!otp.equals(verificationCode.getOtp())) {
+//            throw new OtpVerificationException("Invalid otp");
+//        }
+        seller.setEmailVerified(true);
+        return sellerRepository.save(seller);
     }
 
     @Override
     public Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) {
-        return null;
+        Seller seller = getSellerById(sellerId);
+        seller.setAccountStatus(status);
+        return sellerRepository.save(seller);
     }
 
     private void updateIfPresent(String value, Consumer<String> setter) {
