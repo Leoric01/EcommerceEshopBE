@@ -127,6 +127,7 @@ public class AuthServiceImpl implements AuthService {
             String subject = "LEORIC ESHOP OTP verification code";
             emailService.sendVerificationEmail(email, user.getName(), subject, otp);
         }
+        inv
     }
 
 
@@ -202,10 +203,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void signOut(Authentication authentication) {
+    public void signOut(Authentication authentication) throws Exception {
         User user = (User) authentication.getPrincipal();
         user.setSignedOut(true);
         user.setLastSignOut(LocalDateTime.now());
-        userService.save(user);
+        User savedUser = userService.save(user);
+        if (!savedUser.isSignedOut()) {
+            throw new Exception("something went wrong in logout");
+        }
     }
 }

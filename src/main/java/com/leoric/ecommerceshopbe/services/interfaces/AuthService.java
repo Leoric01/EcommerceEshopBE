@@ -17,7 +17,7 @@ public interface AuthService {
 
     void signup(SignupRequest request);
 
-    void signOut(Authentication authentication);
+    void signOut(Authentication authentication) throws Exception;
 
     void sentLoginOtp(VerificationCodeReq email);
 
