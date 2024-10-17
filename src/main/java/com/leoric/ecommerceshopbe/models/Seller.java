@@ -4,6 +4,7 @@ import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
 import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
 import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,18 +19,16 @@ import java.util.Collections;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Seller implements UserDetails, Principal {
+public class Seller extends Account implements UserDetails, Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String sellerName;
-
-    private String mobile;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -59,8 +58,8 @@ public class Seller implements UserDetails, Principal {
     private boolean isSignedOut = false;
     private LocalDateTime lastSignOut;
 
-    public boolean isSignedOut() {
-        return isSignedOut;
+    public boolean isSignedIn() {
+        return !isSignedOut;
     }
 
     public void setSignedOut(boolean signedOut) {
@@ -80,4 +79,10 @@ public class Seller implements UserDetails, Principal {
     public String getName() {
         return this.sellerName;
     }
+
+    @Override
+    public String getRole() {
+        return this.role.name();  // Implement the abstract getRole() from Account
+    }
+
 }

@@ -11,8 +11,8 @@ import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
-import com.leoric.ecommerceshopbe.response.UserDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.email.EmailService;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
@@ -132,7 +132,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public UserDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException {
+    public AccountDetailDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException {
         String email;
         VerificationCode verificationCode;
         if (req.getEmail().startsWith(USER_PREFIX)) {
@@ -145,12 +145,12 @@ public class AuthServiceImpl implements AuthService {
             user.setPassword(passwordEncoder.encode(req.getPassword()));
             user.setEnabled(true);
             User savedUser = userService.save(user);
-            return new UserDto(
+            return new AccountDetailDto(
                     savedUser.getId(),
                     savedUser.getName(),
                     savedUser.getEmail(),
                     savedUser.getMobile(),
-                    savedUser.getRole().name()
+                    savedUser.getRole()
             );
         } else if (req.getEmail().startsWith(SELLER_PREFIX)) {
             email = req.getEmail().substring(SELLER_PREFIX.length());
@@ -161,13 +161,14 @@ public class AuthServiceImpl implements AuthService {
                 throw new OtpVerificationException("Invalid OTP");
             }
             seller.setPassword(passwordEncoder.encode(req.getPassword()));
+            seller.setEmailVerified(true);
             Seller savedSeller = sellerService.save(seller);
-            return new UserDto(
+            return new AccountDetailDto(
                     savedSeller.getId(),
                     savedSeller.getName(),
                     savedSeller.getEmail(),
                     savedSeller.getMobile(),
-                    savedSeller.getRole().name()
+                    savedSeller.getRole()
             );
         }
         throw new BadRequestException("Invalid email address or role prefix");
@@ -177,33 +178,52 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthenticationResponse signIn(SignInRequest req) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
+
         Map<String, Object> claims = new HashMap<>();
+
         if (auth.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals(ROLE_USER.name()))) {
-            User user = (User) auth.getPrincipal();
-            user.setSignedOut(false);
-            userService.save(user);
-            claims.put("fullname", user.getName());
-            claims.put("email", user.getEmail());
-            String jwtToken = jwtProvider.generateToken(claims, user);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .role(user.getRole())
-                    .build();
+            return handleUserSignIn(auth, claims);
         } else if (auth.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals(ROLE_SELLER.name()))) {
-            Seller seller = (Seller) auth.getPrincipal();
-            sellerService.save(seller);
-            claims.put("fullname", seller.getName());
-            claims.put("email", seller.getEmail());
-            String jwtToken = jwtProvider.generateToken(claims, seller);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .role(seller.getRole())
-                    .build();
+            return handleSellerSignIn(auth, claims);
         }
+
         throw new BadCredentialsException("Invalid username or password");
     }
+
+    private AuthenticationResponse handleUserSignIn(Authentication auth, Map<String, Object> claims) {
+        User user = (User) auth.getPrincipal();
+        user.setSignedOut(false);
+        userService.save(user);
+
+        claims.put("fullname", user.getName());
+        claims.put("email", user.getEmail());
+
+        String jwtToken = jwtProvider.generateToken(claims, user);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .role(user.getRole())
+                .build();
+    }
+
+    private AuthenticationResponse handleSellerSignIn(Authentication auth, Map<String, Object> claims) {
+        Seller seller = (Seller) auth.getPrincipal();
+        seller.setSignedOut(false);
+        sellerService.save(seller);
+
+        claims.put("fullname", seller.getName());
+        claims.put("email", seller.getEmail());
+
+        String jwtToken = jwtProvider.generateToken(claims, seller);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .role(seller.getRole())
+                .build();
+    }
+
 
 
     @Override
@@ -219,7 +239,7 @@ public class AuthServiceImpl implements AuthService {
             user.setLastSignOut(LocalDateTime.now());
             User savedUser = userService.save(user);
 
-            if (!savedUser.isSignedOut()) {
+            if (savedUser.isSignedIn()) {
                 throw new Exception("Something went wrong in user logout");
             }
 
@@ -228,7 +248,7 @@ public class AuthServiceImpl implements AuthService {
             seller.setLastSignOut(LocalDateTime.now());
             sellerService.save(seller);
 
-            if (!seller.isEmailVerified()) {
+            if (seller.isSignedIn()) {
                 throw new Exception("Something went wrong in seller logout");
             }
 

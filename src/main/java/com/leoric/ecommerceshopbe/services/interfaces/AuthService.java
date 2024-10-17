@@ -4,8 +4,8 @@ import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
-import com.leoric.ecommerceshopbe.response.UserDto;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -21,5 +21,5 @@ public interface AuthService {
 
     void sentLoginOtp(VerificationCodeReq email);
 
-    UserDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException;
+    AccountDetailDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException;
 }

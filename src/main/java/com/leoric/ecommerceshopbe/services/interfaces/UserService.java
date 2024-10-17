@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.User;
-import com.leoric.ecommerceshopbe.response.UserDto;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    List<UserDto> findAllUsersToDto();
+    List<AccountDetailDto> findAllUsersToDto();
 
     User findById(Long id);
 
@@ -24,5 +24,5 @@ public interface UserService {
 
     User findUserByJwtToken(String jwtToken);
 
-    UserDto currentUser(Authentication connectedUser);
+    AccountDetailDto currentUser(Authentication connectedUser);
 }

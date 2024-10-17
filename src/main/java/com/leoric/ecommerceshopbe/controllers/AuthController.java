@@ -4,8 +4,8 @@ import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
-import com.leoric.ecommerceshopbe.response.UserDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
@@ -64,18 +64,18 @@ public class AuthController {
     }
 
     @PostMapping("/set-pw")
-    public ResponseEntity<Result<UserDto>> setUpPassword(
+    public ResponseEntity<Result<AccountDetailDto>> setUpPassword(
             @RequestBody @Valid SetupPwFromOtpReq req) throws BadRequestException {
-        UserDto userDto = authService.setupPwFromOtp(req);
-        Result<UserDto> response = Result.success(userDto, "Password set up successfully", CREATED.value());
+        AccountDetailDto accountDetailDto = authService.setupPwFromOtp(req);
+        Result<AccountDetailDto> response = Result.success(accountDetailDto, "Password set up successfully", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
 
     @GetMapping()
-    public ResponseEntity<Result<List<UserDto>>> allUsers() {
-        List<UserDto> users = userService.findAllUsersToDto();
+    public ResponseEntity<Result<List<AccountDetailDto>>> allUsers() {
+        List<AccountDetailDto> users = userService.findAllUsersToDto();
 
-        Result<List<UserDto>> response = Result.success(users, "User list fetched successfully", OK.value());
+        Result<List<AccountDetailDto>> response = Result.success(users, "User list fetched successfully", OK.value());
         return ResponseEntity.ok().body(response);
     }
 }

@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,10 +19,10 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @Table(name = "users")
-public class User implements UserDetails, Principal {
+public class User extends Account implements UserDetails, Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,6 @@ public class User implements UserDetails, Principal {
     private String password;
     private String firstName;
     private String lastName;
-    private String mobile;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private VerificationCode verificationCode;
 
@@ -81,8 +81,8 @@ public class User implements UserDetails, Principal {
 
     private LocalDateTime lastSignOut;
 
-    public boolean isSignedOut() {
-        return isSignedOut;
+    public boolean isSignedIn() {
+        return !isSignedOut;
     }
 
     public void setSignedOut(boolean signedOut) {
@@ -119,6 +119,10 @@ public class User implements UserDetails, Principal {
         return this.enabled;
     }
 
+    @Override
+    public String getRole() {
+        return this.role.name();  // Implement the abstract getRole() from Account
+    }
 
     @Override
     public String getName() {

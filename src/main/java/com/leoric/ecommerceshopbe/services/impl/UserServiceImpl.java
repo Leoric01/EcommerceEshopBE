@@ -2,9 +2,11 @@ package com.leoric.ecommerceshopbe.services.impl;
 
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.UserRepository;
-import com.leoric.ecommerceshopbe.response.UserDto;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,10 +22,10 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
 
     @Override
-    public List<UserDto> findAllUsersToDto() {
+    public List<AccountDetailDto> findAllUsersToDto() {
         List<User> usersList = userRepository.findAll();
         return usersList.stream()
-                .map(this::getUserDto)
+                .map(this::getAccountDto)
                 .toList();
     }
 
@@ -60,18 +62,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto currentUser(Authentication connectedUser) {
-        User user = (User) connectedUser.getPrincipal();
-        return getUserDto(user);
+    public AccountDetailDto currentUser(Authentication connectedUser) {
+        Account account = GlobalUtil.getAccountFromPrincipal(connectedUser.getPrincipal());
+        return getAccountDto(account);
     }
 
-    private UserDto getUserDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setName(user.getName());
-        userDto.setEmail(user.getEmail());
-        userDto.setMobile(user.getMobile());
-        userDto.setRole(user.getRole().name());
-        return userDto;
+    private AccountDetailDto getAccountDto(Account account) {
+        AccountDetailDto accountDetailDto = new AccountDetailDto();
+        accountDetailDto.setId(account.getId());
+        accountDetailDto.setName(account.getName());
+        accountDetailDto.setEmail(account.getEmail());
+        accountDetailDto.setMobile(account.getMobile());
+        accountDetailDto.setRole(account.getRole());
+        return accountDetailDto;
     }
 }

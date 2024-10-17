@@ -5,12 +5,11 @@ import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
 import com.leoric.ecommerceshopbe.requests.SignInRequest;
 import com.leoric.ecommerceshopbe.requests.SignupRequest;
 import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
-import com.leoric.ecommerceshopbe.response.UserDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
-import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -28,7 +27,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class SellerController {
 
     private final SellerService sellerService;
-    private final VerificationCodeService verificationCodeService;
     private final AuthService authService;
 
     @GetMapping()
@@ -37,7 +35,7 @@ public class SellerController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Result<AuthenticationResponse>> loginSeller(@RequestBody SignInRequest req) throws Exception {
+    public ResponseEntity<Result<AuthenticationResponse>> loginSeller(@RequestBody SignInRequest req) {
         AuthenticationResponse authResponse = authService.signIn(req);
         Result<AuthenticationResponse> response = Result.success(authResponse, "Login successful", OK.value());
         return ResponseEntity.ok().body(response);
@@ -62,10 +60,10 @@ public class SellerController {
     }
 
     @PostMapping("/set-pw")
-    public ResponseEntity<Result<UserDto>> setUpPassword(
+    public ResponseEntity<Result<AccountDetailDto>> setUpPassword(
             @RequestBody @Valid SetupPwFromOtpReq req) throws BadRequestException {
-        UserDto userDto = authService.setupPwFromOtp(req);
-        Result<UserDto> response = Result.success(userDto, "Password set up successfully", CREATED.value());
+        AccountDetailDto accountDetailDto = authService.setupPwFromOtp(req);
+        Result<AccountDetailDto> response = Result.success(accountDetailDto, "Password set up successfully", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
 }

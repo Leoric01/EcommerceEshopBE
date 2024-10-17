@@ -1,6 +1,6 @@
 package com.leoric.ecommerceshopbe.controllers;
 
-import com.leoric.ecommerceshopbe.response.UserDto;
+import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users/profile")
-    public ResponseEntity<Result<UserDto>> getUserProfile(Authentication connectedUser
+    public ResponseEntity<Result<AccountDetailDto>> getUserProfile(Authentication connectedUser
     ) {
-        UserDto user = userService.currentUser(connectedUser);
-        Result<UserDto> response = Result.success(user, "User's details fetched succesfully", HttpStatus.CREATED.value());
+        AccountDetailDto accountDetailDto = userService.currentUser(connectedUser);
+        Result<AccountDetailDto> response = Result.success(accountDetailDto, "User's details fetched succesfully", HttpStatus.CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
 }
