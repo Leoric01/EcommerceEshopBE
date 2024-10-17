@@ -169,7 +169,7 @@ public class AuthServiceImpl implements AuthService {
                     savedSeller.getRole().name()
             );
         }
-        return null;
+        throw new BadRequestException("Invalid email address or role prefix");
     }
 
     @Override
