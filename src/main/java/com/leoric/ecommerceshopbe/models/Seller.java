@@ -7,11 +7,13 @@ import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @Entity
 @Getter
@@ -54,18 +56,28 @@ public class Seller implements UserDetails, Principal {
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 
+    private boolean isSignedOut = false;
+    private LocalDateTime lastSignOut;
+
+    public boolean isSignedOut() {
+        return isSignedOut;
+    }
+
+    public void setSignedOut(boolean signedOut) {
+        this.isSignedOut = signedOut;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     @Override
     public String getName() {
-        return "";
+        return this.sellerName;
     }
 }

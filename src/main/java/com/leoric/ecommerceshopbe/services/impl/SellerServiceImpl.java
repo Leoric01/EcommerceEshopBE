@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
+import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
@@ -29,6 +30,7 @@ public class SellerServiceImpl implements SellerService {
     private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
     private final VerificationCodeService verificationCodeService;
+    private final UserRepository userRepository;
 
     @Override
     public List<Seller> findAll() {
@@ -156,6 +158,11 @@ public class SellerServiceImpl implements SellerService {
         Seller seller = getSellerById(sellerId);
         seller.setAccountStatus(status);
         return sellerRepository.save(seller);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     private void updateIfPresent(String value, Consumer<String> setter) {

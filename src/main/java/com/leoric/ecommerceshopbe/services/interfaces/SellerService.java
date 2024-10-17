@@ -34,4 +34,6 @@ public interface SellerService {
     Seller verifyEmail(String email, String otp);
 
     Seller updateSellerAccountStatus(Long sellerId, AccountStatus status);
+
+    boolean existsByEmail(String email);
 }

@@ -32,7 +32,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/signout")
-    public ResponseEntity<Result<Void>> signOut(Authentication connectedUser) {
+    public ResponseEntity<Result<Void>> signOut(Authentication connectedUser) throws Exception {
         authService.signOut(connectedUser);
         return ResponseEntity.ok(Result.success("Successfully signed out", OK.value()));
     }
@@ -59,7 +59,7 @@ public class AuthController {
         authService.sentLoginOtp(req);
         // TODO CHANGE IT, THIS IS FOR DEVELOPMENT ONLY
 //        String code = userService.findByEmail(req.getEmail().substring(8)).getVerificationCode().getOtp();
-        Result<VerificationCodeReq> response = Result.success(req, "Verification code otp was sent value: \n ", CREATED.value());
+        Result<VerificationCodeReq> response = Result.success(req, "Verification code otp was sent", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
 

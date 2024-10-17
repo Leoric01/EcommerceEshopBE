@@ -1,5 +1,7 @@
 package com.leoric.ecommerceshopbe.services.nointerface;
 
+import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
+import com.leoric.ecommerceshopbe.handler.OtpVerificationException;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.User;
@@ -18,6 +20,7 @@ import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import com.leoric.ecommerceshopbe.utils.OtpUtil;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -41,7 +44,7 @@ import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_USER;
 public class AuthServiceImpl implements AuthService {
 
     private static final String SELLER_PREFIX = "seller_";
-    private static final String USER_PREFIX = "seller_";
+    private static final String USER_PREFIX = "user_";
     private static final String SIGNING_PREFIX = "signing_";
 
     private final AuthenticationManager authenticationManager;
@@ -57,37 +60,36 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void signup(SignupRequest request) {
-//        VerificationCode verificationCode = verificationCodeService.findByEmail(request.getEmail());
-//
-//        if (!verificationCode.getOtp().equals(request.getOtp())) {
-//            throw new OtpVerificationException("Invalid or expired OTP");
-//        }
-//
-//        if (userService.existsByEmail(request.getEmail())) {
-//            throw new EmailAlreadyInUseException("Email is already in use");
-//        }
         if (request.getEmail().startsWith(SELLER_PREFIX)) {
+            if (sellerService.existsByEmail(request.getEmail().substring(SELLER_PREFIX.length()))) {
+                throw new EmailAlreadyInUseException("Email is already in use");
+            }
             Seller seller = new Seller();
             seller.setEmail(request.getEmail().substring(SELLER_PREFIX.length()));
             seller.setSellerName(request.getFullName());
             seller.setRole(ROLE_SELLER);
             sellerService.save(seller);
+            return;
         } else if (request.getEmail().startsWith(USER_PREFIX)) {
+            if (userService.existsByEmail(request.getEmail().substring(USER_PREFIX.length()))) {
+                throw new EmailAlreadyInUseException("Email is already in use");
+            }
             User user = User.builder()
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
                     .email(request.getEmail().substring(USER_PREFIX.length()))
                     .role(ROLE_USER)
                     .build();
-            user = userService.save(user);
             Cart cart = new Cart();
-            cart.setUser(user);
+            cart.setUser(userService.save(user));
             cartRepository.save(cart);
+            return;
         }
         throw new BadCredentialsException("Invalid email address or role prefix");
     }
 
     @Override
+    @Transactional
     public void sentLoginOtp(@Valid VerificationCodeReq req) {
         String email = req.getEmail();
         if (email.startsWith(SIGNING_PREFIX + SELLER_PREFIX)) {
@@ -104,10 +106,9 @@ public class AuthServiceImpl implements AuthService {
             verificationCode.setOtp(otp);
             verificationCode.setSeller(seller);
             verificationCodeService.save(verificationCode);
-//            user.setVerificationCode(verificationCode);
-//            userService.save(user);
             String subject = "LEORIC ESHOP OTP verification code";
             emailService.sendVerificationEmail(email, seller.getName(), subject, otp);
+            return;
         } else if (email.startsWith(SIGNING_PREFIX + USER_PREFIX)) {
             email = email.substring(SIGNING_PREFIX.length() + USER_PREFIX.length());
             User user = userService.findByEmail(email);
@@ -122,12 +123,11 @@ public class AuthServiceImpl implements AuthService {
             verificationCode.setOtp(otp);
             verificationCode.setUser(user);
             verificationCodeService.save(verificationCode);
-//            user.setVerificationCode(verificationCode);
-//            userService.save(user);
             String subject = "LEORIC ESHOP OTP verification code";
             emailService.sendVerificationEmail(email, user.getName(), subject, otp);
+            return;
         }
-        inv
+        throw new BadCredentialsException("request is from entity with neither seller nor user role");
     }
 
 
@@ -139,9 +139,8 @@ public class AuthServiceImpl implements AuthService {
             email = req.getEmail().substring(USER_PREFIX.length());
             verificationCode = verificationCodeService.findByEmail(email);
             User user = verificationCode.getUser();
-
             if (!user.getVerificationCode().getOtp().equals(req.getOtp())) {
-                throw new BadRequestException("Invalid OTP");
+                throw new OtpVerificationException("Invalid OTP");
             }
             user.setPassword(passwordEncoder.encode(req.getPassword()));
             user.setEnabled(true);
@@ -157,8 +156,9 @@ public class AuthServiceImpl implements AuthService {
             email = req.getEmail().substring(SELLER_PREFIX.length());
             verificationCode = verificationCodeService.findByEmail(email);
             Seller seller = sellerService.getSellerByEmail(email);
+
             if (!verificationCode.getOtp().equals(req.getOtp())) {
-                throw new BadRequestException("Invalid OTP");
+                throw new OtpVerificationException("Invalid OTP");
             }
             seller.setPassword(passwordEncoder.encode(req.getPassword()));
             Seller savedSeller = sellerService.save(seller);
@@ -173,11 +173,13 @@ public class AuthServiceImpl implements AuthService {
         throw new BadRequestException("Invalid email address or role prefix");
     }
 
+
     @Override
     public AuthenticationResponse signIn(SignInRequest req) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
         Map<String, Object> claims = new HashMap<>();
-        if (auth.getAuthorities().contains(ROLE_USER)) {
+        if (auth.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(ROLE_USER.name()))) {
             User user = (User) auth.getPrincipal();
             user.setSignedOut(false);
             userService.save(user);
@@ -188,7 +190,8 @@ public class AuthServiceImpl implements AuthService {
                     .token(jwtToken)
                     .role(user.getRole())
                     .build();
-        } else if (auth.getAuthorities().contains(ROLE_SELLER)) {
+        } else if (auth.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(ROLE_SELLER.name()))) {
             Seller seller = (Seller) auth.getPrincipal();
             sellerService.save(seller);
             claims.put("fullname", seller.getName());
@@ -202,14 +205,36 @@ public class AuthServiceImpl implements AuthService {
         throw new BadCredentialsException("Invalid username or password");
     }
 
+
     @Override
     public void signOut(Authentication authentication) throws Exception {
-        User user = (User) authentication.getPrincipal();
-        user.setSignedOut(true);
-        user.setLastSignOut(LocalDateTime.now());
-        User savedUser = userService.save(user);
-        if (!savedUser.isSignedOut()) {
-            throw new Exception("something went wrong in logout");
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new Exception("Invalid authentication, principal is null");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof User user) {
+            user.setSignedOut(true);
+            user.setLastSignOut(LocalDateTime.now());
+            User savedUser = userService.save(user);
+
+            if (!savedUser.isSignedOut()) {
+                throw new Exception("Something went wrong in user logout");
+            }
+
+        } else if (principal instanceof Seller seller) {
+            seller.setSignedOut(true);
+            seller.setLastSignOut(LocalDateTime.now());
+            sellerService.save(seller);
+
+            if (!seller.isEmailVerified()) {
+                throw new Exception("Something went wrong in seller logout");
+            }
+
+        } else {
+            throw new Exception("Unknown principal type, cannot sign out");
         }
     }
+
 }

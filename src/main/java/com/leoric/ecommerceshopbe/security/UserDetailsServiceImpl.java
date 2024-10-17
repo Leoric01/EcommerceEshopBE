@@ -1,5 +1,7 @@
 package com.leoric.ecommerceshopbe.security;
 
+import com.leoric.ecommerceshopbe.models.Seller;
+import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,22 +11,31 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private static final String SELLER_PREFIX = "seller_";
 
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        if (userEmail.startsWith(SELLER_PREFIX)) {
-            return sellerRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("Seller " + userEmail + " not found"));
-        } else {
-            return userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException("User " + userEmail + " not found"));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // First check if it's a user
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            return userOpt.get();
         }
-    }
 
+        // If no user found, check if it's a seller
+        Optional<Seller> sellerOpt = sellerRepository.findByEmail(email);
+        if (sellerOpt.isPresent()) {
+            return sellerOpt.get();
+        }
+
+        // If neither found, throw an exception
+        throw new UsernameNotFoundException("No user or seller found with email " + email);
+    }
 }
