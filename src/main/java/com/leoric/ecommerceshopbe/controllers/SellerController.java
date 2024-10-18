@@ -1,6 +1,7 @@
 package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.Seller;
+import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerReportService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
@@ -25,8 +26,10 @@ public class SellerController {
     private final SellerReportService sellerReportService;
 
     @GetMapping()
-    public List<Seller> getAllSellers() {
-        return sellerService.findAll();
+    public ResponseEntity<Result<List<Seller>>> getAllSellers(@RequestParam(required = false) AccountStatus status) {
+        List<Seller> sellers = sellerService.getAllSellers(status);
+        Result<List<Seller>> response = Result.success(sellers, "Seller's details fetched succesfully", OK.value());
+        return ResponseEntity.status(OK).body(response);
     }
 
     @GetMapping("/{id}")
