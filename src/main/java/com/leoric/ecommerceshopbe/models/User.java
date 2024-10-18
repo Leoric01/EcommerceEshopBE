@@ -19,7 +19,6 @@ import java.util.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Builder
 @Table(name = "users")
 public class User extends Account implements UserDetails, Principal {
@@ -42,7 +41,7 @@ public class User extends Account implements UserDetails, Principal {
     @Builder.Default
     private boolean enabled = false;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @Builder.Default
     private Set<Address> addresses = new HashSet<>();
 

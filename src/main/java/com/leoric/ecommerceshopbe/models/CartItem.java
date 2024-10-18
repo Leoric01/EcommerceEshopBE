@@ -2,12 +2,14 @@ package com.leoric.ecommerceshopbe.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItem {
@@ -18,16 +20,15 @@ public class CartItem {
 
     @ManyToOne
     @JsonIgnore
-//    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cart_id")
     private Cart cart;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     private String size;
     private int quantity = 1;
     private Integer mrpPrice;
     private Integer sellingPrice;
     private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

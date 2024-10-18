@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.repositories.CartItemRepository;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.CartService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
 
     @Override
+    @Transactional
     public CartItem addCartItem(User user, Product product, String size, int quantity) {
         Cart cart = findUserCart(user);
         CartItem isPresent = cartItemRepository.findByCartAndProductAndSize(cart, product, size);
@@ -33,6 +35,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setCart(cart);
             int total = product.getSellingPrice() * quantity;
             cartItem.setSellingPrice(total);
+            cartItem.setMrpPrice(quantity * product.getSellingPrice());
             cart.getCartItems().add(cartItem);
             cartItem.setCart(cart);
             return cartItemRepository.save(cartItem);
@@ -41,6 +44,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public Cart findUserCart(User user) {
         Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new EntityNotFoundException("Cart by userId not found"));
         int totalPrice = 0;
@@ -50,6 +54,7 @@ public class CartServiceImpl implements CartService {
             totalPrice += cartItem.getMrpPrice();
             totalDiscountedPrice += cartItem.getSellingPrice();
             totalItem += cartItem.getQuantity();
+            cart.getCartItems().add(cartItem);
         }
         cart.setTotalMrpPrice(totalPrice);
         cart.setTotalItem(totalItem);
@@ -59,7 +64,13 @@ public class CartServiceImpl implements CartService {
     }
 
     private int calculateDiscountPercentage(int mrpPrice, int sellingPrice) {
-        return 0;
+        if (mrpPrice == 0) {
+            return 0;
+        }
+        if (mrpPrice < 0 || sellingPrice < 0) {
+            throw new IllegalArgumentException("MrpPrice or sellingPrice are negative");
+        }
+        return ((mrpPrice - sellingPrice) * 100) / mrpPrice;
     }
 
     @Override

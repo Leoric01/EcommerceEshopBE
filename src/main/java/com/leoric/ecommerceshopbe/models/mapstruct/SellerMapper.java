@@ -9,8 +9,10 @@ public interface SellerMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "pickupAddress.id", ignore = true)
+    @Mapping(target = "password", ignore = true)
     void updateSellerFromSeller(Seller newDataSeller, @MappingTarget Seller connectedSeller);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "password", ignore = true)
     Seller mapWithoutPassword(Seller seller);
 }
