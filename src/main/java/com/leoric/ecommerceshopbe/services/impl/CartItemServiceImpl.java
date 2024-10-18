@@ -6,9 +6,11 @@ import com.leoric.ecommerceshopbe.models.CartItem;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.CartItemRepository;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
+import com.leoric.ecommerceshopbe.requests.CartItemQuantityUpdateReq;
 import com.leoric.ecommerceshopbe.services.interfaces.CartItemService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +23,15 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartRepository cartRepository;
 
     @Override
-    public CartItem updateCartItem(Long userId, Long cartItemId, CartItem cartItem) {
-        CartItem item = findCartItemById(cartItemId);
+    public CartItem updateCartItem(Authentication connectedUser, CartItemQuantityUpdateReq req) {
+        CartItem item = findCartItemById(req.getCartItemId());
         User cartItemUser = item.getCart().getUser();
+        User user = (User) connectedUser.getPrincipal();
 
-        if (cartItemUser.getId().equals(userId)) {
-            item.setQuantity(cartItem.getQuantity());
-            item.setMrpPrice(item.getQuantity() * item.getProduct().getMrpPrice());
-            item.setSellingPrice(item.getQuantity() * item.getProduct().getSellingPrice());
+        if (cartItemUser.getId().equals(user.getId())) {
+            item.setQuantity(req.getQuantity());
+            item.setMrpPrice(req.getQuantity() * item.getProduct().getMrpPrice());
+            item.setSellingPrice(req.getQuantity() * item.getProduct().getSellingPrice());
             return cartitemRepository.save(item);
         }
         throw new OperationNotPermittedException("you do not have permission to update this cart item");

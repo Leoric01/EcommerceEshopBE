@@ -6,6 +6,7 @@ import com.leoric.ecommerceshopbe.models.CartItem;
 import com.leoric.ecommerceshopbe.models.Product;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.requests.AddItemReq;
+import com.leoric.ecommerceshopbe.requests.CartItemQuantityUpdateReq;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.CartItemService;
 import com.leoric.ecommerceshopbe.services.interfaces.CartService;
@@ -56,18 +57,18 @@ public class CartController {
                                                        @PathVariable Long cartItemId) {
         User user = (User) connectedUser.getPrincipal();
         cartItemService.removeCartItem(user.getId(), cartItemId);
-        Result<Void> response = Result.success("Item deleted from cart successfully", ACCEPTED.value());
+        Result<Void> response = Result.success("Item successfully deleted from cart", ACCEPTED.value());
         return ResponseEntity.status(ACCEPTED).body(response);
     }
 
-    @PutMapping("/item/{cartItemId}")
-    public ResponseEntity<Result<CartItem>> updateCartItemHandler(Authentication connectedUser,
-                                                                  @PathVariable Long cartItemId,
-                                                                  @RequestBody CartItem cartItem) {
-        User user = (User) connectedUser.getPrincipal();
+// TODO  fix business logic, you cant alter the product, this way you can make cart item watever you want
 
-        if (cartItem.getQuantity() > 0) {
-            CartItem cartItemUpdated = cartItemService.updateCartItem(user.getId(), cartItemId, cartItem);
+    @PutMapping("/item")
+    public ResponseEntity<Result<CartItem>> updateCartItemHandler(Authentication connectedUser,
+                                                                  @RequestBody CartItemQuantityUpdateReq req) {
+
+        if (req.getQuantity() >= 0) {
+            CartItem cartItemUpdated = cartItemService.updateCartItem(connectedUser, req);
             Result<CartItem> response = Result.success(cartItemUpdated, "Item updated  successfully", ACCEPTED.value());
             return ResponseEntity.status(ACCEPTED).body(response);
         }

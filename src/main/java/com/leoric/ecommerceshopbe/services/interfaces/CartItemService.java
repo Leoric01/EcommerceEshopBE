@@ -1,6 +1,8 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.CartItem;
+import com.leoric.ecommerceshopbe.requests.CartItemQuantityUpdateReq;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
 @Service
 public interface CartItemService {
 
-    CartItem updateCartItem(Long userId, Long cartItemId, CartItem cartItem);
+    CartItem updateCartItem(Authentication connectedUser, CartItemQuantityUpdateReq req);
 
     void removeCartItem(Long userId, Long cartItemId);
 
