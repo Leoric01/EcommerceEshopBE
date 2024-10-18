@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Order;
 import com.leoric.ecommerceshopbe.models.OrderItem;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public interface OrderService {
 
     List<Order> usersOrderHistory(Authentication connectedUser);
 
-    List<Order> sellersOrder(Long sellerId);
+    List<Order> sellersOrders(Long sellerId);
 
     Order updateOrderStatus(Long orderId, OrderStatus orderStatus);
 
@@ -29,5 +30,7 @@ public interface OrderService {
 
     void deleteById(Long id);
 
-    OrderItem findById(Long id);
+    OrderItem getOrderItemById(Long id);
+
+    Order getOrderByIdAndValidateRelation(Long orderId, Account account);
 }

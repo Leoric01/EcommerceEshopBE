@@ -13,7 +13,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/address/")
+@RequestMapping("/address")
 public class AddressController {
 
     private final AddressService addressService;

@@ -1,6 +1,7 @@
 package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.Seller;
+import com.leoric.ecommerceshopbe.models.SellerReport;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerReportService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsSeller;
 import static org.springframework.http.HttpStatus.*;
 
 
@@ -39,13 +41,14 @@ public class SellerController {
         return ResponseEntity.status(OK).body(response);
     }
 
-    //    @GetMapping("/report")
-//    public ResponseEntity<Result<SellerReport>> getSellerByReport(Authentication connectedUser) {
-//        Seller seller = (Seller) connectedUser.getPrincipal();
-//        SellerReport sellerReport = sellerReportService.getSellerReport(seller);
-//        Result<SellerReport> response = Result.success(sellerReport, "Seller's details fetched succesfully", OK.value());
-//        return ResponseEntity.status(OK).body(response);
-//    }
+    @GetMapping("/report")
+    public ResponseEntity<Result<SellerReport>> getSellerByReport(Authentication connectedUser) {
+        Seller seller = getPrincipalAsSeller(connectedUser);
+        SellerReport sellerReport = sellerReportService.getSellerReport(seller);
+        Result<SellerReport> response = Result.success(sellerReport, "Seller's details fetched succesfully", OK.value());
+        return ResponseEntity.status(OK).body(response);
+    }
+
     @PatchMapping()
     public ResponseEntity<Result<Seller>> updateSeller(Authentication connectedUser,
                                                        @RequestBody Seller seller) {

@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.repositories.OrderItemRepository;
 import com.leoric.ecommerceshopbe.repositories.OrderRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.OrderService;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +34,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Set<Order> createOrder(Authentication connectedUser, Address shippingAddress, Cart cart) {
-        if (connectedUser == null || shippingAddress == null || cart == null) {
+        if (shippingAddress == null || cart == null) {
             throw new IllegalArgumentException("Invalid input: User, shipping address, or cart is null");
         }
-        User user = (User) connectedUser.getPrincipal();
+        User user = getPrincipalAsUser(connectedUser);
         user.getAddresses().add(shippingAddress);
         Address address = addressRepository.save(shippingAddress);
 
@@ -79,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> sellersOrder(Long sellerId) {
+    public List<Order> sellersOrders(Long sellerId) {
         if (sellerId == null || !sellerRepository.existsById(sellerId)) {
             throw new IllegalArgumentException("Invalid input: sellerId is null or non-existent");
         }
@@ -115,8 +116,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderItem findById(Long id) {
+    public OrderItem getOrderItemById(Long id) {
         return orderItemRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("OrderItem Not Found"));
+    }
+
+    @Override
+    public Order getOrderByIdAndValidateRelation(Long orderId, Account account) {
+        Order order = findOrderById(orderId);
+        Long userId = Optional.ofNullable(order.getUser())
+                .map(User::getId)
+                .orElseThrow(() -> new IllegalArgumentException("Order has no associated user"));
+
+        Long sellerId = Optional.ofNullable(order.getSellerId())
+                .orElseThrow(() -> new IllegalArgumentException("Order has no associated seller"));
+
+        if (!account.getId().equals(userId) && !account.getId().equals(sellerId)) {
+            throw new IllegalArgumentException("This order does not belong to this account");
+        }
+
+        return order;
     }
 
     private void saveOrderItems(Order savedOrder, List<CartItem> items) {
