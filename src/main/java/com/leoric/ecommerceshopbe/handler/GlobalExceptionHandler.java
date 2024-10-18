@@ -30,6 +30,14 @@ public class GlobalExceptionHandler {
                 .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
     }
 
+    @ExceptionHandler(SellerException.class)
+    public ResponseEntity<Result<Void>> handleSellerExceptibs(SellerException exp) {
+        log.warn("Seller related general error: {}", exp.getMessage());
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(Result.failure(SELLER_RELATED_PROBLEM.getCode(), SELLER_RELATED_PROBLEM.getDescription()));
+    }
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<Result<Void>> handleLockedException(LockedException exp) {
         log.warn("Account locked: {}", exp.getMessage());

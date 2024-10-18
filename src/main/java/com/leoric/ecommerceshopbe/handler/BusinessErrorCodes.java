@@ -15,10 +15,11 @@ public enum BusinessErrorCodes {
     BAD_CREDENTIALS(304, FORBIDDEN, "Login and / or Password is incorrect"),
     EMAIL_ALREADY_IN_USE(305, BAD_REQUEST, "Email is already in use"),
     ENTITY_NOT_FOUND(404, NOT_FOUND, "Entity was not found"),
+    SELLER_RELATED_PROBLEM(601, I_AM_A_TEAPOT, "Seller related problem"),
     ;
     private final int code;
-    private final String description;
     private final HttpStatus httpStatus;
+    private final String description;
 
     BusinessErrorCodes(int code, HttpStatus httpStatus, String description) {
         this.code = code;
