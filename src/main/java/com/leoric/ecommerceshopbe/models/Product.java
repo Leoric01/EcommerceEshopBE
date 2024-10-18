@@ -29,7 +29,7 @@ public class Product {
     private int discountPercentage;
     private String color;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> image = new ArrayList<>();
 
     private int numRatings;
@@ -42,7 +42,7 @@ public class Product {
 //    @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @Immutable

@@ -36,7 +36,7 @@ public class ProductController {
 
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<Result<Page<Product>>> getAllProducts(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String brand,

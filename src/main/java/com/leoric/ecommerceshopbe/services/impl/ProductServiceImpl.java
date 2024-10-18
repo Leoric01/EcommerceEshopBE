@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory2());
             category.setLevel(2);
+            category.setParentCategory(category1);
             category2 = categoryRepository.save(category);
         }
         Category category3 = categoryRepository.findByCategoryId(productReq.getCategory3());
@@ -67,23 +68,23 @@ public class ProductServiceImpl implements ProductService {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory3());
             category.setLevel(3);
+            category.setParentCategory(category2);
             category3 = categoryRepository.save(category);
         }
         int discountPercentage = calculateDiscountPercentage(productReq.getMrpPrice(), productReq.getSellingPrice());
-        Product product = new Product();
-        product.setSeller(seller);
-        product.setCategory(category3);
-        product.setDescription(productReq.getDescription());
-        product.setTitle(productReq.getTitle());
-        product.setColor(productReq.getColor());
-        product.setSellingPrice(productReq.getSellingPrice());
-        product.setImage(product.getImage());
-        product.setMrpPrice(product.getMrpPrice());
-        product.setSizes(productReq.getSizes());
+        Product createdProduct = new Product();
+        createdProduct.setSeller(seller);
+        createdProduct.setCategory(category3);
+        createdProduct.setDescription(productReq.getDescription());
+        createdProduct.setTitle(productReq.getTitle());
+        createdProduct.setColor(productReq.getColor());
+        createdProduct.setSellingPrice(productReq.getSellingPrice());
+        createdProduct.setImage(productReq.getImages());
+        createdProduct.setMrpPrice(productReq.getMrpPrice());
+        createdProduct.setSizes(productReq.getSizes());
+        createdProduct.setDiscountPercentage(discountPercentage);
 
-        product.setDiscountPercentage(discountPercentage);
-
-        return productRepository.save(product);
+        return productRepository.save(createdProduct);
     }
 
     @Override
@@ -109,6 +110,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Page<Product> getAllProducts(String category, String brand, String colors, String size,
                                         Integer minPrice, Integer maxPrice, Integer minDiscount, String sort,
                                         String stock, Integer pageNumber) {

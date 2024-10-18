@@ -25,7 +25,7 @@ public class SellerController {
     private final SellerService sellerService;
     private final SellerReportService sellerReportService;
 
-    @GetMapping()
+    @GetMapping("/")
     public ResponseEntity<Result<List<Seller>>> getAllSellers(@RequestParam(required = false) AccountStatus status) {
         List<Seller> sellers = sellerService.getAllSellers(status);
         Result<List<Seller>> response = Result.success(sellers, "Seller's details fetched succesfully", OK.value());

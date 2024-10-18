@@ -1,0 +1,10 @@
+
+
+
+
+
+
+// fixed // createproduct doesnt set mrpPrice
+// fixed // failed to lazily initialize a collection of role: com.leoric.ecommerceshopbe.models.Product.reviews: could not initialize
+proxy on  Get All Products Params NonRequired
+
