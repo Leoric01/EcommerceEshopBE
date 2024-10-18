@@ -10,6 +10,7 @@ import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product createProduct(CreateProductReq productReq, Seller seller) {
         Category category1 = categoryRepository.findByCategoryId(productReq.getCategory());
         if (category1 == null) {
@@ -56,14 +58,14 @@ public class ProductServiceImpl implements ProductService {
         Category category2 = categoryRepository.findByCategoryId(productReq.getCategory2());
         if (category2 == null) {
             Category category = new Category();
-            category.setCategoryId(productReq.getCategory());
+            category.setCategoryId(productReq.getCategory2());
             category.setLevel(2);
             category2 = categoryRepository.save(category);
         }
         Category category3 = categoryRepository.findByCategoryId(productReq.getCategory3());
         if (category3 == null) {
             Category category = new Category();
-            category.setCategoryId(productReq.getCategory());
+            category.setCategoryId(productReq.getCategory3());
             category.setLevel(3);
             category3 = categoryRepository.save(category);
         }

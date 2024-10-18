@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/sellers/products")
+@RequestMapping("/seller/products")
 public class SellerProductController {
     private final ProductService productService;
     private final SellerService sellerService;
