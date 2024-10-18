@@ -6,8 +6,9 @@ import com.leoric.ecommerceshopbe.repositories.OrderRepository;
 import com.leoric.ecommerceshopbe.stripe.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.PaymentOrderRepository;
 import com.leoric.ecommerceshopbe.stripe.StripeConfig;
-import com.leoric.ecommerceshopbe.utils.GlobalUtil;
-import com.stripe.StripeClient;
+import com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus;
+import com.leoric.ecommerceshopbe.stripe.constants.PaymentStatus;
+import com.stripe.Stripe;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 import static com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus.PENDING;
+import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,18 @@ public class PaymentServiceImpl implements PaymentService {
     public Boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId) {
         if (paymentOrder.getStatus().name().equalsIgnoreCase(PENDING.name())) {
             // proceed with payment
-            StripeClient stripeClient = new StripeClient(stripeProperties.getPublicKey());
+            Stripe.get;
+            Object payment = Stripe.get...fetch();
+            String status = payment.get("status");
+            if (status.equalsIgnoreCase("capture")) {
+                Set<Order> orders = paymentOrder.getOrders();
+                for (Order order : orders) {
+                    order.setPaymentStatus(PaymentStatus.COMPLETED);
+                    orderRepository.save(order);
+                }
+                paymentOrder.setStatus(PaymentOrderStatus.SUCCESS) {
+                }
+            }
         }
 
         return false;
@@ -43,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentOrder createPaymentOrder(Authentication authentication, Set<Order> orders) {
-        User user = GlobalUtil.getPrincipalAsUser(authentication);
+        User user = getPrincipalAsUser(authentication);
         Long amount = orders.stream().mapToLong(Order::getTotalSellingPrice).sum();
 
         PaymentOrder paymentOrder = new PaymentOrder();
