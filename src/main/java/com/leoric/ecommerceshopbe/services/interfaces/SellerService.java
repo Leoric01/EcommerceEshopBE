@@ -31,8 +31,6 @@ public interface SellerService {
 
     void deleteSeller(Long id);
 
-    Seller verifyEmail(String email, String otp);
-
     Seller updateSellerAccountStatus(Long sellerId, AccountStatus status);
 
     boolean existsByEmail(String email);

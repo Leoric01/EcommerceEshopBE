@@ -225,7 +225,7 @@ public class AuthServiceImpl implements AuthService {
             user.setLastSignOut(LocalDateTime.now());
             User savedUser = userService.save(user);
 
-            if (savedUser.isSignedIn()) {
+            if (!savedUser.isSignedOut()) {
                 throw new Exception("Something went wrong in user logout");
             }
 
@@ -234,7 +234,7 @@ public class AuthServiceImpl implements AuthService {
             seller.setLastSignOut(LocalDateTime.now());
             sellerService.save(seller);
 
-            if (seller.isSignedIn()) {
+            if (!seller.isSignedOut()) {
                 throw new Exception("Something went wrong in seller logout");
             }
 

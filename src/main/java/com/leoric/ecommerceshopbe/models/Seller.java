@@ -29,6 +29,10 @@ public class Seller extends Account implements UserDetails, Principal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
+    @Builder.Default
+    private boolean isSignedOut = false;
+
     private String sellerName;
 
     @Column(unique = true, nullable = false)
@@ -44,7 +48,6 @@ public class Seller extends Account implements UserDetails, Principal {
     @Builder.Default
     private BankDetails bankDetails = new BankDetails();
 
-    //    @JoinColumn(name = "address_id")
     @OneToOne(cascade = CascadeType.ALL)
     @Builder.Default
     private Address pickupAddress = new Address();
@@ -58,25 +61,15 @@ public class Seller extends Account implements UserDetails, Principal {
     private boolean isEmailVerified = false;
 
     @Enumerated(EnumType.STRING)
-    private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
     @Builder.Default
-    private boolean isSignedOut = false;
+    private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
 
     private LocalDateTime lastSignOut;
 
-    public boolean isSignedIn() {
-        return !isSignedOut;
-    }
-
     @Override
-    public void setSignedOut(boolean signedOut) {
-        this.isSignedOut = signedOut;
-    }
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
     }
-
     @Override
     public String getUsername() {
         return this.email;
@@ -89,7 +82,6 @@ public class Seller extends Account implements UserDetails, Principal {
 
     @Override
     public String getRole() {
-        return this.role.name();  // Implement the abstract getRole() from Account
+        return this.role.name();
     }
-
 }

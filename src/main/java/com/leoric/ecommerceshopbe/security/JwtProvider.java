@@ -67,11 +67,11 @@ public class JwtProvider {
         if (userDetails instanceof User user) {
             return (username.equals(user.getUsername())) &&
                    isTokenNonExpired(token) &&
-                   user.isSignedIn();
+                   !user.isSignedOut();
         } else if (userDetails instanceof Seller seller) {
             return (username.equals(seller.getUsername())) &&
                    isTokenNonExpired(token) &&
-                   seller.isSignedIn();
+                   !seller.isSignedOut();
         }
         return false;
     }

@@ -70,25 +70,18 @@ public class User extends Account implements UserDetails, Principal {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Wishlist wishlist;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
-    }
-
 
     @Builder.Default
     private boolean isSignedOut = false;
 
     private LocalDateTime lastSignOut;
 
-    public boolean isSignedIn() {
-        return !this.isSignedOut;
-    }
 
     @Override
-    public void setSignedOut(boolean signedOut) {
-        this.isSignedOut = signedOut;
+    public Collection<GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
     }
+
     @Override
     public String getPassword() {
         return this.password;
@@ -100,28 +93,13 @@ public class User extends Account implements UserDetails, Principal {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
     public boolean isEnabled() {
         return this.enabled;
     }
 
     @Override
     public String getRole() {
-        return this.role.name();  // Implement the abstract getRole() from Account
+        return this.role.name();
     }
 
     @Override
