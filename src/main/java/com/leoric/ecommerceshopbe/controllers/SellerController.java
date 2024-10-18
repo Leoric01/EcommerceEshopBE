@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/seller/")
+@RequestMapping("/seller")
 public class SellerController {
 
     private final SellerService sellerService;

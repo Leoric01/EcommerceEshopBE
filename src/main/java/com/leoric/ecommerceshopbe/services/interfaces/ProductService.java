@@ -18,6 +18,8 @@ public interface ProductService {
 
     List<Product> searchProduct(String productName);
 
+    List<Product> searchProducts(String query);
+
     Page<Product> getAllProducts(String category,
                                  String brand,
                                  String colors,

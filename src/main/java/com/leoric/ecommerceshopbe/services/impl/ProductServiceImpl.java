@@ -102,6 +102,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> searchProducts(String query) {
+        return productRepository.searchProducts(query);
+    }
+
+    @Override
     public Page<Product> getAllProducts(String category, String brand, String colors, String size,
                                         Integer minPrice, Integer maxPrice, Integer minDiscount, String sort,
                                         String stock, Integer pageNumber) {
@@ -149,7 +154,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductBySellerId(Long sellerId) {
-        return List.of();
+        return productRepository.findBySellerId(sellerId);
     }
 
     private int calculateDiscountPercentage(double mrpPrice, double sellingPrice) {
