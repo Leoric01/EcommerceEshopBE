@@ -82,7 +82,7 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public Seller getSellerById(Long id) {
         return sellerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with  id number " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Seller with  id number " + id + " not found"));
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.leoric.ecommerceshopbe.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class Product {
     private String description;
     private int mrpPrice;
     private int quantity;
-    private String sellingPrice;
+    private int sellingPrice;
     private int discountPercentage;
     private String color;
 
@@ -43,9 +45,10 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
+    @Immutable
     @CreationTimestamp
     private LocalDateTime createdAt;
-
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
     private String sizes;
 
