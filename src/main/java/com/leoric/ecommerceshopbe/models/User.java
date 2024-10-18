@@ -14,9 +14,9 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Entity
 @Getter
 @Setter
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -82,16 +82,16 @@ public class User extends Account implements UserDetails, Principal {
     private LocalDateTime lastSignOut;
 
     public boolean isSignedIn() {
-        return !isSignedOut;
-    }
-
-    public void setSignedOut(boolean signedOut) {
-        isSignedOut = signedOut;
+        return !this.isSignedOut;
     }
 
     @Override
+    public void setSignedOut(boolean signedOut) {
+        this.isSignedOut = signedOut;
+    }
+    @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override

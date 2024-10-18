@@ -22,6 +22,7 @@ import java.util.Collections;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Seller extends Account implements UserDetails, Principal {
 
     @Id
@@ -36,32 +37,38 @@ public class Seller extends Account implements UserDetails, Principal {
     private String password;
 
     @Embedded
+    @Builder.Default
     private BusinessDetails businessDetails = new BusinessDetails();
 
     @Embedded
+    @Builder.Default
     private BankDetails bankDetails = new BankDetails();
 
     //    @JoinColumn(name = "address_id")
     @OneToOne(cascade = CascadeType.ALL)
+    @Builder.Default
     private Address pickupAddress = new Address();
 
     private String GSTIN;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private USER_ROLE role = USER_ROLE.ROLE_SELLER;
-
+    @Builder.Default
     private boolean isEmailVerified = false;
 
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.PENDING_VERIFICATION;
-
+    @Builder.Default
     private boolean isSignedOut = false;
+
     private LocalDateTime lastSignOut;
 
     public boolean isSignedIn() {
         return !isSignedOut;
     }
 
+    @Override
     public void setSignedOut(boolean signedOut) {
         this.isSignedOut = signedOut;
     }

@@ -20,6 +20,7 @@ import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import com.leoric.ecommerceshopbe.utils.OtpUtil;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ import java.util.Map;
 
 import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_SELLER;
 import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_USER;
+import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
 
 @Service
 @RequiredArgsConstructor
@@ -132,6 +134,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
+    @Transactional
     public AccountDetailDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException {
         String email;
         VerificationCode verificationCode;
@@ -144,7 +147,9 @@ public class AuthServiceImpl implements AuthService {
             }
             user.setPassword(passwordEncoder.encode(req.getPassword()));
             user.setEnabled(true);
+            user.setVerificationCode(null);
             User savedUser = userService.save(user);
+            verificationCodeService.deleteByEmail(email);
             return new AccountDetailDto(
                     savedUser.getId(),
                     savedUser.getName(),
@@ -163,6 +168,7 @@ public class AuthServiceImpl implements AuthService {
             seller.setPassword(passwordEncoder.encode(req.getPassword()));
             seller.setEmailVerified(true);
             Seller savedSeller = sellerService.save(seller);
+            verificationCodeService.deleteByEmail(email);
             return new AccountDetailDto(
                     savedSeller.getId(),
                     savedSeller.getName(),
@@ -180,51 +186,31 @@ public class AuthServiceImpl implements AuthService {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
 
         Map<String, Object> claims = new HashMap<>();
-
-        if (auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals(ROLE_USER.name()))) {
-            return handleUserSignIn(auth, claims);
-        } else if (auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals(ROLE_SELLER.name()))) {
-            return handleSellerSignIn(auth, claims);
+        Account account = getAccountFromPrincipal(auth.getPrincipal());
+        account.setSignedOut(false);
+        if (account instanceof User) {
+            userService.save((User) account);
+        } else if (account instanceof Seller) {
+            sellerService.save((Seller) account);
         }
 
-        throw new BadCredentialsException("Invalid username or password");
-    }
+        claims.put("fullname", account.getName());
+        claims.put("email", account.getEmail());
 
-    private AuthenticationResponse handleUserSignIn(Authentication auth, Map<String, Object> claims) {
-        User user = (User) auth.getPrincipal();
-        user.setSignedOut(false);
-        userService.save(user);
-
-        claims.put("fullname", user.getName());
-        claims.put("email", user.getEmail());
-
-        String jwtToken = jwtProvider.generateToken(claims, user);
-
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .role(user.getRole())
-                .build();
-    }
-
-    private AuthenticationResponse handleSellerSignIn(Authentication auth, Map<String, Object> claims) {
-        Seller seller = (Seller) auth.getPrincipal();
-        seller.setSignedOut(false);
-        sellerService.save(seller);
-
-        claims.put("fullname", seller.getName());
-        claims.put("email", seller.getEmail());
-
-        String jwtToken = jwtProvider.generateToken(claims, seller);
+        String jwtToken;
+        if (account instanceof User) {
+            jwtToken = jwtProvider.generateToken(claims, (User) account);
+        } else if (account instanceof Seller) {
+            jwtToken = jwtProvider.generateToken(claims, (Seller) account);
+        } else {
+            throw new IllegalArgumentException("Unknown account type");
+        }
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .role(seller.getRole())
+                .role(account.getRole())
                 .build();
     }
-
-
 
     @Override
     public void signOut(Authentication authentication) throws Exception {

@@ -53,10 +53,7 @@ public class BeansConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "http://localhost:8080",
-                "http://localhost:1025",
-                "http://localhost:1080",
-                "http://localhost:9090",
-                "http://localhost:80"
+                "http://localhost:1025"
         ));
         config.setAllowedHeaders(Arrays.asList(
                 ORIGIN,

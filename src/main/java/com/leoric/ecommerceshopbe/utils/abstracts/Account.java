@@ -15,5 +15,6 @@ public abstract class Account {
 
     public abstract String getRole();
 
+    public abstract void setSignedOut(boolean b);
 }
 
