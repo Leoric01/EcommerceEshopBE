@@ -1,14 +1,16 @@
-package com.leoric.ecommerceshopbe.models;
+package com.leoric.ecommerceshopbe.stripe;
 
-import com.leoric.ecommerceshopbe.models.constants.PaymentMethod;
-import com.leoric.ecommerceshopbe.models.constants.PaymentOrderStatus;
+import com.leoric.ecommerceshopbe.models.Order;
+import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.stripe.constants.PaymentMethod;
+import com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.leoric.ecommerceshopbe.models.constants.PaymentOrderStatus.PENDING;
+import static com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus.PENDING;
 
 @Entity
 @Getter
@@ -26,6 +28,7 @@ public class PaymentOrder {
     private PaymentOrderStatus status = PENDING;
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
     private String paymentLinkId;
 
     @ManyToOne

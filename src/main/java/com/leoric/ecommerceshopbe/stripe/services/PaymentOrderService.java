@@ -1,6 +1,6 @@
-package com.leoric.ecommerceshopbe.services.interfaces;
+package com.leoric.ecommerceshopbe.stripe.services;
 
-import com.leoric.ecommerceshopbe.models.PaymentOrder;
+import com.leoric.ecommerceshopbe.stripe.PaymentOrder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -21,8 +21,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction findById(Long id) {
-        return transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+        return transactionRepository.findById(id).orElseThrow(() -> new RuntimeException("Transaction not found"));
     }
 
     @Override

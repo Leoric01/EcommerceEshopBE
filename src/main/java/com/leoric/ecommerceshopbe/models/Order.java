@@ -1,8 +1,8 @@
 package com.leoric.ecommerceshopbe.models;
 
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
-import com.leoric.ecommerceshopbe.models.constants.PaymentStatus;
-import com.leoric.ecommerceshopbe.models.embeded.PaymentDetails;
+import com.leoric.ecommerceshopbe.stripe.constants.PaymentStatus;
+import com.leoric.ecommerceshopbe.stripe.dtos.PaymentDetails;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

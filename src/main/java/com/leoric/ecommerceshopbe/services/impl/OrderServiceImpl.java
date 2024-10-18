@@ -2,12 +2,12 @@ package com.leoric.ecommerceshopbe.services.impl;
 
 import com.leoric.ecommerceshopbe.models.*;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
-import com.leoric.ecommerceshopbe.models.constants.PaymentStatus;
 import com.leoric.ecommerceshopbe.repositories.AddressRepository;
 import com.leoric.ecommerceshopbe.repositories.OrderItemRepository;
 import com.leoric.ecommerceshopbe.repositories.OrderRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.OrderService;
+import com.leoric.ecommerceshopbe.stripe.constants.PaymentStatus;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

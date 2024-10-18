@@ -21,8 +21,7 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
 
     @Override
     public HomeCategory findById(Long id) {
-        return homecategoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("HomeCategory not found"));
+        return homecategoryRepository.findById(id).orElseThrow(() -> new RuntimeException("HomeCategory not found"));
     }
 
     @Override

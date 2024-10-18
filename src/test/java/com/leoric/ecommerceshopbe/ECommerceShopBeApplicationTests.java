@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @Disabled
 class ECommerceShopBeApplicationTests {
-
     @Test
     void contextLoads() {
     }

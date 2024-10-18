@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.requests;
+package com.leoric.ecommerceshopbe.stripe.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
