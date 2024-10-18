@@ -3,7 +3,9 @@ package com.leoric.ecommerceshopbe.services.impl;
 import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Order;
+import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
+import com.leoric.ecommerceshopbe.repositories.AddressRepository;
 import com.leoric.ecommerceshopbe.repositories.OrderRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +20,13 @@ import java.util.Set;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-
+    private final AddressRepository addressRepository;
 
     @Override
-    public Set<Order> createOrder(Authentication connectedUser, Address address, Cart cart) {
+    public Set<Order> createOrder(Authentication connectedUser, Address shippingAddress, Cart cart) {
+        User user = (User) connectedUser.getPrincipal();
+        user.getAddresses().add(shippingAddress);
+        Address address = addressRepository.save(shippingAddress);
         return Set.of();
     }
 

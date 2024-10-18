@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.models.constants.PaymentStatus;
 import com.leoric.ecommerceshopbe.models.embeded.PaymentDetails;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class Order {
     private int totalItem;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    @CreationTimestamp
     private LocalDateTime orderDate = LocalDateTime.now();
     private LocalDateTime deliverDate = orderDate.plusDays(7);
 }
