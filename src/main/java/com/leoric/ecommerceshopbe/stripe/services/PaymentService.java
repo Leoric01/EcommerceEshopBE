@@ -16,7 +16,7 @@ public interface PaymentService {
 
     PaymentOrder getPaymentOrderByPaymentId(String paymentId);
 
-    boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId);
+    Boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId);
 
     String createStripePaymentLink(User user, Long amount, Long orderId);
 }
