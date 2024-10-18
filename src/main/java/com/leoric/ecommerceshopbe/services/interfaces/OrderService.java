@@ -3,6 +3,7 @@ package com.leoric.ecommerceshopbe.services.interfaces;
 import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Order;
+import com.leoric.ecommerceshopbe.models.OrderItem;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,4 +28,6 @@ public interface OrderService {
     Order save(Order entity);
 
     void deleteById(Long id);
+
+    OrderItem findById(Long id);
 }

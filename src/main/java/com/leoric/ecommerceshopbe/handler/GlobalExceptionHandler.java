@@ -21,7 +21,13 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Result<Void>> handleIllegalArgumentException(IllegalArgumentException exp) {
+        log.warn("Illegal argument: {}", exp.getMessage());
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(Result.failure(BusinessErrorCodes.INVALID_INPUT.getCode(), exp.getMessage()));
+    }
     @ExceptionHandler(OtpVerificationException.class)
     public ResponseEntity<Result<Void>> handleOtpVerificationException(OtpVerificationException exp) {
         log.warn("OTP verification failed: {}", exp.getMessage());
@@ -30,6 +36,13 @@ public class GlobalExceptionHandler {
                 .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
+        log.warn("Entity not found: {}", exp.getMessage());
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(Result.failure(ENTITY_NOT_FOUND.getCode(), ENTITY_NOT_FOUND.getDescription()));
+    }
     @ExceptionHandler(SellerException.class)
     public ResponseEntity<Result<Void>> handleSellerExceptibs(SellerException exp) {
         log.warn("Seller related general error: {}", exp.getMessage());
@@ -70,13 +83,6 @@ public class GlobalExceptionHandler {
                 .body(Result.failure(BAD_CREDENTIALS.getCode(), BAD_CREDENTIALS.getDescription()));
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
-        log.warn("Entity not found: {}", exp.getMessage());
-        return ResponseEntity
-                .status(NOT_FOUND)
-                .body(Result.failure(ENTITY_NOT_FOUND.getCode(), ENTITY_NOT_FOUND.getDescription()));
-    }
 
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<Result<Void>> handleMessagingException(MessagingException exp) {
