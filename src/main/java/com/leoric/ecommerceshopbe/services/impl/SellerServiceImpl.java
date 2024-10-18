@@ -109,6 +109,17 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
+    public Seller updateSellerById(Long id, Seller seller) {
+        Seller updatedSeller = getSellerById(id);
+        //                                  source, target
+        sellerMapper.updateSellerFromSeller(seller, updatedSeller);
+        if (updatedSeller.getPickupAddress() != null) {
+            addressService.save(updatedSeller.getPickupAddress());
+        }
+        return sellerRepository.save(updatedSeller);
+    }
+
+    @Override
     public void deleteSeller(Long id) {
         sellerRepository.deleteById(id);
     }
@@ -125,6 +136,7 @@ public class SellerServiceImpl implements SellerService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
 
     //prob redundant cause mapstruct
     private void updateIfPresent(String value, Consumer<String> setter) {

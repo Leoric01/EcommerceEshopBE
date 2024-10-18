@@ -35,4 +35,6 @@ public interface SellerService {
     Seller updateSellerAccountStatus(Long sellerId, AccountStatus status);
 
     boolean existsByEmail(String email);
+
+    Seller updateSellerById(Long id, Seller seller);
 }

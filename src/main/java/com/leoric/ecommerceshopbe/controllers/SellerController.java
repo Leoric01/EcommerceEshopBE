@@ -51,6 +51,14 @@ public class SellerController {
         return ResponseEntity.status(CREATED).body(response);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Result<Seller>> updateSellerById(@PathVariable Long id,
+                                                           @RequestBody Seller seller) {
+        Seller updatedSeller = sellerService.updateSellerById(id, seller);
+        Result<Seller> response = Result.success(updatedSeller, "Seller's details updated succesfully", CREATED.value());
+        return ResponseEntity.status(CREATED).body(response);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Result<String>> deleteSeller(@PathVariable Long id) {
         sellerService.deleteSeller(id);
