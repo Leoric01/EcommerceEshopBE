@@ -10,15 +10,18 @@ import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.isNotBlank;
 
 @Service
@@ -95,13 +98,14 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     @Transactional
-    public Seller updateSeller(Long id, Seller newDataSeller) {
-        Seller patchedSeller = getSellerById(id);
-        sellerMapper.updateSellerFromDto(newDataSeller, patchedSeller);
-        if (newDataSeller.getPickupAddress() != null) {
-            addressService.save(patchedSeller.getPickupAddress());
+    public Seller updateSeller(Authentication connectedUser, Seller newDataSeller) {
+        Account account = getAccountFromPrincipal(connectedUser.getPrincipal());
+        Seller connectedSeller = (Seller) account;
+        sellerMapper.updateSellerFromSeller(newDataSeller, connectedSeller);
+        if (connectedSeller.getPickupAddress() != null) {
+            addressService.save(connectedSeller.getPickupAddress());
         }
-        return sellerRepository.save(patchedSeller);
+        return sellerRepository.save(connectedSeller);
     }
 
     @Override

@@ -7,7 +7,9 @@ import org.mapstruct.*;
 public interface SellerMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateSellerFromDto(Seller newDataSeller, @MappingTarget Seller patchedSeller);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "pickupAddress.id", ignore = true)
+    void updateSellerFromSeller(Seller newDataSeller, @MappingTarget Seller connectedSeller);
 
     @Mapping(target = "password", ignore = true)
     Seller mapWithoutPassword(Seller seller);

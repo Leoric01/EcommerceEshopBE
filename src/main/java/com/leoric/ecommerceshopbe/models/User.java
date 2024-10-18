@@ -79,7 +79,9 @@ public class User extends Account implements UserDetails, Principal {
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(this.role.toString()));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(this.role.toString()));
+        return authorities;
     }
 
     @Override

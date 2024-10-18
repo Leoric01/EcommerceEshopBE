@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Result<Void>> handleEntityNotFound(BadCredentialsException exp) {
+    public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
         log.warn("Entity not found: {}", exp.getMessage());
         return ResponseEntity
                 .status(NOT_FOUND)

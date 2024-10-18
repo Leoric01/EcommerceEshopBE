@@ -5,7 +5,6 @@ import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
-import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AccountDetailDto currentUser(Authentication connectedUser) {
-        Account account = GlobalUtil.getAccountFromPrincipal(connectedUser.getPrincipal());
+        Account account = getAccountFromPrincipal(connectedUser.getPrincipal());
         return getAccountDto(account);
     }
 

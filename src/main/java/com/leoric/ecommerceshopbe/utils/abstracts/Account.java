@@ -19,6 +19,7 @@ public abstract class Account {
 
     //this is redundant field, but it makes sure you don't return generic wild card
     //in any future types of accounts(for example moderator, admin, guest etc...)
+    //mapstruct has a problem with it and me too, I don't think wild cards should be used if they can be avoided
     public abstract Collection<GrantedAuthority> getAuthorities();
 }
 

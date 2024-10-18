@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface SellerService {
 
     List<Seller> getAllSellers(AccountStatus status);
 
-    Seller updateSeller(Long id, Seller seller);
+    Seller updateSeller(Authentication connectedUser, Seller seller);
 
     void deleteSeller(Long id);
 
