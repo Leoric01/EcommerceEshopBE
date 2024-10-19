@@ -1,9 +1,9 @@
 package com.leoric.ecommerceshopbe.security;
 
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
-import com.leoric.ecommerceshopbe.repositories.UserRepository;
+import com.leoric.ecommerceshopbe.security.auth.User;
+import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

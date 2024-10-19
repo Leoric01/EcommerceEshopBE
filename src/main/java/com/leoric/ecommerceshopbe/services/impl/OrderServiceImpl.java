@@ -6,6 +6,7 @@ import com.leoric.ecommerceshopbe.repositories.AddressRepository;
 import com.leoric.ecommerceshopbe.repositories.OrderItemRepository;
 import com.leoric.ecommerceshopbe.repositories.OrderRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.OrderService;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentStatus;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;

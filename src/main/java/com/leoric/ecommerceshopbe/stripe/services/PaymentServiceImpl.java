@@ -1,8 +1,8 @@
 package com.leoric.ecommerceshopbe.stripe.services;
 
 import com.leoric.ecommerceshopbe.models.Order;
-import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.OrderRepository;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.stripe.PaymentOrderRepository;
 import com.leoric.ecommerceshopbe.stripe.StripeConfig;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
@@ -117,4 +117,3 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new EntityNotFoundException("Payment order by payment link ID was not found"));
     }
 }
-

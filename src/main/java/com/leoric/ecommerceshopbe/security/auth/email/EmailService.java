@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.services.email;
+package com.leoric.ecommerceshopbe.security.auth.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

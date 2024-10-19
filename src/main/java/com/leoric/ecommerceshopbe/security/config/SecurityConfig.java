@@ -1,5 +1,6 @@
-package com.leoric.ecommerceshopbe.security;
+package com.leoric.ecommerceshopbe.security.config;
 
+import com.leoric.ecommerceshopbe.security.JwtTokenValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

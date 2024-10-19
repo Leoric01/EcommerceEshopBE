@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.stripe.services;
 
 import com.leoric.ecommerceshopbe.models.Order;
-import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import com.stripe.exception.StripeException;
 import org.springframework.security.core.Authentication;

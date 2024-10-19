@@ -1,6 +1,7 @@
 package com.leoric.ecommerceshopbe.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package com.leoric.ecommerceshopbe.services.interfaces;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.CartItem;
 import com.leoric.ecommerceshopbe.models.Product;
-import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

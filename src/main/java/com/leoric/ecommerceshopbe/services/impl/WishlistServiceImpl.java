@@ -1,9 +1,9 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
 import com.leoric.ecommerceshopbe.models.Product;
-import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.models.Wishlist;
 import com.leoric.ecommerceshopbe.repositories.WishlistRepository;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

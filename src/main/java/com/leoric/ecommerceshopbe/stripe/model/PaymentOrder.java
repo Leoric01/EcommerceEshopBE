@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.stripe.model;
 
 import com.leoric.ecommerceshopbe.models.Order;
-import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentMethod;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentOrderStatus;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.services.email;
+package com.leoric.ecommerceshopbe.security.auth.email;
 
 import lombok.Getter;
 

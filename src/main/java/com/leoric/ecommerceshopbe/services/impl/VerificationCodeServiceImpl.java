@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
-import com.leoric.ecommerceshopbe.models.VerificationCode;
-import com.leoric.ecommerceshopbe.repositories.VerificationCodeRepository;
+import com.leoric.ecommerceshopbe.security.auth.VerificationCode;
+import com.leoric.ecommerceshopbe.security.auth.VerificationCodeRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

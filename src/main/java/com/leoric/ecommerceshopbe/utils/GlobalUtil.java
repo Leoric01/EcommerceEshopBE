@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.utils;
 
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
