@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
+import com.leoric.ecommerceshopbe.models.Order;
 import com.leoric.ecommerceshopbe.models.Transaction;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +16,6 @@ public interface TransactionService {
     Transaction save(Transaction entity);
 
     void deleteById(Long id);
+
+    void createTransaction(Order order);
 }

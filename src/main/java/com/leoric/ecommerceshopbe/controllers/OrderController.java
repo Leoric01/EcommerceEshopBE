@@ -3,10 +3,12 @@ package com.leoric.ecommerceshopbe.controllers;
 import com.leoric.ecommerceshopbe.models.*;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.*;
+import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentLinkResponse;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentMethod;
 import com.leoric.ecommerceshopbe.stripe.services.PaymentService;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,14 +37,21 @@ public class OrderController {
     public ResponseEntity<PaymentLinkResponse> createOrder(Authentication authentication,
                                                            @RequestBody Address shippingAddress,
                                                            @RequestParam PaymentMethod paymentMethod
-    ) {
+    ) throws StripeException {
         User user = getPrincipalAsUser(authentication);
         Cart cart = cartService.findUserCart(user);
         Set<Order> orders = orderService.createOrder(authentication, shippingAddress, cart);
-//        PaymentOrder paymentOrder = paymentService.createOrder(user, shippingAddress, cart);
-        PaymentLinkResponse paymentLinkResponse = new PaymentLinkResponse();
+        PaymentOrder paymentOrder = paymentService.createPaymentOrder(authentication, orders);
+        PaymentLinkResponse res = new PaymentLinkResponse();
 
-        return new ResponseEntity<>(paymentLinkResponse, OK);
+        if (paymentMethod.name().equals(PaymentMethod.STRIPE.name())) {
+            String paymentUrl = paymentService.createStripePaymentLink(user, paymentOrder.getAmount(), paymentOrder.getId());
+            res.setPayment_link_url(paymentUrl);
+            return new ResponseEntity<>(res, OK);
+        } else if (paymentMethod.name().equals(PaymentMethod.PAYPAL.name())) {
+            throw new IllegalArgumentException("Pay-pal not implemented yet");
+        }
+        throw new IllegalArgumentException("Invalid payment method");
     }
 
     @GetMapping("/user")

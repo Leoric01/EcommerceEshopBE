@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
+import com.leoric.ecommerceshopbe.models.Order;
 import com.leoric.ecommerceshopbe.models.Transaction;
 import com.leoric.ecommerceshopbe.repositories.TransactionRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.TransactionService;
@@ -32,5 +33,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void deleteById(Long id) {
         transactionRepository.deleteById(id);
+    }
+
+    @Override
+    public void createTransaction(Order order) {
+
     }
 }
