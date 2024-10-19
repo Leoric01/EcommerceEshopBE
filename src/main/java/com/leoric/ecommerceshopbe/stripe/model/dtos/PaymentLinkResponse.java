@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.stripe.dtos;
+package com.leoric.ecommerceshopbe.stripe.model.dtos;
 
 import lombok.Data;
 

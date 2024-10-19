@@ -3,15 +3,15 @@ package com.leoric.ecommerceshopbe.stripe.services;
 import com.leoric.ecommerceshopbe.models.Order;
 import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.repositories.OrderRepository;
-import com.leoric.ecommerceshopbe.stripe.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.PaymentOrderRepository;
 import com.leoric.ecommerceshopbe.stripe.StripeConfig;
-import com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus;
-import com.leoric.ecommerceshopbe.stripe.constants.PaymentStatus;
+import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
+import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentOrderStatus;
+import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentStatus;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentLink;
-import com.stripe.param.PaymentLinkCreateParams;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,33 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripeConfig stripeProperties;
     private final PaymentOrderRepository paymentOrderRepository;
     private final OrderRepository orderRepository;
+
+    @Override
+    public String createStripePaymentLink(User user, Long amount, Long orderId) throws StripeException {
+        SessionCreateParams params = SessionCreateParams.builder()
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl(stripeProperties.getEndpointOnSuccess() + "/" + orderId)
+                .setCancelUrl(stripeProperties.getEndpointOnCancel())
+                .addLineItem(SessionCreateParams.LineItem.builder()
+                        .setQuantity(1L)
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("eur")
+                                .setUnitAmount(amount * 100)
+                                .setProductData(
+                                        SessionCreateParams.LineItem
+                                                .PriceData
+                                                .ProductData
+                                                .builder()
+                                                .setName("George's first Eshop")
+                                                .build()
+                                ).build()
+                        ).build()
+                ).build();
+        Session session = Session.create(params);
+        return session.getUrl();
+
+    }
 
     @Override
     public Boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId) {
@@ -63,33 +90,7 @@ public class PaymentServiceImpl implements PaymentService {
         return false;
     }
 
-    @Override
-    public String createStripePaymentLink(User user, Long amount, Long orderId) {
 
-        try {
-            PaymentLinkCreateParams createParams = PaymentLinkCreateParams.builder()
-                    .addLineItem(PaymentLinkCreateParams.LineItem.builder()
-                            .setQuantity(1L)
-                            .setPrice("price_your_price_id") // Replace with your actual Stripe price ID
-                            .build())
-                    .setAfterCompletion(
-                            PaymentLinkCreateParams.AfterCompletion.builder()
-                                    .setRedirect(
-                                            PaymentLinkCreateParams.AfterCompletion.Redirect.builder()
-                                                    .setUrl(stripeProperties.getEndpointOnSuccess())
-                                                    .build())
-                                    .build())
-                    .setCancelUrl(stripeProperties.getEndpointOnCancel()) // Set the cancel URL here
-                    .build();
-
-            // Create the payment link
-            PaymentLink paymentLink = PaymentLink.create(createParams);
-            return paymentLink.getUrl();
-        } catch (StripeException e) {
-            log.error("Failed to create Stripe payment link for User {}: {}", user.getId(), e.getMessage(), e);
-            return null; // Handle error
-        }
-    }
 
     @Override
     public PaymentOrder createPaymentOrder(Authentication authentication, Set<Order> orders) {

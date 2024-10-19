@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.stripe.services;
 
-import com.leoric.ecommerceshopbe.stripe.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.PaymentOrderRepository;
+import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

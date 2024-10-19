@@ -1,6 +1,6 @@
-package com.leoric.ecommerceshopbe.stripe.dtos;
+package com.leoric.ecommerceshopbe.stripe.model.dtos;
 
-import com.leoric.ecommerceshopbe.stripe.constants.PaymentStatus;
+import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
