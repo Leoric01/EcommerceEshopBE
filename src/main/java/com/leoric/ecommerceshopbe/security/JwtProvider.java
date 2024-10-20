@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.security;
 
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.models.User;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

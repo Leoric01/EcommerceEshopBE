@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
-import com.leoric.ecommerceshopbe.models.User;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
+import com.leoric.ecommerceshopbe.security.auth.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

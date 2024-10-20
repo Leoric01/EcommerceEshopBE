@@ -1,6 +1,5 @@
-package com.leoric.ecommerceshopbe.repositories;
+package com.leoric.ecommerceshopbe.security.auth;
 
-import com.leoric.ecommerceshopbe.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

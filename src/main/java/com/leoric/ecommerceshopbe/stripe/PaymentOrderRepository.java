@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.stripe;
 
+import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

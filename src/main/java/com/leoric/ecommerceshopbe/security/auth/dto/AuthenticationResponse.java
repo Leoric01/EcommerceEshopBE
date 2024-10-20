@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.response;
+package com.leoric.ecommerceshopbe.security.auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;

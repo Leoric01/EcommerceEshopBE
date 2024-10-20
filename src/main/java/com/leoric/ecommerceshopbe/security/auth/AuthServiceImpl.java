@@ -1,20 +1,14 @@
-package com.leoric.ecommerceshopbe.services.nointerface;
+package com.leoric.ecommerceshopbe.security.auth;
 
 import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
 import com.leoric.ecommerceshopbe.handler.OtpVerificationException;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.models.User;
-import com.leoric.ecommerceshopbe.models.VerificationCode;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
-import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
-import com.leoric.ecommerceshopbe.requests.SignInRequest;
-import com.leoric.ecommerceshopbe.requests.SignupRequest;
-import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
-import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
-import com.leoric.ecommerceshopbe.services.email.EmailService;
+import com.leoric.ecommerceshopbe.security.auth.dto.*;
+import com.leoric.ecommerceshopbe.security.auth.email.EmailService;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;

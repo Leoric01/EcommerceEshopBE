@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.requests;
+package com.leoric.ecommerceshopbe.security.auth.dto;
 
 import lombok.Data;
 

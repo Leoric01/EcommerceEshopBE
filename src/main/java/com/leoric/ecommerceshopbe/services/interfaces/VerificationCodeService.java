@@ -1,6 +1,6 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
-import com.leoric.ecommerceshopbe.models.VerificationCode;
+import com.leoric.ecommerceshopbe.security.auth.VerificationCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

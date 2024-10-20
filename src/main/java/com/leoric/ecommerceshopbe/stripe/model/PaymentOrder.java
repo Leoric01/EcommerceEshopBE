@@ -1,16 +1,16 @@
-package com.leoric.ecommerceshopbe.stripe;
+package com.leoric.ecommerceshopbe.stripe.model;
 
 import com.leoric.ecommerceshopbe.models.Order;
-import com.leoric.ecommerceshopbe.models.User;
-import com.leoric.ecommerceshopbe.stripe.constants.PaymentMethod;
-import com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus;
+import com.leoric.ecommerceshopbe.security.auth.User;
+import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentMethod;
+import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.leoric.ecommerceshopbe.stripe.constants.PaymentOrderStatus.PENDING;
+import static com.leoric.ecommerceshopbe.stripe.model.enums.PaymentOrderStatus.PENDING;
 
 @Entity
 @Getter

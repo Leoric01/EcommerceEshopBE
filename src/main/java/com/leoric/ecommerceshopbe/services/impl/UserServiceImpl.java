@@ -1,9 +1,9 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
-import com.leoric.ecommerceshopbe.models.User;
-import com.leoric.ecommerceshopbe.repositories.UserRepository;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
+import com.leoric.ecommerceshopbe.security.auth.User;
+import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;

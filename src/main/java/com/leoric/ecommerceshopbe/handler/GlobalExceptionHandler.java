@@ -1,6 +1,7 @@
 package com.leoric.ecommerceshopbe.handler;
 
 import com.leoric.ecommerceshopbe.response.common.Result;
+import com.stripe.exception.StripeException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler {
                 .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
     }
 
+    @ExceptionHandler(StripeException.class)
+    public ResponseEntity<Result<Void>> handleStripePaymentExceptions(StripeException exp) {
+        log.warn("Stripe payment failed: {}", exp.getMessage());
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
+    }
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
         log.warn("Entity not found: {}", exp.getMessage());

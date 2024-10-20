@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
 

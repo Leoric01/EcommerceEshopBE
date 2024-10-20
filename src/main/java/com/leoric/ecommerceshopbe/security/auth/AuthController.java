@@ -1,12 +1,8 @@
-package com.leoric.ecommerceshopbe.controllers;
+package com.leoric.ecommerceshopbe.security.auth;
 
-import com.leoric.ecommerceshopbe.requests.SetupPwFromOtpReq;
-import com.leoric.ecommerceshopbe.requests.SignInRequest;
-import com.leoric.ecommerceshopbe.requests.SignupRequest;
-import com.leoric.ecommerceshopbe.requests.VerificationCodeReq;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
-import com.leoric.ecommerceshopbe.response.AuthenticationResponse;
 import com.leoric.ecommerceshopbe.response.common.Result;
+import com.leoric.ecommerceshopbe.security.auth.dto.*;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import jakarta.validation.Valid;
