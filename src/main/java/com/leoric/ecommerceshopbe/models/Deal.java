@@ -17,4 +17,9 @@ public class Deal {
 
     @OneToOne
     private HomeCategory category;
+
+    public Deal(Integer discount, HomeCategory category) {
+        this.discount = discount;
+        this.category = category;
+    }
 }

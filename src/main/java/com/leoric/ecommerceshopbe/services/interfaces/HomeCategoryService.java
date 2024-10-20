@@ -8,11 +8,9 @@ import java.util.List;
 @Service
 public interface HomeCategoryService {
 
-    List<HomeCategory> findAll();
-
-    HomeCategory findById(Long id);
-
-    HomeCategory save(HomeCategory entity);
-
-    void deleteById(Long id);
+    List<HomeCategory> getAllHomeCategories();
+    HomeCategory createHomeCategory(HomeCategory homeCategory);
+    HomeCategory updateHomeCategory(HomeCategory homeCategory, Long id);
+    List<HomeCategory> createCategories(List<HomeCategory> categories);
+    void deleteHomeCategoryById(Long id);
 }

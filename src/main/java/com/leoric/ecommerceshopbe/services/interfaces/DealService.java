@@ -7,13 +7,13 @@ import java.util.List;
 
 @Service
 public interface DealService {
+
+    Deal updateDealById(Long id, Deal deal);
+    void deleteDealById(Long id);
+
     Deal createDeal(Deal deal);
 
-    List<Deal> findAll();
+    List<Deal> getAllDeals();
 
-    Deal findById(Long id);
-
-    Deal save(Deal entity);
-
-    void deleteById(Long id);
+    Deal getDealById(Long id);
 }
