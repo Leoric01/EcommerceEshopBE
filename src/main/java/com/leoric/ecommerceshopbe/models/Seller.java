@@ -53,7 +53,7 @@ public class Seller extends Account implements UserDetails, Principal {
     @Builder.Default
     private Address pickupAddress = new Address();
 
-    private String GSTIN;
+    private String VAT;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
