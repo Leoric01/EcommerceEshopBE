@@ -58,13 +58,13 @@ public class User extends Account implements UserDetails, Principal {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Transaction> transactions;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -114,4 +114,3 @@ public class User extends Account implements UserDetails, Principal {
         return Principal.super.implies(subject);
     }
 }
-

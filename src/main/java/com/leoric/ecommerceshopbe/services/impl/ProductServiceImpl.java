@@ -7,6 +7,7 @@ import com.leoric.ecommerceshopbe.repositories.CategoryRepository;
 import com.leoric.ecommerceshopbe.repositories.ProductRepository;
 import com.leoric.ecommerceshopbe.requests.CreateProductReq;
 import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -157,8 +159,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductBySellerId(Long sellerId) {
+    public List<Product> getProductsBySellerId(Long sellerId) {
         return productRepository.findBySellerId(sellerId);
+    }
+
+    @Override
+    public List<Product> getProductsOfCurrentUser(Authentication authentication) {
+        Seller seller = GlobalUtil.getPrincipalAsSeller(authentication);
+        return getProductsBySellerId(seller.getId());
     }
 
     private int calculateDiscountPercentage(double mrpPrice, double sellingPrice) {

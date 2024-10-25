@@ -16,4 +16,3 @@ public interface SellerMapper {
     @Mapping(target = "password", ignore = true)
     Seller mapWithoutPassword(Seller seller);
 }
-

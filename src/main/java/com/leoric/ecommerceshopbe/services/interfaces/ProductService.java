@@ -4,6 +4,7 @@ import com.leoric.ecommerceshopbe.models.Product;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.requests.CreateProductReq;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +32,9 @@ public interface ProductService {
                                  String stock,
                                  Integer pageNumber);
 
-    List<Product> getProductBySellerId(Long sellerId);
+    List<Product> getProductsBySellerId(Long sellerId);
 
+    List<Product> getProductsOfCurrentUser(Authentication authentication);
     Product findProductById(Long id);
 
     Product save(Product entity);

@@ -5,7 +5,6 @@ import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.requests.CreateProductReq;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
-import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +22,18 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/seller/products")
 public class SellerProductController {
     private final ProductService productService;
-    private final SellerService sellerService;
 
     @GetMapping("")
-    public ResponseEntity<Result<List<Product>>> getProductsBySellerId(Authentication connectedUser) {
-        Seller seller = (Seller) connectedUser.getPrincipal();
-        List<Product> product = productService.getProductBySellerId(seller.getId());
-        Result<List<Product>> response = Result.success(product, "Product's searched by connected users id and fetched succesfully", OK.value());
+    public ResponseEntity<Result<List<Product>>> getProductsOfCurrentSeller(Authentication auth) {
+        List<Product> products = productService.getProductsOfCurrentUser(auth);
+        Result<List<Product>> response = Result.success(products, "Product's searched by specific sellers id and fetched succesfully", OK.value());
+        return ResponseEntity.status(OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Result<List<Product>>> getProductsBySellerId(@PathVariable Long id, Authentication connectedUser) {
+        List<Product> products = productService.getProductsBySellerId(id);
+        Result<List<Product>> response = Result.success(products, "Product's searched by connected users id and fetched succesfully", OK.value());
         return ResponseEntity.status(OK).body(response);
     }
 

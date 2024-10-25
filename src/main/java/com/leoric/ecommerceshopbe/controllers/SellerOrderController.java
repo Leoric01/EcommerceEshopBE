@@ -23,7 +23,7 @@ public class SellerOrderController {
     private final OrderService orderService;
 
     @GetMapping("")
-    public ResponseEntity<Result<List<Order>>> getAllOrders(Authentication authentication) {
+    public ResponseEntity<Result<List<Order>>> getAllSellersOrders(Authentication authentication) {
         Seller seller = GlobalUtil.getPrincipalAsSeller(authentication);
         List<Order> orders = orderService.sellersOrders(seller.getId());
         Result<List<Order>> result = Result.success(orders, "Sellers orders fetched succesfully", ACCEPTED.value());

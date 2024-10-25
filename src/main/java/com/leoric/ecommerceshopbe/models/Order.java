@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentDetails;
@@ -27,7 +28,7 @@ public class Order {
 
     private String orderId;
 
-    //    @JoinColumn(name = "user_id")
+    @JsonIgnore
     @ManyToOne
     private User user;
 
