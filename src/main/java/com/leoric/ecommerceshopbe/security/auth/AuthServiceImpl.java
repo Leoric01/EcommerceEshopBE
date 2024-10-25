@@ -7,7 +7,10 @@ import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
-import com.leoric.ecommerceshopbe.security.auth.dto.*;
+import com.leoric.ecommerceshopbe.security.auth.dto.AuthenticationResponse;
+import com.leoric.ecommerceshopbe.security.auth.dto.SetupPwFromOtpReq;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignInRequest;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignupRequest;
 import com.leoric.ecommerceshopbe.security.auth.email.EmailService;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
@@ -16,7 +19,6 @@ import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import com.leoric.ecommerceshopbe.utils.OtpUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,10 +41,6 @@ import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipa
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final String SELLER_PREFIX = "seller_";
-    private static final String USER_PREFIX = "user_";
-    private static final String SIGNING_PREFIX = "signing_";
-
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
@@ -55,95 +53,87 @@ public class AuthServiceImpl implements AuthService {
     private int length;
 
     @Override
-    public void signup(SignupRequest request) {
-        if (request.getEmail().startsWith(SELLER_PREFIX)) {
-            if (sellerService.existsByEmail(request.getEmail().substring(SELLER_PREFIX.length()))) {
+    @Transactional
+    public void signupAndSendOtp(SignupRequest request) {
+        String email = request.getEmail();
+        String accountType = request.getAccount();
+
+        if (accountType.equalsIgnoreCase("seller")) {
+            if (sellerService.existsByEmail(email)) {
                 throw new EmailAlreadyInUseException("Email is already in use");
             }
             Seller seller = new Seller();
-            seller.setEmail(request.getEmail().substring(SELLER_PREFIX.length()));
+            seller.setEmail(email);
             seller.setSellerName(request.getFullName());
             seller.setRole(ROLE_SELLER);
             sellerService.save(seller);
+            sendOtp(email, seller, true);
             return;
-        } else if (request.getEmail().startsWith(USER_PREFIX)) {
-            if (userService.existsByEmail(request.getEmail().substring(USER_PREFIX.length()))) {
+        } else if (accountType.equalsIgnoreCase("user")) {
+            if (userService.existsByEmail(email)) {
                 throw new EmailAlreadyInUseException("Email is already in use");
             }
             User user = User.builder()
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
-                    .email(request.getEmail().substring(USER_PREFIX.length()))
+                    .email(email)
                     .role(ROLE_USER)
                     .build();
             Cart cart = new Cart();
             cart.setUser(userService.save(user));
             cartRepository.save(cart);
+            sendOtp(email, user, false);
             return;
         }
-        throw new BadCredentialsException("Invalid email address or role prefix");
+        throw new BadCredentialsException("Invalid account type");
     }
 
-    @Override
-    @Transactional
-    public void sentLoginOtp(@Valid VerificationCodeReq req) {
-        String email = req.getEmail();
-        if (email.startsWith(SIGNING_PREFIX + SELLER_PREFIX)) {
-            email = email.substring(SIGNING_PREFIX.length() + SELLER_PREFIX.length());
-            Seller seller = sellerService.getSellerByEmail(email);
-            boolean isExists = verificationCodeService.existsByEmail(email);
-            if (isExists) {
-                verificationCodeService.deleteByEmail(email);
-            }
-            String otp = OtpUtil.generateOtp(length);
-
-            VerificationCode verificationCode = new VerificationCode();
-            verificationCode.setEmail(email);
-            verificationCode.setOtp(otp);
-            verificationCode.setSeller(seller);
-            verificationCodeService.save(verificationCode);
-            String subject = "LEORIC ESHOP OTP verification code";
-            emailService.sendVerificationEmail(email, seller.getName(), subject, otp);
-            return;
-        } else if (email.startsWith(SIGNING_PREFIX + USER_PREFIX)) {
-            email = email.substring(SIGNING_PREFIX.length() + USER_PREFIX.length());
-            User user = userService.findByEmail(email);
-            boolean isExists = verificationCodeService.existsByEmail(email);
-            if (isExists) {
-                verificationCodeService.deleteByEmail(email);
-            }
-            String otp = OtpUtil.generateOtp(length);
-
-            VerificationCode verificationCode = new VerificationCode();
-            verificationCode.setEmail(email);
-            verificationCode.setOtp(otp);
-            verificationCode.setUser(user);
-            verificationCodeService.save(verificationCode);
-            String subject = "LEORIC ESHOP OTP verification code";
-            emailService.sendVerificationEmail(email, user.getName(), subject, otp);
-            return;
+    private void sendOtp(String email, Object user, boolean isSeller) {
+        boolean isExists = verificationCodeService.existsByEmail(email);
+        if (isExists) {
+            verificationCodeService.deleteByEmail(email);
         }
-        throw new BadCredentialsException("request is from entity with neither seller nor user role");
-    }
 
+        String otp = OtpUtil.generateOtp(length);
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setEmail(email);
+        verificationCode.setOtp(otp);
+
+        if (isSeller) {
+            verificationCode.setSeller((Seller) user);
+            verificationCodeService.save(verificationCode);
+            String subject = "LEORIC ESHOP OTP verification code";
+            emailService.sendVerificationEmail(email, ((Seller) user).getSellerName(), subject, otp);
+        } else {
+            verificationCode.setUser((User) user);
+            verificationCodeService.save(verificationCode);
+            String subject = "LEORIC ESHOP OTP verification code";
+            emailService.sendVerificationEmail(email, ((User) user).getName(), subject, otp);
+        }
+    }
 
     @Override
     @Transactional
     public AccountDetailDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException {
-        String email;
+        String email = req.getEmail();
         VerificationCode verificationCode;
-        if (req.getEmail().startsWith(USER_PREFIX)) {
-            email = req.getEmail().substring(USER_PREFIX.length());
+
+        // Check if the user exists
+        if (userService.existsByEmail(email)) {
             verificationCode = verificationCodeService.findByEmail(email);
-            User user = verificationCode.getUser();
-            if (!user.getVerificationCode().getOtp().equals(req.getOtp())) {
+            User user = userService.findByEmail(email);
+
+            if (!verificationCode.getOtp().equals(req.getOtp())) {
                 throw new OtpVerificationException("Invalid OTP");
             }
+
             user.setPassword(passwordEncoder.encode(req.getPassword()));
             user.setEnabled(true);
             user.setVerificationCode(null);
             User savedUser = userService.save(user);
+
             verificationCodeService.deleteByEmail(email);
+
             return new AccountDetailDto(
                     savedUser.getId(),
                     savedUser.getName(),
@@ -151,18 +141,20 @@ public class AuthServiceImpl implements AuthService {
                     savedUser.getMobile(),
                     savedUser.getRole()
             );
-        } else if (req.getEmail().startsWith(SELLER_PREFIX)) {
-            email = req.getEmail().substring(SELLER_PREFIX.length());
+        } else if (sellerService.existsByEmail(email)) {
             verificationCode = verificationCodeService.findByEmail(email);
-            Seller seller = sellerService.getSellerByEmail(email);
+            Seller seller = sellerService.findByEmail(email);
 
             if (!verificationCode.getOtp().equals(req.getOtp())) {
                 throw new OtpVerificationException("Invalid OTP");
             }
+
             seller.setPassword(passwordEncoder.encode(req.getPassword()));
             seller.setEmailVerified(true);
             Seller savedSeller = sellerService.save(seller);
+
             verificationCodeService.deleteByEmail(email);
+
             return new AccountDetailDto(
                     savedSeller.getId(),
                     savedSeller.getName(),
@@ -171,9 +163,9 @@ public class AuthServiceImpl implements AuthService {
                     savedSeller.getRole()
             );
         }
-        throw new BadRequestException("Invalid email address or role prefix");
-    }
 
+        throw new BadRequestException("Invalid email address or role");
+    }
 
     @Override
     public AuthenticationResponse signIn(SignInRequest req) {

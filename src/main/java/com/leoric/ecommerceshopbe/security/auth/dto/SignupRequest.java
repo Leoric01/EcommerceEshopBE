@@ -7,6 +7,9 @@ import lombok.Data;
 
 @Data
 public class SignupRequest {
+    @NotBlank(message = "account type field is mandatory")
+    @NotEmpty(message = "account type field is mandatory")
+    private String account;
     @NotEmpty(message = "Email field is mandatory")
     @NotBlank(message = "Email field is mandatory")
     @Email(message = "Email is not in valid format")
@@ -22,7 +25,4 @@ public class SignupRequest {
     public String getFullName() {
         return firstName + " " + lastName;
     }
-//    @NotEmpty(message = "Password name is mandatory")
-//    @NotBlank(message = "Password name is mandatory")
-//    private String password;
 }

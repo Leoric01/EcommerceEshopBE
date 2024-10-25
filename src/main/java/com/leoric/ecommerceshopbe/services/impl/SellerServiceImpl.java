@@ -7,7 +7,6 @@ import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.models.mapstruct.SellerMapper;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
-import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
@@ -32,7 +31,6 @@ public class SellerServiceImpl implements SellerService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
-    private final UserRepository userRepository;
     private final SellerMapper sellerMapper;
 
     @Override
@@ -59,7 +57,7 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public Seller getSellerProfile(String jwt) {
         String email = jwtProvider.extractEmailFromJwt(jwt);
-        return getSellerByEmail(email);
+        return findByEmail(email);
     }
 
     @Override
@@ -86,7 +84,7 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller getSellerByEmail(String email) {
+    public Seller findByEmail(String email) {
         return sellerRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Seller not found"));
     }
@@ -138,7 +136,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+        return sellerRepository.existsByEmail(email);
     }
 
 

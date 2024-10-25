@@ -24,7 +24,7 @@ public interface SellerService {
 
     Seller getSellerById(Long id);
 
-    Seller getSellerByEmail(String email);
+    Seller findByEmail(String email);
 
     List<Seller> getAllSellers(AccountStatus status);
 

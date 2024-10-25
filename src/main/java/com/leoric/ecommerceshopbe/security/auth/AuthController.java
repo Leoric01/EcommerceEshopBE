@@ -2,7 +2,10 @@ package com.leoric.ecommerceshopbe.security.auth;
 
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
-import com.leoric.ecommerceshopbe.security.auth.dto.*;
+import com.leoric.ecommerceshopbe.security.auth.dto.AuthenticationResponse;
+import com.leoric.ecommerceshopbe.security.auth.dto.SetupPwFromOtpReq;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignInRequest;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignupRequest;
 import com.leoric.ecommerceshopbe.services.interfaces.AuthService;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import jakarta.validation.Valid;
@@ -36,8 +39,7 @@ public class AuthController {
     @PostMapping("/signup")
     @ResponseStatus(CREATED)
     public ResponseEntity<Result<String>> createUserHandler(@RequestBody @Valid SignupRequest req) {
-        authService.signup(req);
-
+        authService.signupAndSendOtp(req);
         Result<String> response = Result.success("User registered successfully!", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
@@ -48,15 +50,6 @@ public class AuthController {
 
         Result<AuthenticationResponse> response = Result.success(authResponse, "Login successful", OK.value());
         return ResponseEntity.ok().body(response);
-    }
-
-    @PostMapping("/send/login-signup-otp")
-    public ResponseEntity<Result<VerificationCodeReq>> sentOtpHandler(@RequestBody @Valid VerificationCodeReq req) {
-        authService.sentLoginOtp(req);
-        // TODO CHANGE IT, THIS IS FOR DEVELOPMENT ONLY
-//        String code = userService.findByEmail(req.getEmail().substring(8)).getVerificationCode().getOtp();
-        Result<VerificationCodeReq> response = Result.success(req, "Verification code otp was sent", CREATED.value());
-        return ResponseEntity.status(CREATED).body(response);
     }
 
     @PostMapping("/set-pw")
