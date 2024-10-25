@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,11 +25,13 @@ public class Address {
     private String pinCode;
     private String mobile;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 }

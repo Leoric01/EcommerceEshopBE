@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,13 +24,13 @@ public class Coupon {
     private Long id;
 
     private String code;
-
     private double discountPercentage;
     private LocalDate validityStartDate;
     private LocalDate validityEndDate;
     private double minimumOrderValue;
     private boolean isActive = true;
 
-    @ManyToMany(mappedBy = "usedCoupons")
+    @ManyToMany(mappedBy = "usedCoupons", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<User> usedByUsers = new HashSet<>();
 }

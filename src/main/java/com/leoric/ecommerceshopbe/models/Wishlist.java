@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,9 +19,10 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Product> products;
 }

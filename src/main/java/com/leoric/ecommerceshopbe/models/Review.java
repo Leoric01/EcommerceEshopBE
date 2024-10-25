@@ -1,6 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -27,15 +27,14 @@ public class Review {
     @ElementCollection
     private List<String> productImages;
 
-    @JsonIgnore
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-//    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-//    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false, updatable = false)

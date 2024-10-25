@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,16 +19,17 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @ManyToOne
+    @JsonBackReference
     private User customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    @ManyToOne
+    @JsonBackReference
     private Seller seller;
 
-    //    @JoinColumn(name = "order_id")
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Order order;
 
     private LocalDateTime date = LocalDateTime.now();

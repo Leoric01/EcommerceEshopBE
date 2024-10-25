@@ -1,6 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentDetails;
@@ -28,24 +28,22 @@ public class Order {
 
     private String orderId;
 
-    @JsonIgnore
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     private Long sellerId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    //    @JoinColumn(name = "shipping_address_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Address shippingAddress;
 
     @Embedded
     private PaymentDetails paymentDetails = new PaymentDetails();
 
     private double totalMrpPrice;
-
     private Integer totalSellingPrice;
     private Integer discount;
     @Enumerated(EnumType.STRING)

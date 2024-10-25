@@ -49,7 +49,7 @@ public class Seller extends Account implements UserDetails, Principal {
     @Builder.Default
     private BankDetails bankDetails = new BankDetails();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private Address pickupAddress = new Address();
 
@@ -73,6 +73,7 @@ public class Seller extends Account implements UserDetails, Principal {
         authorities.add(new SimpleGrantedAuthority(this.role.toString()));
         return authorities;
     }
+
     @Override
     public String getUsername() {
         return this.email;

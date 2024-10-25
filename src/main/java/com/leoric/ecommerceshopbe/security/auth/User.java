@@ -32,7 +32,8 @@ public class User extends Account implements UserDetails, Principal {
     private String password;
     private String firstName;
     private String lastName;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private VerificationCode verificationCode;
 
     @Enumerated(EnumType.STRING)
@@ -42,40 +43,33 @@ public class User extends Account implements UserDetails, Principal {
     @Builder.Default
     private boolean enabled = false;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Address> addresses = new HashSet<>();
 
     @ManyToMany
     @JsonIgnore
-//    @JoinTable(
-//            name = "user_coupon",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "coupon_id")
-//    )
     private Set<Coupon> usedCoupons;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transaction> transactions;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Wishlist wishlist;
-
 
     @Builder.Default
     private boolean isSignedOut = false;
 
     private LocalDateTime lastSignOut;
-
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
