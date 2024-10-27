@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,9 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<Result<Product>> getProduct(@PathVariable Long productId) {
         Product product = productService.findProductById(productId);
-        Result<Product> response = Result.success(product, "Product's details fetched succesfully", OK.value());
+        Hibernate.initialize(product.getSeller());  // Initialize lazy-loaded fields
+        Hibernate.initialize(product.getReviews());
+        Result<Product> response = Result.success(product, "Product's details fetched successfully", OK.value());
         return ResponseEntity.status(OK).body(response);
     }
 

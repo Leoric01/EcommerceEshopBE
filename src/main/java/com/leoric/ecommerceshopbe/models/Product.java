@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,14 +36,15 @@ public class Product {
     private int numRatings;
 
     @ManyToOne
-//    @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-//    @JoinColumn(name = "seller_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    @JsonIgnore
     private Seller seller;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @Immutable
