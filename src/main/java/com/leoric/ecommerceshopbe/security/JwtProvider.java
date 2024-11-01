@@ -41,16 +41,20 @@ public class JwtProvider {
         return claimsResolver.apply(claims);
     }
 
-
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration
     ) {
         List<String> authorities = userDetails.getAuthorities()
-                .stream().
-                map(GrantedAuthority::getAuthority)
+                .stream()
+                .map(GrantedAuthority::getAuthority)
                 .toList();
+        if (userDetails instanceof User user) {
+            extraClaims.put("id", user.getId());
+        } else if (userDetails instanceof Seller seller) {
+            extraClaims.put("id", seller.getId());
+        }
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

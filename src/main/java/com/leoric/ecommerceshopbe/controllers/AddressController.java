@@ -3,6 +3,7 @@ package com.leoric.ecommerceshopbe.controllers;
 import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.requests.dto.AddAddressRequestDTO;
+import com.leoric.ecommerceshopbe.response.AddressDtoResponse;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
@@ -26,7 +27,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @GetMapping
-    public ResponseEntity<Set<Address>> getAll(
+    public ResponseEntity<Set<AddressDtoResponse>> getAll(
             Authentication connectedUser
     ) {
         return ResponseEntity.ok(addressService.findAllUsersAddresses(connectedUser));

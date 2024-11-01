@@ -48,6 +48,18 @@ public class ECommerceShopBeApplication {
                             .enabled(true)
                             .build();
                     userRepository.save(user);
+                    for (int j = 1; j <= 4; j++) {
+                        AddAddressRequestDTO addressDto = new AddAddressRequestDTO(
+                                "User " + i + " Address " + j,
+                                "Street " + j,
+                                "Locality " + j,
+                                "ZIP" + (1000 + j),
+                                "City " + j,
+                                "Country " + i,
+                                "123-456-78" + j
+                        );
+                        addressService.addUserAddress(user.getId(), addressDto);
+                    }
                 }
             }
 

@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.repositories.AddressRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.requests.dto.AddAddressRequestDTO;
+import com.leoric.ecommerceshopbe.response.AddressDtoResponse;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Service
@@ -76,9 +78,12 @@ public class AddressServiceImpl implements AddressService {
         }
     }
     @Override
-    public Set<Address> findAllUsersAddresses(Authentication connectedUser) {
+    public Set<AddressDtoResponse> findAllUsersAddresses(Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
-        return user.getAddresses();
+        Set<Address> addresses = new HashSet<>();
+        Set<AddressDtoResponse> addressDtoResponses = new HashSet<>();
+
+        return addressDtoResponses;
     }
     @Override
     public List<Address> findAll() {
