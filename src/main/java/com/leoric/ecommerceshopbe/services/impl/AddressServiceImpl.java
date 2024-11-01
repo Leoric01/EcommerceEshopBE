@@ -10,13 +10,15 @@ import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
@@ -78,12 +80,34 @@ public class AddressServiceImpl implements AddressService {
         }
     }
     @Override
+    @Transactional
     public Set<AddressDtoResponse> findAllUsersAddresses(Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
-        Set<Address> addresses = new HashSet<>();
-        Set<AddressDtoResponse> addressDtoResponses = new HashSet<>();
+        User fetchedFromDb = userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Set<Address> addresses = fetchedFromDb.getAddresses();
 
-        return addressDtoResponses;
+        return addresses.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toSet());
+    }
+
+    private AddressDtoResponse convertToDto(Address address) {
+        AddressDtoResponse dto = new AddressDtoResponse();
+        dto.setId(address.getId());
+
+        dto.setName(address.getName() != null ? address.getName() : "");
+        dto.setStreet(address.getStreet() != null ? address.getStreet() : "");
+        dto.setLocality(address.getLocality() != null ? address.getLocality() : "");
+        dto.setZip(address.getZip() != null ? address.getZip() : "");
+        dto.setCity(address.getCity() != null ? address.getCity() : "");
+        dto.setCountry(address.getCountry() != null ? address.getCountry() : "");
+        dto.setMobile(address.getMobile() != null ? address.getMobile() : "");
+
+        dto.setUser_id(address.getUser() != null ? address.getUser().getId() : null);
+        dto.setOrder_id(address.getOrder() != null ? address.getOrder().getId() : null);
+        dto.setSeller_id(address.getSeller() != null ? address.getSeller().getId() : null);
+
+        return dto;
     }
     @Override
     public List<Address> findAll() {
