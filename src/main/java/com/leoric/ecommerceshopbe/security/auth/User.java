@@ -1,6 +1,7 @@
 package com.leoric.ecommerceshopbe.security.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.leoric.ecommerceshopbe.models.*;
 import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
@@ -43,8 +44,9 @@ public class User extends Account implements UserDetails, Principal {
     @Builder.Default
     private boolean enabled = false;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Address> addresses = new HashSet<>();
 
     @ManyToMany

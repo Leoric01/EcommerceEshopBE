@@ -7,7 +7,6 @@ import com.leoric.ecommerceshopbe.repositories.CartItemRepository;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.CartService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,7 +45,15 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public Cart findUserCart(User user) {
-        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() -> new EntityNotFoundException("Cart by userId not found"));
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseGet(() -> {
+            Cart newCart = new Cart();
+            newCart.setUser(user);
+            newCart.setTotalMrpPrice(0);
+            newCart.setTotalItem(0);
+            newCart.setTotalSellingPrice(0);
+            newCart.setDiscount(0);
+            return cartRepository.save(newCart);
+        });
         int totalPrice = 0;
         int totalDiscountedPrice = 0;
         int totalItem = 0;
@@ -54,12 +61,12 @@ public class CartServiceImpl implements CartService {
             totalPrice += cartItem.getMrpPrice();
             totalDiscountedPrice += cartItem.getSellingPrice();
             totalItem += cartItem.getQuantity();
-            cart.getCartItems().add(cartItem);
         }
         cart.setTotalMrpPrice(totalPrice);
         cart.setTotalItem(totalItem);
         cart.setTotalSellingPrice(totalDiscountedPrice);
         cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice));
+
         return cart;
     }
 

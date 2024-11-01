@@ -18,11 +18,11 @@ public class Address {
     private Long id;
 
     private String name;
-    private String address;
+    private String street;
     private String locality;
+    private String zip;
     private String city;
-    private String state;
-    private String pinCode;
+    private String country;
     private String mobile;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,4 +34,9 @@ public class Address {
     @JoinColumn(name = "order_id")
     @JsonBackReference
     private Order order;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    @JsonBackReference
+    private Seller seller;
 }

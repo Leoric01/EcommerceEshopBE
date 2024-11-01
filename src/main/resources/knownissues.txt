@@ -1,7 +1,7 @@
 
 on delete item from cart, you have to manualy refresh page
-
-
+on login, no data on profile
+cartitem - i dont see seller info. gonna have to create dto to avoid infinite loop. endpoint {baseurl}cart
 
 
 

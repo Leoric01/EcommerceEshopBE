@@ -1,6 +1,6 @@
 package com.leoric.ecommerceshopbe.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
 import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
@@ -50,7 +50,7 @@ public class Seller extends Account implements UserDetails, Principal {
     @Builder.Default
     private BankDetails bankDetails = new BankDetails();
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Address pickupAddress = new Address();
 
