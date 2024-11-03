@@ -3,8 +3,6 @@ package com.leoric.ecommerceshopbe.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -40,18 +38,16 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
-    @JsonIgnore
     private Seller seller;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    @Immutable
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    //    @CreationTimestamp
+//    @Column(nullable = false, updatable = false)
+//    private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     private String sizes;
-
 }

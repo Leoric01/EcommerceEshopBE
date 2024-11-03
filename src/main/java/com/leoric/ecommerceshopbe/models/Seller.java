@@ -51,6 +51,7 @@ public class Seller extends Account implements UserDetails, Principal {
     private BankDetails bankDetails = new BankDetails();
 
     @JsonManagedReference
+    @Builder.Default
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address pickupAddress = new Address();
 

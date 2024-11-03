@@ -41,6 +41,7 @@ dependencies {
     implementation group: 'com.stripe', name: 'stripe-java', version: '27.1.0'
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate6', version: '2.18.1'
 
+
     implementation 'org.mapstruct:mapstruct:1.6.2'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
 
