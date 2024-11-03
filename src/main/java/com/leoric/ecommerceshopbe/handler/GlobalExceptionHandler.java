@@ -24,6 +24,14 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
+        log.warn("Entity not found: {}", exp.getMessage());
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(Result.failure(ENTITY_NOT_FOUND.getCode(), "Entity not found: " + exp.getMessage()));
+    }
+
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Result<Void>> handleNoHandlerFoundException(NoHandlerFoundException ex) {
         log.warn("Invalid URL accessed: {}", ex.getMessage());
@@ -86,14 +94,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(Result.failure(BAD_REQUEST.value(), exp.getMessage()));
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
-        log.warn("Entity not found: {}", exp.getMessage());
-        return ResponseEntity
-                .status(NOT_FOUND)
-                .body(Result.failure(ENTITY_NOT_FOUND.getCode(), ENTITY_NOT_FOUND.getDescription()));
     }
 
     @ExceptionHandler(SellerException.class)
