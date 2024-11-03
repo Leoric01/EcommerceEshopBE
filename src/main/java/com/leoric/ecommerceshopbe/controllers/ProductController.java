@@ -52,6 +52,10 @@ public class ProductController {
             @RequestParam(required = false) String stock,
             @RequestParam(defaultValue = "0") Integer pageNumber) {
         Page<Product> products = productService.getAllProducts(category, brand, colors, sizes, minPrice, maxPrice, minDiscount, sort, stock, pageNumber);
+        for (Product product : products.getContent()) {
+            Hibernate.initialize(product.getSeller());
+            Hibernate.initialize(product.getReviews());
+        }
         Result<Page<Product>> response = Result.success(products, "Products fetched succesfully", OK.value());
         return ResponseEntity.status(OK).body(response);
     }
