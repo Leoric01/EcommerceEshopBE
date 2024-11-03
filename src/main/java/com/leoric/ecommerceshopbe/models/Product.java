@@ -24,7 +24,7 @@ public class Product {
     private Long id;
     private String title;
     private String description;
-    private int mrpPrice;
+    private int maxPrice;
     private int quantity;
     private int sellingPrice;
     private int discountPercentage;

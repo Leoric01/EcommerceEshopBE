@@ -116,7 +116,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address findById(Long id) {
-        return null;
+        return addressRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Address not found"));
     }
 
     @Override

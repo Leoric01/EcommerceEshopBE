@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.models.Coupon;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.CouponService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Slf4j
@@ -23,6 +23,8 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequestMapping("/coupon")
 public class AdminCouponController {
     private final CouponService couponService;
+    private final GlobalUtil globalUtil;
+
 
     @GetMapping("/admin/all")
     public ResponseEntity<Result<List<Coupon>>> getAllCoupons() {
@@ -36,7 +38,7 @@ public class AdminCouponController {
                                                     @RequestParam String code,
                                                     @RequestParam double orderValue,
                                                     Authentication authentication) {
-        User user = getPrincipalAsUser(authentication);
+        User user = globalUtil.getPrincipalAsUser(authentication);
         Cart cart;
         if (apply.equals("true")) {
             cart = couponService.applyCoupon(code, orderValue, user);

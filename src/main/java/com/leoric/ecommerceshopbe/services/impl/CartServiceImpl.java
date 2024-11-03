@@ -34,7 +34,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setCart(cart);
             int total = product.getSellingPrice() * quantity;
             cartItem.setSellingPrice(total);
-            cartItem.setMrpPrice(quantity * product.getSellingPrice());
+            cartItem.setMaxPrice(quantity * product.getSellingPrice());
             cart.getCartItems().add(cartItem);
             cartItem.setCart(cart);
             return cartItemRepository.save(cartItem);
@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByUserId(user.getId()).orElseGet(() -> {
             Cart newCart = new Cart();
             newCart.setUser(user);
-            newCart.setTotalMrpPrice(0);
+            newCart.setTotalMaxPrice(0);
             newCart.setTotalItem(0);
             newCart.setTotalSellingPrice(0);
             newCart.setDiscount(0);
@@ -58,11 +58,11 @@ public class CartServiceImpl implements CartService {
         int totalDiscountedPrice = 0;
         int totalItem = 0;
         for (CartItem cartItem : cart.getCartItems()) {
-            totalPrice += cartItem.getMrpPrice();
+            totalPrice += cartItem.getMaxPrice();
             totalDiscountedPrice += cartItem.getSellingPrice();
             totalItem += cartItem.getQuantity();
         }
-        cart.setTotalMrpPrice(totalPrice);
+        cart.setTotalMaxPrice(totalPrice);
         cart.setTotalItem(totalItem);
         cart.setTotalSellingPrice(totalDiscountedPrice);
         cart.setDiscount(calculateDiscountPercentage(totalPrice, totalDiscountedPrice));
@@ -70,14 +70,14 @@ public class CartServiceImpl implements CartService {
         return cart;
     }
 
-    private int calculateDiscountPercentage(int mrpPrice, int sellingPrice) {
-        if (mrpPrice == 0) {
+    private int calculateDiscountPercentage(int maxPrice, int sellingPrice) {
+        if (maxPrice == 0) {
             return 0;
         }
-        if (mrpPrice < 0 || sellingPrice < 0) {
-            throw new IllegalArgumentException("MrpPrice or sellingPrice are negative");
+        if (maxPrice < 0 || sellingPrice < 0) {
+            throw new IllegalArgumentException("MaxPrice or sellingPrice are negative");
         }
-        return ((mrpPrice - sellingPrice) * 100) / mrpPrice;
+        return ((maxPrice - sellingPrice) * 100) / maxPrice;
     }
 
     @Override

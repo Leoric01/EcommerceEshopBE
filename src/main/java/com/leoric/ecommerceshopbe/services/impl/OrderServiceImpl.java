@@ -8,7 +8,9 @@ import com.leoric.ecommerceshopbe.repositories.OrderRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.OrderService;
+import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentStatus;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -20,9 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
-
-
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -31,6 +30,8 @@ public class OrderServiceImpl implements OrderService {
     private final AddressRepository addressRepository;
     private final OrderItemRepository orderItemRepository;
     private final SellerRepository sellerRepository;
+    private final UserService userService;
+    private final GlobalUtil globalUtil;
 
     @Override
     @Transactional
@@ -38,8 +39,10 @@ public class OrderServiceImpl implements OrderService {
         if (shippingAddress == null || cart == null) {
             throw new IllegalArgumentException("Invalid input: User, shipping address, or cart is null");
         }
-        User user = getPrincipalAsUser(connectedUser);
-        user.getAddresses().add(shippingAddress);
+        User userVer = globalUtil.getPrincipalAsUser(connectedUser);
+        User user = userService.findById(userVer.getId());
+        Set<Address> addresses = user.getAddresses();
+        addresses.add(shippingAddress);
         Address address = addressRepository.save(shippingAddress);
 
         Map<Long, List<CartItem>> itemsBySeller = cart.getCartItems().stream()
@@ -54,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
             Order createdOrder = new Order();
             createdOrder.setUser(user);
             createdOrder.setSellerId(sellerId);
-            createdOrder.setTotalMrpPrice(totalOrderPrice);
+            createdOrder.setTotalMaxPrice(totalOrderPrice);
             createdOrder.setTotalSellingPrice(totalOrderPrice);
             createdOrder.setTotalItem(totalItem);
             createdOrder.setShippingAddress(address);
@@ -76,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> usersOrderHistory(Authentication connectedUser) {
-        User user = getPrincipalAsUser(connectedUser);
+        User user = globalUtil.getPrincipalAsUser(connectedUser);
         return orderRepository.findAllByUserId(user.getId());
     }
 
@@ -97,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order cancelOrder(Long orderId, Authentication connectedUser) {
-        User user = getPrincipalAsUser(connectedUser);
+        User user = globalUtil.getPrincipalAsUser(connectedUser);
         Order order = findOrderById(orderId);
         if (!user.getId().equals(order.getUser().getId())) {
             throw new BadCredentialsException("Access denied: the order belongs to a different user account");
@@ -143,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
         for (CartItem item : items) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(savedOrder);
-            orderItem.setMrpPrice(item.getMrpPrice());
+            orderItem.setMaxPrice(item.getMaxPrice());
             orderItem.setProduct(item.getProduct());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setSize(item.getSize());

@@ -8,7 +8,7 @@ import java.util.List;
 public class CreateProductReq {
     private String title;
     private String description;
-    private int mrpPrice;
+    private int maxPrice;
     private int sellingPrice;
     private String color;
     private List<String> images;

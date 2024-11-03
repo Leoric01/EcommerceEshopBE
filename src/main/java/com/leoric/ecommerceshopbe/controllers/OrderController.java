@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentLinkResponse;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentMethod;
 import com.leoric.ecommerceshopbe.stripe.services.PaymentService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromAuthentication;
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -27,20 +27,21 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
-    private final UserService userService;
     private final CartService cartService;
     private final PaymentService paymentService;
-    private final OrderItemService orderItemService;
     private final SellerService sellerService;
     private final SellerReportService sellerReportService;
+    private final AddressService addressService;
+    private final GlobalUtil globalUtil;
 
-    @PostMapping
+    @PostMapping("/{addressId}")
     public ResponseEntity<PaymentLinkResponse> createOrder(Authentication authentication,
-                                                           @RequestBody Address shippingAddress,
+                                                           @PathVariable Long addressId,
                                                            @RequestParam PaymentMethod paymentMethod
     ) throws StripeException {
-        User user = getPrincipalAsUser(authentication);
+        User user = globalUtil.getPrincipalAsUser(authentication);
         Cart cart = cartService.findUserCart(user);
+        Address shippingAddress = addressService.findById(addressId);
         Set<Order> orders = orderService.createOrder(authentication, shippingAddress, cart);
         PaymentOrder paymentOrder = paymentService.createPaymentOrder(authentication, orders);
         PaymentLinkResponse res = new PaymentLinkResponse();

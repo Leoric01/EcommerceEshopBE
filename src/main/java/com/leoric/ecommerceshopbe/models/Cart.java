@@ -32,7 +32,7 @@ public class Cart {
     private double preDiscountPrice;
     private double totalSellingPrice;
     private double totalItem;
-    private double totalMrpPrice;
+    private double totalMaxPrice;
     private int discount;
     private String couponCode;
 }

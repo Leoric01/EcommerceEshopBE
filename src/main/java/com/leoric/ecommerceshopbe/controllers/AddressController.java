@@ -7,6 +7,7 @@ import com.leoric.ecommerceshopbe.response.AddressDtoResponse;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsSeller;
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -25,20 +25,21 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class AddressController {
 
     private final AddressService addressService;
+    private final GlobalUtil globalUtil;
+
+    @PostMapping(value = "/user")
+    public ResponseEntity<Result<Address>> addUserAddress(Authentication authentication, @Valid @RequestBody AddAddressRequestDTO address) {
+        User user = globalUtil.getPrincipalAsUser(authentication);
+        Address createdAddress = addressService.addUserAddress(user.getId(), address);
+        Result<Address> result = Result.success(createdAddress, "Address created success", CREATED.value());
+        return ResponseEntity.status(CREATED).body(result);
+    }
 
     @GetMapping
     public ResponseEntity<Set<AddressDtoResponse>> getAll(
             Authentication connectedUser
     ) {
         return ResponseEntity.ok(addressService.findAllUsersAddresses(connectedUser));
-    }
-
-    @PostMapping(value = "/user")
-    public ResponseEntity<Result<Address>> addUserAddress(Authentication authentication, @Valid @RequestBody AddAddressRequestDTO address) {
-        User user = getPrincipalAsUser(authentication);
-        Address createdAddress = addressService.addUserAddress(user.getId(), address);
-        Result<Address> result = Result.success(createdAddress, "Address created success", CREATED.value());
-        return ResponseEntity.status(CREATED).body(result);
     }
 
     @PostMapping("/seller")

@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.requests.CreateReviewRequest;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.ReviewService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
-
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
@@ -25,6 +24,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final GlobalUtil globalUtil;
+
 
     @Override
     public List<Review> getReviewsByProduct(Long productId) {
@@ -33,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review createReview(CreateReviewRequest req, Authentication authentication, Product product) {
-        User user = getPrincipalAsUser(authentication);
+        User user = globalUtil.getPrincipalAsUser(authentication);
         Review review = new Review();
         review.setUser(user);
         review.setProduct(product);
@@ -48,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review updateReview(Long reviewId, String reviewText, double rating, Authentication authentication) {
         Review review = findById(reviewId);
-        User user = getPrincipalAsUser(authentication);
+        User user = globalUtil.getPrincipalAsUser(authentication);
         if (!review.getUser().getId().equals(user.getId())) {
             throw new BadCredentialsException("You do not have permission to edit this review");
         }
@@ -60,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteById(Long id, Authentication authentication) {
         Review review = findById(id);
-        User user = getPrincipalAsUser(authentication);
+        User user = globalUtil.getPrincipalAsUser(authentication);
         if (!review.getUser().getId().equals(user.getId())) {
             throw new BadCredentialsException("You do not have permission to delete this review");
         }

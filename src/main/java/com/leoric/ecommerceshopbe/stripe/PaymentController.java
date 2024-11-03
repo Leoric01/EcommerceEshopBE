@@ -4,14 +4,12 @@ import com.leoric.ecommerceshopbe.models.Order;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.SellerReport;
 import com.leoric.ecommerceshopbe.response.ApiResponse;
-import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerReportService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import com.leoric.ecommerceshopbe.services.interfaces.TransactionService;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentLinkResponse;
 import com.leoric.ecommerceshopbe.stripe.services.PaymentService;
-import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,7 +33,6 @@ public class PaymentController {
                                                              @RequestParam Long paymentLinkId,
                                                              Authentication authentication
     ) {
-        User user = GlobalUtil.getPrincipalAsUser(authentication);
         PaymentLinkResponse paymentLinkResponse;
         PaymentOrder paymentOrder = paymentService.getPaymentOrderById(paymentLinkId);
 

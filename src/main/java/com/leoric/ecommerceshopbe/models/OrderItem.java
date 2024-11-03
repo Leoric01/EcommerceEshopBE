@@ -27,7 +27,7 @@ public class OrderItem {
 
     private String size;
     private int quantity;
-    private Integer mrpPrice;
+    private Integer maxPrice;
     private Integer sellingPrice;
     private Long userId;
 

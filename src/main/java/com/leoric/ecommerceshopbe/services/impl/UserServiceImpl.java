@@ -7,6 +7,7 @@ import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +27,17 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final UserMapper userMapper;
+    private final GlobalUtil globalUtil;
+
+    @Transactional
+    public User getUserProfile(Authentication connectedUser) {
+        User user = globalUtil.getPrincipalAsUser(connectedUser);
+        Hibernate.initialize(user.getOrders());
+        Hibernate.initialize(user.getReviews());
+        Hibernate.initialize(user.getTransactions());
+        Hibernate.initialize(user.getAddresses());
+        return user;
+    }
 
     @Override
     public List<AccountDetailDto> findAllUsersToDto() {
@@ -81,17 +92,6 @@ public class UserServiceImpl implements UserService {
         userMapper.updateUserFromUserUpdateReqDto(userReq, current);
         return userRepository.save(current);
     }
-
-    @Transactional
-    public User getUserProfile(Authentication connectedUser) {
-        User user = getPrincipalAsUser(connectedUser);
-        Hibernate.initialize(user.getOrders());
-        Hibernate.initialize(user.getReviews());
-        Hibernate.initialize(user.getTransactions());
-        Hibernate.initialize(user.getAddresses());
-        return user;
-    }
-
 
     private AccountDetailDto getAccountDto(Account account) {
         AccountDetailDto accountDetailDto = new AccountDetailDto();

@@ -18,10 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -137,13 +135,5 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public boolean existsByEmail(String email) {
         return sellerRepository.existsByEmail(email);
-    }
-
-
-    //prob redundant cause mapstruct
-    private void updateIfPresent(String value, Consumer<String> setter) {
-        if (isNotBlank(value)) {
-            setter.accept(value);
-        }
     }
 }

@@ -24,7 +24,7 @@ public class CartItem {
     private Cart cart;
     private String size;
     private int quantity = 1;
-    private Integer mrpPrice;
+    private Integer maxPrice;
     private Integer sellingPrice;
     private Long userId;
 

@@ -2,20 +2,25 @@ package com.leoric.ecommerceshopbe.utils;
 
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.security.auth.User;
+import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class GlobalUtil {
 
-    public static boolean isNotBlank(String str) {
-        return str != null && !str.trim().isEmpty();
-    }
+    private final UserRepository userRepository;
 
-    public static User getPrincipalAsUser(Authentication authentication) {
+    public User getPrincipalAsUser(Authentication authentication) {
         Account account = getAccountFromAuthentication(authentication);
         if (account instanceof User) {
-            return (User) account;
+            return userRepository.findById(account.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
         }
         throw new BadCredentialsException("Your account is not of type User");
     }

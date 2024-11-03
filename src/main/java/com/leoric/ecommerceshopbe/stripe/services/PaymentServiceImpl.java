@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.stripe.StripeConfig;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentOrderStatus;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentStatus;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsUser;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripeConfig stripeProperties;
     private final PaymentOrderRepository paymentOrderRepository;
     private final OrderRepository orderRepository;
+    private final GlobalUtil globalUtil;
 
     @Override
     public String createStripePaymentLink(User user, Long amount, Long orderId) throws StripeException {
@@ -94,7 +95,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentOrder createPaymentOrder(Authentication authentication, Set<Order> orders) {
-        User user = getPrincipalAsUser(authentication);
+        User user = globalUtil.getPrincipalAsUser(authentication);
         Long amount = orders.stream().mapToLong(Order::getTotalSellingPrice).sum();
 
         PaymentOrder paymentOrder = new PaymentOrder();

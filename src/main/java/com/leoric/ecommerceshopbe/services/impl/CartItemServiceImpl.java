@@ -30,7 +30,7 @@ public class CartItemServiceImpl implements CartItemService {
 
         if (cartItemUser.getId().equals(user.getId())) {
             item.setQuantity(req.getQuantity());
-            item.setMrpPrice(req.getQuantity() * item.getProduct().getMrpPrice());
+            item.setMaxPrice(req.getQuantity() * item.getProduct().getMaxPrice());
             item.setSellingPrice(req.getQuantity() * item.getProduct().getSellingPrice());
             return cartitemRepository.save(item);
         }

@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
             category.setParentCategory(category2);
             category3 = categoryRepository.save(category);
         }
-        int discountPercentage = calculateDiscountPercentage(productReq.getMrpPrice(), productReq.getSellingPrice());
+        int discountPercentage = calculateDiscountPercentage(productReq.getMaxPrice(), productReq.getSellingPrice());
         Product createdProduct = new Product();
         createdProduct.setSeller(seller);
         createdProduct.setCategory(category3);
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         createdProduct.setColor(productReq.getColor());
         createdProduct.setSellingPrice(productReq.getSellingPrice());
         createdProduct.setImage(productReq.getImages());
-        createdProduct.setMrpPrice(productReq.getMrpPrice());
+        createdProduct.setMaxPrice(productReq.getMaxPrice());
         createdProduct.setSizes(productReq.getSizes());
         createdProduct.setDiscountPercentage(discountPercentage);
 
@@ -169,12 +169,12 @@ public class ProductServiceImpl implements ProductService {
         return getProductsBySellerId(seller.getId());
     }
 
-    private int calculateDiscountPercentage(double mrpPrice, double sellingPrice) {
-        if (sellingPrice > mrpPrice || sellingPrice < 0 || mrpPrice < 0) {
+    private int calculateDiscountPercentage(double maxPrice, double sellingPrice) {
+        if (sellingPrice > maxPrice || sellingPrice < 0 || maxPrice < 0) {
             throw new RuntimeException("Invalid selling price");
         }
-        double discount = mrpPrice - sellingPrice;
-        double percentage = (discount / mrpPrice) * 100;
+        double discount = maxPrice - sellingPrice;
+        double percentage = (discount / maxPrice) * 100;
         return (int) percentage;
     }
 }
