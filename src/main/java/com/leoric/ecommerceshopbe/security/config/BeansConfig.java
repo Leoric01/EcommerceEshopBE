@@ -1,5 +1,7 @@
 package com.leoric.ecommerceshopbe.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,13 @@ import static org.springframework.http.HttpHeaders.*;
 public class BeansConfig {
 
     private final UserDetailsService userDetailsService;
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new Hibernate6Module());
+        return mapper;
+    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

@@ -51,7 +51,7 @@ public class Seller extends Account implements UserDetails, Principal {
     private BankDetails bankDetails = new BankDetails();
 
     @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address pickupAddress = new Address();
 
     private String VAT;
