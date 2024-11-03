@@ -1,12 +1,13 @@
 package com.leoric.ecommerceshopbe.utils;
 
+import com.leoric.ecommerceshopbe.handler.InvalidAccountTypeAccessException;
 import com.leoric.ecommerceshopbe.models.Seller;
+import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -15,34 +16,18 @@ import org.springframework.stereotype.Component;
 public class GlobalUtil {
 
     private final UserRepository userRepository;
-
-    public User getPrincipalAsUser(Authentication authentication) {
-        Account account = getAccountFromAuthentication(authentication);
-        if (account instanceof User) {
-            return userRepository.findById(account.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        }
-        throw new BadCredentialsException("Your account is not of type User");
-    }
-
-    public static Seller getPrincipalAsSeller(Authentication authentication) {
-        Account account = getAccountFromAuthentication(authentication);
-        if (account instanceof Seller) {
-            return (Seller) account;
-        }
-        throw new BadCredentialsException("Your account is not of type Seller");
-    }
+    private final SellerRepository sellerRepository;
 
     public static Account getAccountFromAuthentication(Authentication authentication) {
         if (authentication == null) {
-            throw new BadCredentialsException("No authentication found");
+            throw new IllegalArgumentException("No authentication found");
         }
         return getAccountFromPrincipal(authentication.getPrincipal());
     }
 
     public static Account getAccountFromPrincipal(Object principal) {
         if (principal == null) {
-            throw new BadCredentialsException("Principal is null");
+            throw new IllegalArgumentException("Principal is null");
         }
         if (principal instanceof User) {
             return (User) principal;
@@ -50,5 +35,23 @@ public class GlobalUtil {
             return (Seller) principal;
         }
         throw new IllegalArgumentException("Unknown principal type");
+    }
+
+    public User getPrincipalAsUser(Authentication authentication) {
+        Account account = getAccountFromAuthentication(authentication);
+        if (account instanceof User) {
+            return userRepository.findById(account.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        }
+        throw new InvalidAccountTypeAccessException("Access denied: This endpoint is restricted to User accounts only.");
+    }
+
+    public Seller getPrincipalAsSeller(Authentication authentication) {
+        Account account = getAccountFromAuthentication(authentication);
+        if (account instanceof Seller) {
+            return sellerRepository.findById(account.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Seller not found"));
+        }
+        throw new InvalidAccountTypeAccessException("Your account is not of type Seller");
     }
 }

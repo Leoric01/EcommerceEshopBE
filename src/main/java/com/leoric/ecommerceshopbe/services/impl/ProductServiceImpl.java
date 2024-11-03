@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final GlobalUtil globalUtil;
 
     @Override
     public List<Product> findAll() {
@@ -73,6 +74,12 @@ public class ProductServiceImpl implements ProductService {
             category.setParentCategory(category2);
             category3 = categoryRepository.save(category);
         }
+        Product createdProduct = getCreatedProduct(productReq, seller, category3);
+
+        return productRepository.save(createdProduct);
+    }
+
+    private Product getCreatedProduct(CreateProductReq productReq, Seller seller, Category category3) {
         int discountPercentage = calculateDiscountPercentage(productReq.getMaxPrice(), productReq.getSellingPrice());
         Product createdProduct = new Product();
         createdProduct.setSeller(seller);
@@ -85,8 +92,7 @@ public class ProductServiceImpl implements ProductService {
         createdProduct.setMaxPrice(productReq.getMaxPrice());
         createdProduct.setSizes(productReq.getSizes());
         createdProduct.setDiscountPercentage(discountPercentage);
-
-        return productRepository.save(createdProduct);
+        return createdProduct;
     }
 
     @Override
@@ -165,7 +171,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductsOfCurrentUser(Authentication authentication) {
-        Seller seller = GlobalUtil.getPrincipalAsSeller(authentication);
+        Seller seller = globalUtil.getPrincipalAsSeller(authentication);
         return getProductsBySellerId(seller.getId());
     }
 

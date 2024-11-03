@@ -47,6 +47,6 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
 
     @Override
     public void deleteHomeCategoryById(Long id) {
-
+        homecategoryRepository.deleteById(id);
     }
 }

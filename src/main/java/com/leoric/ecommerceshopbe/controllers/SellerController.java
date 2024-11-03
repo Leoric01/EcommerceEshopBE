@@ -6,6 +6,7 @@ import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerReportService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsSeller;
 import static org.springframework.http.HttpStatus.*;
 
 
@@ -26,6 +26,7 @@ public class SellerController {
 
     private final SellerService sellerService;
     private final SellerReportService sellerReportService;
+    private final GlobalUtil globalUtil;
 
     @GetMapping("/")
     public ResponseEntity<Result<List<Seller>>> getAllSellers(@RequestParam(required = false) AccountStatus status) {
@@ -43,7 +44,7 @@ public class SellerController {
 
     @GetMapping("/report")
     public ResponseEntity<Result<SellerReport>> getSellerByReport(Authentication connectedUser) {
-        Seller seller = getPrincipalAsSeller(connectedUser);
+        Seller seller = globalUtil.getPrincipalAsSeller(connectedUser);
         SellerReport sellerReport = sellerReportService.getSellerReport(seller);
         Result<SellerReport> response = Result.success(sellerReport, "Seller's details fetched succesfully", OK.value());
         return ResponseEntity.status(OK).body(response);

@@ -11,6 +11,7 @@ import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.CartItemService;
 import com.leoric.ecommerceshopbe.services.interfaces.CartService;
 import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +30,11 @@ public class CartController {
     private final CartService cartService;
     private final CartItemService cartItemService;
     private final ProductService productService;
+    private final GlobalUtil globalUtil;
 
     @GetMapping("")
     public ResponseEntity<Result<Cart>> findUserCartHandler(Authentication connectedUser) {
-        User user = (User) connectedUser.getPrincipal();
+        User user = globalUtil.getPrincipalAsUser(connectedUser);
         Cart cart = cartService.findUserCart(user);
         Result<Cart> response = Result.success(cart, "Cart found succesfully", OK.value());
         return ResponseEntity.status(OK).body(response);
@@ -41,7 +43,7 @@ public class CartController {
     @PutMapping("/add")
     public ResponseEntity<Result<CartItem>> addItemToCart(Authentication connectedUser,
                                                           @RequestBody AddItemReq itemReq) {
-        User user = (User) connectedUser.getPrincipal();
+        User user = globalUtil.getPrincipalAsUser(connectedUser);
         Product product = productService.findProductById(itemReq.getProductId());
         CartItem cartItem = cartService.addCartItem(
                 user,
@@ -55,7 +57,7 @@ public class CartController {
     @DeleteMapping("/item/{cartItemId}")
     public ResponseEntity<Result<Void>> deleteCartItem(Authentication connectedUser,
                                                        @PathVariable Long cartItemId) {
-        User user = (User) connectedUser.getPrincipal();
+        User user = globalUtil.getPrincipalAsUser(connectedUser);
         cartItemService.removeCartItem(user.getId(), cartItemId);
         Result<Void> response = Result.success("Item successfully deleted from cart", ACCEPTED.value());
         return ResponseEntity.status(ACCEPTED).body(response);

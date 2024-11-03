@@ -1,9 +1,9 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
-import com.leoric.ecommerceshopbe.models.DTOs.Home;
 import com.leoric.ecommerceshopbe.models.Deal;
 import com.leoric.ecommerceshopbe.models.HomeCategory;
 import com.leoric.ecommerceshopbe.models.constants.HomeCategorySection;
+import com.leoric.ecommerceshopbe.models.dtos.Home;
 import com.leoric.ecommerceshopbe.repositories.DealRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.HomeService;
 import lombok.RequiredArgsConstructor;

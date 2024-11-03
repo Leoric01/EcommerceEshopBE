@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.services.interfaces;
 
-import com.leoric.ecommerceshopbe.models.DTOs.Home;
 import com.leoric.ecommerceshopbe.models.HomeCategory;
+import com.leoric.ecommerceshopbe.models.dtos.Home;
 
 import java.util.List;
 

@@ -6,6 +6,6 @@ cartitem - i dont see seller info. gonna have to create dto to avoid infinite lo
 
 // fixed //on login, no data on profile
 // fixed // on delete item from cart, you have to manualy refresh page
-// fixed // createproduct doesnt set maxPrice
+// fixed // createproduct doesn't set maxPrice
 // fixed // failed to lazily initialize a collection of role: com.leoric.ecommerceshopbe.models.Product.reviews: could not initialize
 proxy on  Get All Products Params NonRequired

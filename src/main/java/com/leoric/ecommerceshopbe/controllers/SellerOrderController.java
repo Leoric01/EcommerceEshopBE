@@ -21,10 +21,10 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/seller/order")
 public class SellerOrderController {
     private final OrderService orderService;
-
+    private final GlobalUtil globalUtil;
     @GetMapping("")
     public ResponseEntity<Result<List<Order>>> getAllSellersOrders(Authentication authentication) {
-        Seller seller = GlobalUtil.getPrincipalAsSeller(authentication);
+        Seller seller = globalUtil.getPrincipalAsSeller(authentication);
         List<Order> orders = orderService.sellersOrders(seller.getId());
         Result<List<Order>> result = Result.success(orders, "Sellers orders fetched succesfully", ACCEPTED.value());
         return ResponseEntity.status(ACCEPTED).body(result);
@@ -32,7 +32,7 @@ public class SellerOrderController {
 
     @PatchMapping("/{orderId}/status/{orderStatus}")
     public ResponseEntity<Result<Order>> updateOrderStatus(Authentication authentication, @PathVariable("orderId") Long orderId, @PathVariable OrderStatus orderStatus) {
-        //TODO i need to impl check if the order belongs to the seller to be able to update it
+        //TODO i need to add check if the order belongs to the seller to be able to update it
         Order order = orderService.updateOrderStatus(orderId, orderStatus);
         Result<Order> response = Result.success(order, "Order status was successfully updated", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getPrincipalAsSeller;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -44,7 +43,7 @@ public class AddressController {
 
     @PostMapping("/seller")
     public ResponseEntity<Result<Address>> addSellerAddress(Authentication authentication, @RequestBody AddAddressRequestDTO address) {
-        Seller seller = getPrincipalAsSeller(authentication);
+        Seller seller = globalUtil.getPrincipalAsSeller(authentication);
         Address createdAddress = addressService.addSellerAddress(seller.getId(), address);
         Result<Address> result = Result.success(createdAddress, "Address created success", CREATED.value());
         return ResponseEntity.status(CREATED).body(result);

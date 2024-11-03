@@ -111,7 +111,7 @@ public class AddressServiceImpl implements AddressService {
     }
     @Override
     public List<Address> findAll() {
-        return List.of();
+        return addressRepository.findAll();
     }
 
     @Override
@@ -126,5 +126,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void deleteById(Long id) {
+        addressRepository.deleteById(id);
     }
 }

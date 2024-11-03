@@ -1,7 +1,7 @@
 package com.leoric.ecommerceshopbe.controllers;
 
-import com.leoric.ecommerceshopbe.models.DTOs.Home;
 import com.leoric.ecommerceshopbe.models.HomeCategory;
+import com.leoric.ecommerceshopbe.models.dtos.Home;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.HomeCategoryService;
 import com.leoric.ecommerceshopbe.services.interfaces.HomeService;

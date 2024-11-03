@@ -1,4 +1,4 @@
-package com.leoric.ecommerceshopbe.models.DTOs;
+package com.leoric.ecommerceshopbe.models.dtos;
 
 import com.leoric.ecommerceshopbe.models.Deal;
 import com.leoric.ecommerceshopbe.models.HomeCategory;
