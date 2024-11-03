@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
@@ -36,14 +36,17 @@ public class Product {
     private int numRatings;
 
     @ManyToOne
+    @EqualsAndHashCode.Exclude
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
+    @EqualsAndHashCode.Exclude
     private Seller seller;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
     private List<Review> reviews = new ArrayList<>();
 
     @CreationTimestamp

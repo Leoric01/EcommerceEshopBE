@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Wishlist {
@@ -21,8 +21,10 @@ public class Wishlist {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonBackReference
+    @EqualsAndHashCode.Exclude
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
     private Set<Product> products;
 }

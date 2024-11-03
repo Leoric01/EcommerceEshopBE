@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.models.Wishlist;
 import com.leoric.ecommerceshopbe.repositories.WishlistRepository;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.WishlistService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class WishlistServiceImpl implements WishlistService {
 
 
     @Override
+    @Transactional
     public Wishlist updateProductToWishlist(Authentication authentication, Product product) {
         Wishlist wishlist = getWishlistByUserId(authentication);
         if (wishlist.getProducts().contains(product)) {

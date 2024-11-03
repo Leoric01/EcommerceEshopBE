@@ -21,7 +21,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -53,6 +53,7 @@ public class Seller extends Account implements UserDetails, Principal {
     @JsonManagedReference
     @Builder.Default
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
     private Address pickupAddress = new Address();
 
     private String VAT;

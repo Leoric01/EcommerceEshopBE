@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
@@ -28,15 +28,18 @@ public class Address {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @JsonBackReference
+    @EqualsAndHashCode.Exclude
     private Order order;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     @JsonBackReference
+    @EqualsAndHashCode.Exclude
     private Seller seller;
 }
