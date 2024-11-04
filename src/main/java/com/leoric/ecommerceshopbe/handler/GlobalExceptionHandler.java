@@ -23,6 +23,12 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler(OrderAlreadyCancelledException.class)
+    public ResponseEntity<Result<Void>> handleOrderAlreadyCancelled(OrderAlreadyCancelledException exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(Result.failure(INVALID_INPUT.getCode(), "Order was already cancel;ed: " + exp.getMessage()));
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {

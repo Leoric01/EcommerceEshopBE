@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
+import com.leoric.ecommerceshopbe.handler.OrderAlreadyCancelledException;
 import com.leoric.ecommerceshopbe.models.*;
 import com.leoric.ecommerceshopbe.models.constants.OrderStatus;
 import com.leoric.ecommerceshopbe.repositories.AddressRepository;
@@ -103,6 +104,9 @@ public class OrderServiceImpl implements OrderService {
     public Order cancelOrder(Long orderId, Authentication connectedUser) {
         User user = globalUtil.getPrincipalAsUser(connectedUser);
         Order order = findOrderById(orderId);
+        if (order.getOrderStatus().name().equals(OrderStatus.CANCELLED.name())) {
+            throw new OrderAlreadyCancelledException("Order is already canceled.");
+        }
         if (!user.getId().equals(order.getUser().getId())) {
             throw new BadCredentialsException("Access denied: the order belongs to a different user account");
         }

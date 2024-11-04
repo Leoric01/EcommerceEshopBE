@@ -13,6 +13,7 @@ navbar search button - doesn't work
 pricingcard - dummy data on cart summary
 order history list on customer - gotta figure how i actualy wana render, which data etc. cant go 1 by 1, would get spamed
 delete cart on payment
+gotta add option to choose size when adding product into cart
 
 
 // fixed //on login, no data on profile

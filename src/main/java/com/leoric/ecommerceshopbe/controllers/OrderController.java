@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.controllers;
 
+import com.leoric.ecommerceshopbe.handler.OrderAlreadyCancelledException;
 import com.leoric.ecommerceshopbe.models.*;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -81,15 +83,23 @@ public class OrderController {
 
     @PutMapping("/{orderId}/cancel")
     public ResponseEntity<Result<Order>> cancelOrder(Authentication authentication, @PathVariable Long orderId) {
-        Order order = orderService.cancelOrder(orderId, authentication);
-        Seller seller = sellerService.getSellerById(order.getSellerId());
-        SellerReport report = sellerReportService.getSellerReport(seller);
+        Order order = null;
+        try {
+            order = orderService.cancelOrder(orderId, authentication);
 
-        report.setCanceledOrders(report.getCanceledOrders() + 1);
-        report.setTotalRefunds(report.getTotalRefunds() + order.getTotalSellingPrice());
-        sellerReportService.updateSellerReport(report);
+            Seller seller = sellerService.getSellerById(order.getSellerId());
+            SellerReport report = sellerReportService.getSellerReport(seller);
 
-        Result<Order> result = Result.success(order, "Order successfully canceled", OK.value());
-        return ResponseEntity.ok(result);
+            report.setCanceledOrders(report.getCanceledOrders() + 1);
+            report.setTotalRefunds(report.getTotalRefunds() + order.getTotalSellingPrice());
+            sellerReportService.updateSellerReport(report);
+
+            Result<Order> result = Result.success(order, "Order successfully canceled", OK.value());
+            return ResponseEntity.ok(result);
+
+        } catch (OrderAlreadyCancelledException e) {
+            Result<Order> result = Result.failure(CONFLICT.value(), e.getMessage(), order);
+            return ResponseEntity.status(CONFLICT).body(result);
+        }
     }
 }
