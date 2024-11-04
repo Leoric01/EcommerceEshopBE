@@ -43,7 +43,7 @@ public class SellerController {
     }
 
     @GetMapping("/report")
-    public ResponseEntity<Result<SellerReport>> getSellerByReport(Authentication connectedUser) {
+    public ResponseEntity<Result<SellerReport>> getSellerReportBySeller(Authentication connectedUser) {
         Seller seller = globalUtil.getPrincipalAsSeller(connectedUser);
         SellerReport sellerReport = sellerReportService.getSellerReport(seller);
         Result<SellerReport> response = Result.success(sellerReport, "Seller's details fetched succesfully", OK.value());

@@ -24,14 +24,14 @@ public class TransactionController {
     private final GlobalUtil globalUtil;
 
     @GetMapping("/seller")
-    public ResponseEntity<List<Transaction>> getTransactionBySeller(Authentication authentication) {
+    public ResponseEntity<List<Transaction>> getTransactionsBySeller(Authentication authentication) {
         Seller seller = globalUtil.getPrincipalAsSeller(authentication);
         List<Transaction> transactions = transactionService.getTransactionsBySellerId(seller);
         return ResponseEntity.ok(transactions);
     }
 
     @GetMapping()
-    public ResponseEntity<List<Transaction>> getAllTransaction() {
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
         return ResponseEntity.ok(transactions);
     }

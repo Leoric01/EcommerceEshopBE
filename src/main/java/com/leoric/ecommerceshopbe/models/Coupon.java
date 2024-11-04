@@ -33,4 +33,12 @@ public class Coupon {
     @ManyToMany(mappedBy = "usedCoupons", fetch = FetchType.LAZY)
     @JsonBackReference
     private Set<User> usedByUsers = new HashSet<>();
+
+    public Coupon(String code, double discountPercentage, LocalDate validityStartDate, LocalDate validityEndDate, double minimumOrderValue) {
+        this.code = code;
+        this.discountPercentage = discountPercentage;
+        this.validityStartDate = validityStartDate;
+        this.validityEndDate = validityEndDate;
+        this.minimumOrderValue = minimumOrderValue;
+    }
 }

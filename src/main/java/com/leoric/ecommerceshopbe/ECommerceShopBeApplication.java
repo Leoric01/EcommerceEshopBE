@@ -1,8 +1,11 @@
 package com.leoric.ecommerceshopbe;
 
+import com.leoric.ecommerceshopbe.models.Coupon;
 import com.leoric.ecommerceshopbe.models.Seller;
+import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
 import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
 import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
+import com.leoric.ecommerceshopbe.repositories.CouponRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.requests.dto.AddAddressRequestDTO;
 import com.leoric.ecommerceshopbe.security.auth.User;
@@ -17,6 +20,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.util.Arrays;
 
 @EnableAsync
 @SpringBootApplication
@@ -26,7 +31,7 @@ public class ECommerceShopBeApplication {
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
     private final AddressService addressService;
-
+    private final CouponRepository couponRepository;
     public static void main(String[] args) {
         SpringApplication.run(ECommerceShopBeApplication.class, args);
     }
@@ -61,6 +66,18 @@ public class ECommerceShopBeApplication {
                         addressService.addUserAddress(user.getId(), addressDto);
                     }
                 }
+            }
+            String adminEmail = "a@a";
+            if (userRepository.findByEmail(adminEmail).isEmpty()) {
+                User userAdmin = User.builder()
+                        .email("a@a")
+                        .password(passwordEncoder.encode("cccc"))
+                        .firstName("AdminF 1")
+                        .lastName("AdminL 1")
+                        .enabled(true)
+                        .role(USER_ROLE.ROLE_ADMIN)
+                        .build();
+                userRepository.save(userAdmin);
             }
 
             for (int i = 1; i <= 10; i++) {
@@ -107,6 +124,12 @@ public class ECommerceShopBeApplication {
                     addressService.addSellerAddress(seller.getId(), addressDto);
                 }
             }
+            Coupon save10 = new Coupon("SAVE10", 10, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31), 100);
+            Coupon welcome20 = new Coupon("WELCOME20", 20, LocalDate.of(2024, 2, 1), LocalDate.of(2024, 11, 30), 200);
+            Coupon holiday30 = new Coupon("HOLIDAY30", 30, LocalDate.of(2024, 3, 15), LocalDate.of(2024, 6, 15), 300);
+            Coupon summer15 = new Coupon("SUMMER15", 15, LocalDate.of(2024, 6, 1), LocalDate.of(2024, 9, 1), 150);
+            Coupon blackFriday50 = new Coupon("BLACKFRIDAY50", 50, LocalDate.of(2024, 11, 25), LocalDate.of(2024, 11, 30), 500);
+            couponRepository.saveAll(Arrays.asList(save10, welcome20, holiday30, summer15, blackFriday50));
         };
     }
 
