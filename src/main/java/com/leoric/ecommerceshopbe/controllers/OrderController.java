@@ -56,7 +56,7 @@ public class OrderController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Result<List<Order>>> usersOrderHistoryHandlers(Authentication authentication) {
+    public ResponseEntity<Result<List<Order>>> usersOrderHistoryHandler(Authentication authentication) {
         List<Order> orders = orderService.usersOrderHistory(authentication);
         Result<List<Order>> result = Result.success(orders, "Users history of orders", OK.value());
         return ResponseEntity.ok(result);

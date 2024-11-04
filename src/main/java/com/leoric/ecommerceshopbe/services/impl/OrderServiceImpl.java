@@ -78,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public List<Order> usersOrderHistory(Authentication connectedUser) {
         User user = globalUtil.getPrincipalAsUser(connectedUser);
         return orderRepository.findAllByUserId(user.getId());
