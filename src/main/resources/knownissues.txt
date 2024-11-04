@@ -14,6 +14,8 @@ pricingcard - dummy data on cart summary
 order history list on customer - gotta figure how i actualy wana render, which data etc. cant go 1 by 1, would get spamed
 delete cart on payment
 gotta add option to choose size when adding product into cart
+product quantity - should be how many seller has in stock -> fix price and order
+product quantity update as seller on in_stock button
 
 
 // fixed //on login, no data on profile

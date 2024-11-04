@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {

@@ -11,5 +11,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(attributePaths = {"orderItems", "orderItems.product", "orderItems.product.seller"})
     List<Order> findAllByUserId(Long userId);
+
+    @EntityGraph(attributePaths = {"orderItems", "orderItems.product", "orderItems.product.seller", "shippingAddress"})
     List<Order> findAllBySellerId(Long sellerId);
 }

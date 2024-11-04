@@ -5,6 +5,7 @@ import com.leoric.ecommerceshopbe.security.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -26,5 +27,5 @@ public class Wishlist {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
-    private Set<Product> products;
+    private Set<Product> products = new HashSet<>();
 }
