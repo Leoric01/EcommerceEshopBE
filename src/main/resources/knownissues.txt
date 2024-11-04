@@ -12,6 +12,8 @@ orders - dummy data
 navbar search button - doesn't work
 pricingcard - dummy data on cart summary
 order history list on customer - gotta figure how i actualy wana render, which data etc. cant go 1 by 1, would get spamed
+delete cart on payment
+
 
 // fixed //on login, no data on profile
 // fixed // on delete item from cart, you have to manualy refresh page
