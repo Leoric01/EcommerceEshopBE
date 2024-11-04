@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
+import com.leoric.ecommerceshopbe.handler.InvalidAccountTypeAccessException;
 import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.repositories.AddressRepository;
@@ -9,9 +10,13 @@ import com.leoric.ecommerceshopbe.response.AddressDtoResponse;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
+import com.leoric.ecommerceshopbe.services.interfaces.UserService;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +31,8 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
+    private final GlobalUtil globalUtil;
+    private final UserService userService;
 
     private static Address getAddress(AddAddressRequestDTO addressDto) {
         Address address = new Address();
@@ -37,6 +44,38 @@ public class AddressServiceImpl implements AddressService {
         address.setCountry(addressDto.getCountry());
         address.setMobile(addressDto.getMobile());
         return address;
+    }
+
+    @Override
+    public void deleteAddress(Authentication authentication, Long addressId) {
+        Account account = globalUtil.getAccountFromAuthentication(authentication);
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
+        if (account instanceof User user) {
+            if (address.getUser() == null || !address.getUser().getId().equals(user.getId())) {
+                throw new AccessDeniedException("This address does not belong to the current user.");
+            }
+            User fetchedUser = userService.findById(user.getId());
+            fetchedUser.getAddresses().remove(address);
+            userRepository.save(fetchedUser);
+            deleteById(addressId);
+        } else if (account instanceof Seller seller) {
+            if (address.getSeller() == null || !address.getSeller().getId().equals(seller.getId())) {
+                throw new AccessDeniedException("This address does not belong to the current seller.");
+            }
+            Seller fetchedSeller = sellerRepository.findById(seller.getId()).orElseThrow(
+                    () -> new EntityNotFoundException("Seller not found"));
+            fetchedSeller.setPickupAddress(null);
+            sellerRepository.save(fetchedSeller);
+            deleteById(addressId);
+        } else {
+            throw new InvalidAccountTypeAccessException("Access denied: Unrecognized account type.");
+        }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        addressRepository.deleteById(id);
     }
 
     public Address addUserAddress(Long userId, AddAddressRequestDTO addressDto) {
@@ -79,6 +118,7 @@ public class AddressServiceImpl implements AddressService {
             return savedAddress;
         }
     }
+
     @Override
     @Transactional
     public Set<AddressDtoResponse> findAllUsersAddresses(Authentication connectedUser) {
@@ -109,6 +149,7 @@ public class AddressServiceImpl implements AddressService {
 
         return dto;
     }
+
     @Override
     public List<Address> findAll() {
         return addressRepository.findAll();
@@ -122,10 +163,5 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Address save(Address address) {
         return addressRepository.save(address);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        addressRepository.deleteById(id);
     }
 }

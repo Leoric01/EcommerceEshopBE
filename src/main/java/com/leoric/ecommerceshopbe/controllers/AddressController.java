@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class AddressController {
     private final AddressService addressService;
     private final GlobalUtil globalUtil;
 
-    @PostMapping(value = "/user")
+    @PostMapping("/user")
     public ResponseEntity<Result<Address>> addUserAddress(Authentication authentication, @Valid @RequestBody AddAddressRequestDTO address) {
         User user = globalUtil.getPrincipalAsUser(authentication);
         Address createdAddress = addressService.addUserAddress(user.getId(), address);
@@ -47,5 +48,12 @@ public class AddressController {
         Address createdAddress = addressService.addSellerAddress(seller.getId(), address);
         Result<Address> result = Result.success(createdAddress, "Address created success", CREATED.value());
         return ResponseEntity.status(CREATED).body(result);
+    }
+
+    @DeleteMapping("/{addressId}")
+    public ResponseEntity<Result<Void>> deleteAddress(Authentication authentication, @PathVariable Long addressId) {
+        addressService.deleteAddress(authentication, addressId);
+        Result<Void> result = Result.success("Address deleted success", OK.value());
+        return ResponseEntity.status(OK).body(result);
     }
 }

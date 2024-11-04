@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromAuthentication;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -65,7 +64,7 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Result<Order>> getOrderById(Authentication authentication, @PathVariable Long orderId) {
-        Account account = getAccountFromAuthentication(authentication);
+        Account account = globalUtil.getAccountFromAuthentication(authentication);
         Order order = orderService.getOrderByIdAndValidateRelation(orderId, account);
         Result<Order> result = Result.success(order, "Order found by id and verified it related to current account",
                 OK.value());
@@ -74,7 +73,7 @@ public class OrderController {
 
     @GetMapping("/item/{orderItemId}")
     public ResponseEntity<Result<OrderItem>> getOrderItemById(Authentication authentication, @PathVariable Long orderItemId) {
-        Account account = getAccountFromAuthentication(authentication);
+        Account account = globalUtil.getAccountFromAuthentication(authentication);
         OrderItem orderItem = orderService.getOrderItemById(orderItemId);
         Result<OrderItem> result = Result.success(orderItem, "Order item found by id", OK.value());
         return ResponseEntity.ok(result);

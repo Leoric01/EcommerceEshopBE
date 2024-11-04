@@ -18,13 +18,6 @@ public class GlobalUtil {
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
 
-    public static Account getAccountFromAuthentication(Authentication authentication) {
-        if (authentication == null) {
-            throw new IllegalArgumentException("No authentication found");
-        }
-        return getAccountFromPrincipal(authentication.getPrincipal());
-    }
-
     public static Account getAccountFromPrincipal(Object principal) {
         if (principal == null) {
             throw new IllegalArgumentException("Principal is null");
@@ -35,6 +28,13 @@ public class GlobalUtil {
             return (Seller) principal;
         }
         throw new IllegalArgumentException("Unknown principal type");
+    }
+
+    public Account getAccountFromAuthentication(Authentication authentication) {
+        if (authentication == null) {
+            throw new IllegalArgumentException("No authentication found");
+        }
+        return getAccountFromPrincipal(authentication.getPrincipal());
     }
 
     public User getPrincipalAsUser(Authentication authentication) {

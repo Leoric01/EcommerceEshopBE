@@ -24,4 +24,6 @@ public interface AddressService {
     Address addUserAddress(Long userId, AddAddressRequestDTO address);
 
     Address addSellerAddress(Long sellerId, AddAddressRequestDTO address);
+
+    void deleteAddress(Authentication authentication, Long addressId);
 }
