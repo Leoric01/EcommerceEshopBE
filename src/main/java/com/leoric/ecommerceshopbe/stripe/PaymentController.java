@@ -26,7 +26,7 @@ public class PaymentController {
 
     @GetMapping("/{paymentId}")
     public ResponseEntity<ApiResponse> paymentSuccessHandler(@PathVariable("paymentId") String paymentId,
-                                                             @RequestParam Long paymentLinkId,
+                                                             @RequestParam String paymentLinkId,
                                                              Authentication authentication
     ) {
         PaymentLinkResponse paymentLinkResponse;

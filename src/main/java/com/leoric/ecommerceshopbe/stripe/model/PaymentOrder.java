@@ -29,7 +29,7 @@ public class PaymentOrder {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private String paymentLinkId;
+    private Long paymentLinkId;
 
     @ManyToOne
     private User user;

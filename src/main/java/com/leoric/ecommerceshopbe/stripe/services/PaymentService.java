@@ -13,7 +13,7 @@ import java.util.Set;
 public interface PaymentService {
     PaymentOrder createPaymentOrder(Authentication authentication, Set<Order> orders);
 
-    PaymentOrder getPaymentOrderById(Long orderId);
+    PaymentOrder getPaymentOrderById(String orderId);
 
     PaymentOrder getPaymentOrderByPaymentId(String paymentId);
 

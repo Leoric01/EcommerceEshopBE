@@ -11,26 +11,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PaymentOrderServiceImpl implements PaymentOrderService {
 
-    private final PaymentOrderRepository paymentorderRepository;
+    private final PaymentOrderRepository paymentOrderRepository;
 
     @Override
     public List<PaymentOrder> findAll() {
-        return paymentorderRepository.findAll();
+        return paymentOrderRepository.findAll();
     }
 
     @Override
     public PaymentOrder findById(Long id) {
-        return paymentorderRepository.findById(id)
+        return paymentOrderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PaymentOrder not found"));
     }
 
     @Override
     public PaymentOrder save(PaymentOrder entity) {
-        return paymentorderRepository.save(entity);
+        return paymentOrderRepository.save(entity);
     }
 
     @Override
     public void deleteById(Long id) {
-        paymentorderRepository.deleteById(id);
+        paymentOrderRepository.deleteById(id);
     }
 }
