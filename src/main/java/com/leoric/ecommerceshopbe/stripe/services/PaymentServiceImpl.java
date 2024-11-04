@@ -37,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(stripeProperties.getEndpointOnSuccess() + "/" + orderId)
+                .setSuccessUrl(stripeProperties.getEndpointOnSuccess() + orderId)
                 .setCancelUrl(stripeProperties.getEndpointOnCancel())
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
