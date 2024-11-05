@@ -1,0 +1,80 @@
+{
+  "brands": [
+    {
+      "name": "Nike",
+      "value": "nike"
+    },
+    {
+      "name": "Adidas",
+      "value": "adidas"
+    },
+    {
+      "name": "Apple",
+      "value": "apple"
+    },
+    {
+      "name": "Samsung",
+      "value": "samsung"
+    },
+    {
+      "name": "Sony",
+      "value": "sony"
+    },
+    {
+      "name": "Microsoft",
+      "value": "microsoft"
+    },
+    {
+      "name": "Google",
+      "value": "google"
+    },
+    {
+      "name": "HP",
+      "value": "hp"
+    },
+    {
+      "name": "Philips",
+      "value": "philips"
+    },
+    {
+      "name": "Bosch",
+      "value": "bosch"
+    },
+    {
+      "name": "Panasonic",
+      "value": "panasonic"
+    },
+    {
+      "name": "Canon",
+      "value": "canon"
+    },
+    {
+      "name": "Nikon",
+      "value": "nikon"
+    },
+    {
+      "name": "Puma",
+      "value": "puma"
+    },
+    {
+      "name": "Under Armour",
+      "value": "under_armour"
+    },
+    {
+      "name": "Reebok",
+      "value": "reebok"
+    },
+    {
+      "name": "Ikea",
+      "value": "ikea"
+    },
+    {
+      "name": "Honda",
+      "value": "honda"
+    },
+    {
+      "name": "Kawasaki",
+      "value": "kawasaki"
+    }
+  ]
+}

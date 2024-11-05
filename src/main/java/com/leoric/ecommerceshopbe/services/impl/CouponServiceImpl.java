@@ -109,7 +109,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Coupon findById(Long id) {
         return couponRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Coupon not found"));
     }
 
     @Override
@@ -123,6 +123,7 @@ public class CouponServiceImpl implements CouponService {
                 .filter(Objects::nonNull)
                 .map(coupon -> {
                     CouponDtoResponse couponDtoResponse = new CouponDtoResponse();
+                    couponDtoResponse.setId(coupon.getId());
                     couponDtoResponse.setCode(coupon.getCode());
                     couponDtoResponse.setDiscountPercentage(coupon.getDiscountPercentage());
                     couponDtoResponse.setValidityStartDate(coupon.getValidityStartDate());
@@ -131,6 +132,27 @@ public class CouponServiceImpl implements CouponService {
                     couponDtoResponse.setStatus(findCorrectStatus(coupon));
                     return couponDtoResponse;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Coupon updateCouponStatus(Long couponId, String status) {
+        if (couponId == null || status == null || status.isBlank()) {
+            throw new IllegalArgumentException("Coupon id and status are required both");
+        }
+        if (status.equals(CouponStatus.SUSPENDED.name())) {
+            Coupon coupon = findCouponByid(couponId);
+            if (coupon.isActive()) {
+                coupon.setActive(false);
+                return save(coupon);
+            }
+        } else if (status.equals(CouponStatus.ACTIVE.name())) {
+            Coupon coupon = findCouponByid(couponId);
+            if (!coupon.isActive()) {
+                coupon.setActive(true);
+                return save(coupon);
+            }
+        }
+        throw new OperationNotPermittedException("Coupon update params does not meet the conditions");
     }
 
     private String findCorrectStatus(Coupon coupon) {

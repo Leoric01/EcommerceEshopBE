@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -17,6 +19,14 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/admin/deals")
 public class DealController {
     private final DealService dealService;
+
+    @GetMapping()
+    public ResponseEntity<Result<List<Deal>>> getAllDeals() {
+        List<Deal> deals = dealService.getAllDeals();
+        Result<List<Deal>> result = Result.success(deals, "Deal found", OK.value());
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping
     public ResponseEntity<Result<Deal>> createDeal(@RequestBody Deal deal) {
         Deal createdDeal = dealService.createDeal(deal);
@@ -24,7 +34,7 @@ public class DealController {
         return ResponseEntity.ok(result);
     }
     @PatchMapping("/{id}")
-    public ResponseEntity<Result<Deal>> createDeal(@PathVariable Long id ,@RequestBody Deal deal) {
+    public ResponseEntity<Result<Deal>> updateDeal(@PathVariable Long id, @RequestBody Deal deal) {
         Deal updatedDeal = dealService.updateDealById(id, deal);
         Result<Deal> result = Result.success(updatedDeal, "Deal successfully updated", ACCEPTED.value());
         return ResponseEntity.ok(result);

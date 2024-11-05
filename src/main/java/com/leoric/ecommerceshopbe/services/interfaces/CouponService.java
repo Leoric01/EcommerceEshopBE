@@ -30,4 +30,6 @@ public interface CouponService {
     Coupon save(Coupon entity);
 
     List<CouponDtoResponse> getAllCouponsAsDtos();
+
+    Coupon updateCouponStatus(Long couponId, String status);
 }

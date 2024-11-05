@@ -57,6 +57,13 @@ public class AdminCouponController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/admin/{couponId}/{status}")
+    public ResponseEntity<Result<Coupon>> updateCouponStatus(@PathVariable Long couponId, @PathVariable String status) {
+        Coupon coupon = couponService.updateCouponStatus(couponId, status);
+        Result<Coupon> response = Result.success(coupon, "Coupon successfully updated", HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/admin/delete/{couponId}")
     public ResponseEntity<Result<Void>> deleteCoupon(@PathVariable Long couponId) {
         couponService.deleteCouponById(couponId);

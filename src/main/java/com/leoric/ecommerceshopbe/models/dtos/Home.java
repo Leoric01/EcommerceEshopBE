@@ -2,15 +2,13 @@ package com.leoric.ecommerceshopbe.models.dtos;
 
 import com.leoric.ecommerceshopbe.models.Deal;
 import com.leoric.ecommerceshopbe.models.HomeCategory;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Home {

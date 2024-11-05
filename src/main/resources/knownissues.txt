@@ -19,6 +19,10 @@ product quantity update as seller on in_stock button
 transactions - no data cause payment never success... have to fix that stripe
 transactions - map order corectly in seller payment dashboard
 homeCategory - all fields are duplicated. data source is ok tho
+createdeal has some issues
+categoryId in deal doesn't corespond with categody ids in db
+
+
 
 // fixed //on login, no data on profile
 // fixed // on delete item from cart, you have to manualy refresh page
