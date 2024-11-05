@@ -29,8 +29,8 @@ public class PaymentOrder {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private Long paymentLinkId;
-
+    private String paymentLinkId;
+    private String stripeSessionId;
     @ManyToOne
     private User user;
     @OneToMany

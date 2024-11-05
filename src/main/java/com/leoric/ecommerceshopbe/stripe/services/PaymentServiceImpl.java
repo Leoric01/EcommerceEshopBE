@@ -6,7 +6,6 @@ import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.stripe.PaymentOrderRepository;
 import com.leoric.ecommerceshopbe.stripe.StripeConfig;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
-import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentLinkResponse;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentOrderStatus;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentStatus;
 import com.leoric.ecommerceshopbe.utils.GlobalUtil;
@@ -46,32 +45,6 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentOrderRepository.save(paymentOrder);
     }
 
-    @Transactional
-    public String createStripePaymentLink2(User user, Long amount, Long orderId) throws StripeException {
-        SessionCreateParams params = SessionCreateParams.builder()
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(stripeProperties.getEndpointOnSuccess() + orderId)
-                .setCancelUrl(stripeProperties.getEndpointOnCancel())
-                .addLineItem(SessionCreateParams.LineItem.builder()
-                        .setQuantity(1L)
-                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                                .setCurrency("eur")
-                                .setUnitAmount(amount * 100)
-                                .setProductData(
-                                        SessionCreateParams.LineItem
-                                                .PriceData
-                                                .ProductData
-                                                .builder()
-                                                .setName("George's first Eshop")
-                                                .build()
-                                ).build()
-                        ).build()
-                ).build();
-        Session session = Session.create(params);
-        return session.getUrl();
-
-    }
     @Override
     public String createStripePaymentLink(User user, Long amount, Long orderId) throws StripeException {
         SessionCreateParams params = SessionCreateParams.builder()
@@ -94,28 +67,27 @@ public class PaymentServiceImpl implements PaymentService {
                                 ).build()
                         ).build()
                 ).build();
-
         Session session = Session.create(params);
-
-        System.out.println("session _____ " + session);
-
-        PaymentLinkResponse res = new PaymentLinkResponse();
-        res.setPayment_link_url(session.getUrl());
-
+        PaymentOrder paymentOrder = paymentOrderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("PaymentOrder not found"));
+        paymentOrder.setPaymentLinkId(session.getPaymentLink());
+        paymentOrder.setStripeSessionId(session.getId());
+        paymentOrderRepository.save(paymentOrder);
         return session.getUrl();
     }
 
+    // TODO FIX THIS - SESSION NULL, ID IS WRONG
     @Override
     @Transactional
     public Boolean proceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId) {
         if (paymentOrder.getStatus().name().equalsIgnoreCase(PaymentOrderStatus.PENDING.name())) {
             try {
-                Session session = Session.retrieve(paymentId);
-                // TODO FIX THIS - SESSION NULL, ID IS WRONG 
+                String stripeSessionId = paymentOrder.getStripeSessionId();
+                Session session = Session.retrieve(stripeSessionId);
                 System.out.println("SESSION _____ " + session);
                 String status = session.getStatus();
 
-                if (status.equalsIgnoreCase("succeeded")) {
+                if (status.equalsIgnoreCase("complete")) {
                     Set<Order> orders = paymentOrder.getOrders();
                     for (Order order : orders) {
                         order.setPaymentStatus(PaymentStatus.COMPLETED);
@@ -155,14 +127,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public PaymentOrder getPaymentOrderByPaymentId(String paymentId) {
-        long longPaymentId;
-        try {
-            longPaymentId = Long.parseLong(paymentId);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The provided payment Id is not a valid number");
-        }
-        return paymentOrderRepository.findByPaymentLinkId(longPaymentId)
+    public PaymentOrder getPaymentOrderByPaymentId(String paymentLinkId) {
+        return paymentOrderRepository.findByPaymentLinkId(paymentLinkId)
                 .orElseThrow(() -> new EntityNotFoundException("Payment order by payment link ID was not found"));
     }
 }

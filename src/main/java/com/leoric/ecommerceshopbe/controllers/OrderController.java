@@ -6,7 +6,7 @@ import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.*;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
-import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentLinkResponse;
+import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentStripeLinkResponse;
 import com.leoric.ecommerceshopbe.stripe.model.enums.PaymentMethod;
 import com.leoric.ecommerceshopbe.stripe.services.PaymentService;
 import com.leoric.ecommerceshopbe.utils.GlobalUtil;
@@ -36,24 +36,24 @@ public class OrderController {
     private final GlobalUtil globalUtil;
 
     @PostMapping("/{addressId}")
-    public ResponseEntity<PaymentLinkResponse> createOrder(Authentication authentication,
-                                                           @PathVariable Long addressId,
-                                                           @RequestParam PaymentMethod paymentMethod
+    public ResponseEntity<PaymentStripeLinkResponse> createOrder(Authentication authentication,
+                                                                 @PathVariable Long addressId,
+                                                                 @RequestParam PaymentMethod paymentMethod
     ) throws StripeException {
         User user = globalUtil.getPrincipalAsUser(authentication);
         Cart cart = cartService.findUserCart(user);
         Address shippingAddress = addressService.findById(addressId);
         Set<Order> orders = orderService.createOrder(authentication, shippingAddress, cart);
         PaymentOrder paymentOrder = paymentService.createPaymentOrder(authentication, orders);
-        PaymentLinkResponse res = new PaymentLinkResponse();
-
-        if (paymentMethod.name().equals(PaymentMethod.STRIPE.name())) {
+        PaymentStripeLinkResponse res = new PaymentStripeLinkResponse();
+        if (paymentMethod == PaymentMethod.STRIPE) {
             String paymentUrl = paymentService.createStripePaymentLink(user, paymentOrder.getAmount(), paymentOrder.getId());
             res.setPayment_link_url(paymentUrl);
             return new ResponseEntity<>(res, OK);
-        } else if (paymentMethod.name().equals(PaymentMethod.PAYPAL.name())) {
-            throw new IllegalArgumentException("Pay-pal not implemented yet");
+        } else if (paymentMethod == PaymentMethod.PAYPAL) {
+            throw new IllegalArgumentException("PayPal not implemented yet");
         }
+
         throw new IllegalArgumentException("Invalid payment method");
     }
 

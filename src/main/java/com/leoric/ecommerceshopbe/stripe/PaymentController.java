@@ -8,11 +8,9 @@ import com.leoric.ecommerceshopbe.services.interfaces.SellerReportService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
 import com.leoric.ecommerceshopbe.services.interfaces.TransactionService;
 import com.leoric.ecommerceshopbe.stripe.model.PaymentOrder;
-import com.leoric.ecommerceshopbe.stripe.model.dtos.PaymentLinkResponse;
 import com.leoric.ecommerceshopbe.stripe.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,13 +24,11 @@ public class PaymentController {
 
     @GetMapping("/{paymentId}")
     public ResponseEntity<ApiResponse> paymentSuccessHandler(@PathVariable("paymentId") String paymentId,
-                                                             @RequestParam String paymentLinkId,
-                                                             Authentication authentication
+                                                             @RequestParam String paymentLinkId
     ) {
-        PaymentLinkResponse paymentLinkResponse;
         PaymentOrder paymentOrder = paymentService.getPaymentOrderById(paymentLinkId);
+        boolean paymentSuccess = paymentService.proceedPaymentOrder(paymentOrder, paymentId, paymentLinkId);
 
-        boolean paymentSuccess = paymentService.proceedPaymentOrder(paymentOrder, paymentId, String.valueOf(paymentLinkId));
 
         if (paymentSuccess) {
             for (Order order : paymentOrder.getOrders()) {
