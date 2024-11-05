@@ -4,11 +4,17 @@ import com.leoric.ecommerceshopbe.models.HomeCategory;
 import com.leoric.ecommerceshopbe.repositories.HomeCategoryRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.HomeCategoryService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HomeCategoryServiceImpl implements HomeCategoryService {
@@ -38,11 +44,23 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
     }
 
     @Override
-    public List<HomeCategory> createCategories(List<HomeCategory> categories) {
-        if (homecategoryRepository.findAll().isEmpty()) {
-            return homecategoryRepository.saveAll(categories);
+    @Transactional
+    public synchronized List<HomeCategory> createCategories(List<HomeCategory> categories) {
+        List<HomeCategory> existingCategories = homecategoryRepository.findAll();
+        log.warn("HOMECATEGORYSERVICE: Create Categories for {} Categories inside{}", categories.size(), UUID.randomUUID());
+
+        if (existingCategories.size() < 2) {
+            try {
+                List<HomeCategory> newCategories = categories.stream()
+                        .filter(category -> existingCategories.stream().noneMatch(existingCategory -> existingCategory.getName().equals(category.getName())))
+                        .collect(Collectors.toList());
+
+                return homecategoryRepository.saveAll(newCategories);
+            } catch (DataIntegrityViolationException e) {
+                throw new DataIntegrityViolationException(e.getMessage());
+            }
         }
-        return homecategoryRepository.findAll();
+        return existingCategories;
     }
 
     @Override

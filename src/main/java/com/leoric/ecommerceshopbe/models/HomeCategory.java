@@ -24,4 +24,6 @@ public class HomeCategory {
     private String categoryId;
     @Enumerated(EnumType.STRING)
     private HomeCategorySection section;
+    @Version
+    private Integer version;
 }

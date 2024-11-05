@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -29,6 +30,7 @@ public class CustomerController {
 
     @PostMapping("/home/categories")
     public ResponseEntity<Home> createHomeCategories(@RequestBody List<HomeCategory> homeCategories) {
+        log.warn("CUSTOMER CONTROLLER : Create Categories for {} Categories inside{}", homeCategories.size(), UUID.randomUUID());
         List<HomeCategory> categories = homeCategoryService.createCategories(homeCategories);
         Home home = homeService.createHomePageData(categories);
         return ResponseEntity.accepted().body(home);

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -24,6 +25,7 @@ public class HomeCategoryController {
 
     @PostMapping("/categories")
     public ResponseEntity<Result<Home>> createHomeCategories(@RequestBody List<HomeCategory> homeCategories) {
+        log.warn("HOMECATEGORYCONTROLLER : Create Categories for {} Categories inside{}", homeCategories.size(), UUID.randomUUID());
         List<HomeCategory> categories = homeCategoryService.createCategories(homeCategories);
         Home home = homeService.createHomePageData(categories);
         Result<Home> response = Result.success(home, "home created", OK.value());
