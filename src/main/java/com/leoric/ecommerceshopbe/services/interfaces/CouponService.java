@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Coupon;
+import com.leoric.ecommerceshopbe.response.CouponDtoResponse;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import org.springframework.stereotype.Service;
 
@@ -27,4 +28,6 @@ public interface CouponService {
     Coupon findById(Long id);
 
     Coupon save(Coupon entity);
+
+    List<CouponDtoResponse> getAllCouponsAsDtos();
 }

@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Coupon;
+import com.leoric.ecommerceshopbe.response.CouponDtoResponse;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.CouponService;
@@ -27,9 +28,9 @@ public class AdminCouponController {
 
 
     @GetMapping("/admin/all")
-    public ResponseEntity<Result<List<Coupon>>> getAllCoupons() {
-        List<Coupon> couponList = couponService.findAll();
-        Result<List<Coupon>> response = Result.success(couponList, "List of coupons retrieved", HttpStatus.OK.value());
+    public ResponseEntity<Result<List<CouponDtoResponse>>> getAllCoupons() {
+        List<CouponDtoResponse> couponList = couponService.getAllCouponsAsDtos();
+        Result<List<CouponDtoResponse>> response = Result.success(couponList, "List of coupons retrieved", HttpStatus.OK.value());
         return ResponseEntity.ok(response);
     }
 

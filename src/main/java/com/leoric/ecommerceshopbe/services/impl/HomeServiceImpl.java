@@ -43,4 +43,9 @@ public class HomeServiceImpl implements HomeService {
 
         return new Home(gridCategories, shopCategories, electricCategories, dealCategories, createdDeals);
     }
+
+    @Override
+    public Home getHomePageData() {
+        return null;
+    }
 }

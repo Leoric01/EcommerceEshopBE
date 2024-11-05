@@ -18,6 +18,7 @@ product quantity - should be how many seller has in stock -> fix price and order
 product quantity update as seller on in_stock button
 transactions - no data cause payment never success... have to fix that stripe
 transactions - map order corectly in seller payment dashboard
+homeCategory - all fields are duplicated. data source is ok tho
 
 // fixed //on login, no data on profile
 // fixed // on delete item from cart, you have to manualy refresh page

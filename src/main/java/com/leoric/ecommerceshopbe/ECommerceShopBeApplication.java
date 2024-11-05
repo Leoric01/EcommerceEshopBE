@@ -32,6 +32,7 @@ public class ECommerceShopBeApplication {
     private final SellerRepository sellerRepository;
     private final AddressService addressService;
     private final CouponRepository couponRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(ECommerceShopBeApplication.class, args);
     }
@@ -124,12 +125,14 @@ public class ECommerceShopBeApplication {
                     addressService.addSellerAddress(seller.getId(), addressDto);
                 }
             }
-            Coupon save10 = new Coupon("SAVE10", 10, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31), 100);
-            Coupon welcome20 = new Coupon("WELCOME20", 20, LocalDate.of(2024, 2, 1), LocalDate.of(2024, 11, 30), 200);
-            Coupon holiday30 = new Coupon("HOLIDAY30", 30, LocalDate.of(2024, 3, 15), LocalDate.of(2024, 6, 15), 300);
-            Coupon summer15 = new Coupon("SUMMER15", 15, LocalDate.of(2024, 6, 1), LocalDate.of(2024, 9, 1), 150);
-            Coupon blackFriday50 = new Coupon("BLACKFRIDAY50", 50, LocalDate.of(2024, 11, 25), LocalDate.of(2024, 11, 30), 500);
-            couponRepository.saveAll(Arrays.asList(save10, welcome20, holiday30, summer15, blackFriday50));
+            if (couponRepository.findAll().isEmpty()) {
+                Coupon save10 = new Coupon("SAVE10", 10, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31), 100);
+                Coupon welcome20 = new Coupon("WELCOME20", 20, LocalDate.of(2024, 2, 1), LocalDate.of(2024, 11, 30), 200);
+                Coupon holiday30 = new Coupon("HOLIDAY30", 30, LocalDate.of(2024, 3, 15), LocalDate.of(2024, 6, 15), 300);
+                Coupon summer15 = new Coupon("SUMMER15", 15, LocalDate.of(2024, 6, 1), LocalDate.of(2024, 9, 1), 150);
+                Coupon blackFriday50 = new Coupon("BLACKFRIDAY50", 50, LocalDate.of(2024, 11, 25), LocalDate.of(2024, 11, 30), 500);
+                couponRepository.saveAll(Arrays.asList(save10, welcome20, holiday30, summer15, blackFriday50));
+            }
         };
     }
 

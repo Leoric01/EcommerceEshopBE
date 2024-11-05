@@ -3,8 +3,10 @@ package com.leoric.ecommerceshopbe.services.impl;
 import com.leoric.ecommerceshopbe.handler.OperationNotPermittedException;
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Coupon;
+import com.leoric.ecommerceshopbe.models.constants.CouponStatus;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.repositories.CouponRepository;
+import com.leoric.ecommerceshopbe.response.CouponDtoResponse;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.CartService;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -111,5 +115,46 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Coupon save(Coupon entity) {
         return couponRepository.save(entity);
+    }
+
+    @Override
+    public List<CouponDtoResponse> getAllCouponsAsDtos() {
+        return couponRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .map(coupon -> {
+                    CouponDtoResponse couponDtoResponse = new CouponDtoResponse();
+                    couponDtoResponse.setCode(coupon.getCode());
+                    couponDtoResponse.setDiscountPercentage(coupon.getDiscountPercentage());
+                    couponDtoResponse.setValidityStartDate(coupon.getValidityStartDate());
+                    couponDtoResponse.setValidityEndDate(coupon.getValidityEndDate());
+                    couponDtoResponse.setMinimumOrderValue(coupon.getMinimumOrderValue());
+                    couponDtoResponse.setStatus(findCorrectStatus(coupon));
+                    return couponDtoResponse;
+                }).collect(Collectors.toList());
+    }
+
+    private String findCorrectStatus(Coupon coupon) {
+        if (coupon == null) {
+            throw new IllegalArgumentException("Coupon object is null");
+        }
+        if (coupon.getValidityStartDate() == null) {
+            throw new IllegalArgumentException("Coupon validity start date is null");
+        }
+        if (coupon.getValidityEndDate() == null) {
+            throw new IllegalArgumentException("Coupon validity end date is null");
+        }
+        if (!coupon.isActive()) {
+            return CouponStatus.SUSPENDED.name();
+        } else if (coupon.getValidityStartDate().isAfter(coupon.getValidityEndDate())) {
+            return CouponStatus.INVALID.name();
+        } else if (coupon.getValidityStartDate().isAfter(LocalDate.now())) {
+            return CouponStatus.NOT_ACTIVE_YET.name();
+        } else if (coupon.getValidityEndDate().isBefore(LocalDate.now())) {
+            return CouponStatus.EXPIRED.name();
+        } else if (LocalDate.now().isBefore(coupon.getValidityEndDate()) && LocalDate.now().isAfter(coupon.getValidityStartDate())) {
+            return CouponStatus.ACTIVE.name();
+        } else {
+            throw new IllegalStateException("Invalid coupon status");
+        }
     }
 }
