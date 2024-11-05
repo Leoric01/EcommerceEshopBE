@@ -1,0 +1,24 @@
+{
+  "deals": [
+    {
+      "discount": 10,
+      "categoryId": "laptops"
+    },
+    {
+      "discount": 15,
+      "categoryId": "mobiles"
+    },
+    {
+      "discount": 20,
+      "categoryId": "headphones"
+    },
+    {
+      "discount": 25,
+      "categoryId": "smart_watches"
+    },
+    {
+      "discount": 30,
+      "categoryId": "kitchen_table"
+    }
+  ]
+}

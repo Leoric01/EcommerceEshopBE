@@ -1,14 +1,18 @@
 package com.leoric.ecommerceshopbe;
 
+import com.jayway.jsonpath.JsonPath;
 import com.leoric.ecommerceshopbe.models.Coupon;
+import com.leoric.ecommerceshopbe.models.Deal;
+import com.leoric.ecommerceshopbe.models.HomeCategory;
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.models.constants.USER_ROLE;
+import com.leoric.ecommerceshopbe.models.constants.HomeCategorySection;
 import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
 import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
 import com.leoric.ecommerceshopbe.repositories.CouponRepository;
+import com.leoric.ecommerceshopbe.repositories.DealRepository;
+import com.leoric.ecommerceshopbe.repositories.HomeCategoryRepository;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
 import com.leoric.ecommerceshopbe.requests.dto.AddAddressRequestDTO;
-import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +23,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.InputStream;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @EnableAsync
 @SpringBootApplication
@@ -32,6 +40,8 @@ public class ECommerceShopBeApplication {
     private final SellerRepository sellerRepository;
     private final AddressService addressService;
     private final CouponRepository couponRepository;
+    private final HomeCategoryRepository homeCategoryRepository;
+    private final DealRepository dealRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(ECommerceShopBeApplication.class, args);
@@ -40,47 +50,6 @@ public class ECommerceShopBeApplication {
     @Bean
     public CommandLineRunner commandLineRunner(PasswordEncoder passwordEncoder) {
         return args -> {
-            for (int i = 1; i <= 20; i++) {
-                int firstIndex = (i - 1) / 9 + 1;
-                int secondIndex = (i - 1) % 9 + 1;
-                String email = firstIndex + "@" + secondIndex;
-
-                if (userRepository.findByEmail(email).isEmpty()) {
-                    User user = User.builder()
-                            .email(email)
-                            .password(passwordEncoder.encode("cccc"))
-                            .firstName("First" + i)
-                            .lastName("Last" + i)
-                            .enabled(true)
-                            .build();
-                    userRepository.save(user);
-                    for (int j = 1; j <= 4; j++) {
-                        AddAddressRequestDTO addressDto = new AddAddressRequestDTO(
-                                "User " + i + " Address " + j,
-                                "Street " + j,
-                                "Locality " + j,
-                                "ZIP" + (1000 + j),
-                                "City " + j,
-                                "Country " + i,
-                                "123-456-78" + j
-                        );
-                        addressService.addUserAddress(user.getId(), addressDto);
-                    }
-                }
-            }
-            String adminEmail = "a@a";
-            if (userRepository.findByEmail(adminEmail).isEmpty()) {
-                User userAdmin = User.builder()
-                        .email("a@a")
-                        .password(passwordEncoder.encode("cccc"))
-                        .firstName("AdminF 1")
-                        .lastName("AdminL 1")
-                        .enabled(true)
-                        .role(USER_ROLE.ROLE_ADMIN)
-                        .build();
-                userRepository.save(userAdmin);
-            }
-
             for (int i = 1; i <= 10; i++) {
                 int firstIndex = (i - 1) / 9 + 1;
                 int secondIndex = (i - 1) % 9 + 1;
@@ -132,6 +101,43 @@ public class ECommerceShopBeApplication {
                 Coupon summer15 = new Coupon("SUMMER15", 15, LocalDate.of(2024, 6, 1), LocalDate.of(2024, 9, 1), 150);
                 Coupon blackFriday50 = new Coupon("BLACKFRIDAY50", 50, LocalDate.of(2024, 11, 25), LocalDate.of(2024, 11, 30), 500);
                 couponRepository.saveAll(Arrays.asList(save10, welcome20, holiday30, summer15, blackFriday50));
+            }
+            if (homeCategoryRepository.count() == 0) {
+                InputStream inputStream = getClass().getResourceAsStream("/initData/homeCategories.json");
+                try {
+                    List<Map<String, Object>> categoriesData = JsonPath.read(inputStream, "$.homecategories");
+                    List<HomeCategory> homeCategories = categoriesData.stream().map(data -> {
+                        HomeCategory category = new HomeCategory();
+                        category.setCategoryId((String) data.get("categoryId"));
+                        category.setName((String) data.get("name"));
+                        category.setImage((String) data.get("image"));
+                        category.setSection(HomeCategorySection.valueOf((String) data.get("section")));
+                        return category;
+                    }).collect(Collectors.toList());
+
+                    homeCategoryRepository.saveAll(homeCategories);
+                    System.out.println("Home categories loaded successfully.");
+                } catch (Exception e) {
+                    System.err.println("Failed to load home categories from JSON: " + e.getMessage());
+                }
+            }
+            if (dealRepository.count() == 0) {
+                InputStream dealStream = getClass().getResourceAsStream("/initData/deals.json");
+                try {
+                    List<Map<String, Object>> dealsData = JsonPath.read(dealStream, "$.deals");
+                    List<Deal> deals = dealsData.stream().map(data -> {
+                        Integer discount = (Integer) data.get("discount");
+                        String categoryId = (String) data.get("categoryId");
+
+                        HomeCategory category = homeCategoryRepository.findFirstByCategoryId(categoryId)
+                                .orElseThrow(() -> new IllegalArgumentException("Category with id " + categoryId + " not found"));
+                        return new Deal(discount, category);
+                    }).collect(Collectors.toList());
+                    dealRepository.saveAll(deals);
+                    System.out.println("Deals loaded successfully.");
+                } catch (Exception e) {
+                    System.err.println("Failed to load deals from JSON: " + e.getMessage());
+                }
             }
         };
     }

@@ -48,8 +48,7 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
     public synchronized List<HomeCategory> createCategories(List<HomeCategory> categories) {
         List<HomeCategory> existingCategories = homecategoryRepository.findAll();
         log.warn("HOMECATEGORYSERVICE: Create Categories for {} Categories inside{}", categories.size(), UUID.randomUUID());
-
-        if (existingCategories.size() < 2) {
+        if (existingCategories.size() <= 1) {
             try {
                 List<HomeCategory> newCategories = categories.stream()
                         .filter(category -> existingCategories.stream().noneMatch(existingCategory -> existingCategory.getName().equals(category.getName())))

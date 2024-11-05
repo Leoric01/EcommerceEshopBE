@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class CustomerController {
+    private final ReentrantLock lock = new ReentrantLock();
     private final HomeCategoryService homeCategoryService;
     private final HomeService homeService;
 
@@ -30,9 +32,14 @@ public class CustomerController {
 
     @PostMapping("/home/categories")
     public ResponseEntity<Home> createHomeCategories(@RequestBody List<HomeCategory> homeCategories) {
+        lock.lock();
         log.warn("CUSTOMER CONTROLLER : Create Categories for {} Categories inside{}", homeCategories.size(), UUID.randomUUID());
-        List<HomeCategory> categories = homeCategoryService.createCategories(homeCategories);
-        Home home = homeService.createHomePageData(categories);
-        return ResponseEntity.accepted().body(home);
+        try {
+            List<HomeCategory> categories = homeCategoryService.createCategories(homeCategories);
+            Home home = homeService.createHomePageData(categories);
+            return ResponseEntity.accepted().body(home);
+        } finally {
+            lock.unlock();
+        }
     }
 }
