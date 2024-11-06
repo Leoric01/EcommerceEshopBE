@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,23 +52,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Product createProduct(CreateProductReq productReq, Seller seller) {
-        Category category1 = categoryRepository.findByCategoryId(productReq.getCategory());
-        if (category1 == null) {
+        Optional<Category> categoryOpt1 = categoryRepository.findByCategoryId(productReq.getCategory());
+        Category category1 = new Category();
+        if (categoryOpt1.isEmpty()) {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory());
             category.setLevel(1);
             category1 = categoryRepository.save(category);
         }
-        Category category2 = categoryRepository.findByCategoryId(productReq.getCategory2());
-        if (category2 == null) {
+        Optional<Category> categoryOpt2 = categoryRepository.findByCategoryId(productReq.getCategory2());
+        Category category2 = new Category();
+        if (categoryOpt2.isEmpty()) {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory2());
             category.setLevel(2);
             category.setParentCategory(category1);
             category2 = categoryRepository.save(category);
         }
-        Category category3 = categoryRepository.findByCategoryId(productReq.getCategory3());
-        if (category3 == null) {
+        Optional<Category> categoryOpt3 = categoryRepository.findByCategoryId(productReq.getCategory3());
+        Category category3 = new Category();
+        if (categoryOpt3.isEmpty()) {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory3());
             category.setLevel(3);

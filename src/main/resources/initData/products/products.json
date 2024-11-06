@@ -1,0 +1,20 @@
+{
+  "products": [
+    {
+      "title": "Women's Casual Tank-top",
+      "description": "Cozy and stylish sleveless tank-top.",
+      "maxPrice": 333,
+      "sellingPrice": 99,
+      "color": "Red",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1730849283/sqs6p9uqfslzltygyf1d.jpg",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1730849287/bwdwftwtivn81e2kgbgt.avif",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1730849288/tzb8hsgkf3tprifhm6cx.jpg"
+      ],
+      "category": "Clothing",
+      "category2": "Women",
+      "category3": "Hoodies",
+      "sizes": "XS, S, M, L, XL"
+    }
+  ]
+}
