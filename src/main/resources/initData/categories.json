@@ -117,9 +117,13 @@
       ]
     },
     {
-      "name": "Home & Furniture",
-      "categoryId": "home_furniture",
-      "level": 1
+      "furniture": [
+        {
+          "name": "Home & Furniture",
+          "categoryId": "home_furniture",
+          "level": 1
+        }
+      ]
     },
     {
       "name": "Electronics",
