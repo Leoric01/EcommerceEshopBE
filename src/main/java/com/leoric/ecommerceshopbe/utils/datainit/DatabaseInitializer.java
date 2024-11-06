@@ -143,7 +143,7 @@ public class DatabaseInitializer {
     }
 
     private void createCategories() {
-        if (categoryRepository.count() > 0) {
+        if (categoryRepository.count() > 200) {
             System.out.println("categories already are in db(at least 1).");
             return;
         }
@@ -157,9 +157,9 @@ public class DatabaseInitializer {
 
         // Load Level 3 Categories
         loadCategoriesFromJson("/initData/levelthree/menLevelThree.json", "$.menlevelthree", 3);
-        loadCategoriesFromJson("/initData/levelthree/womenLevelThree.json", "$.womenlevelthree", 3);
-        loadCategoriesFromJson("/initData/levelthree/furnitureLevelThree.json", "$.funiturelevelthree", 3);
+        loadCategoriesFromJson("/initData/levelthree/furnitureLevelThree.json", "$.furniturelevelthree", 3);
         loadCategoriesFromJson("/initData/levelthree/electronicsLevelThree.json", "$.electronicslevelthree", 3);
+        loadCategoriesFromJson("/initData/levelthree/womenLevelThree.json", "$.womenlevelthree", 3);
     }
 
     private void loadCategoriesFromJson(String jsonFilePath, String jsonPath, int level) {

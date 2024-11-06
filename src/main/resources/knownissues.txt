@@ -1,5 +1,4 @@
 
-paymentservice - session - fix it, orders/payments dont get updated on success
 order - check if addressId belongs to the current user
 cartitem - i dont see seller info. gonna have to create dto to avoid infinite loop. endpoint {baseurl}cart
 become seller does't work, you cant get tehre unless you logged in
@@ -24,6 +23,7 @@ categoryId in deal doesn't corespond with categody ids in db
 
 
 
+// fixed // paymentservice - session - fix it, orders/payments dont get updated on success
 // fixed //on login, no data on profile
 // fixed // on delete item from cart, you have to manualy refresh page
 // fixed // createproduct doesn't set maxPrice
