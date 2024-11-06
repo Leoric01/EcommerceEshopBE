@@ -20,11 +20,8 @@ public class Category {
     @NotNull
     @Column(unique = true)
     private String categoryId;
-
-    //    @JoinColumn(name = "parent_category_id")
     @ManyToOne
     private Category parentCategory;
-
     @NotNull
     private Integer level;
 }

@@ -20,7 +20,10 @@ import java.io.InputStream;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,35 +97,37 @@ public class DatabaseInitializer {
                     }
                     product.setImage(imagesList);
                 }
-                Optional<Category> categoryOpt1 = categoryRepository.findByCategoryId(data.get("category").toString());
-                Category category1 = categoryOpt1.orElseGet(() -> {
-                    Category newCategory = new Category();
-                    newCategory.setCategoryId(data.get("category").toString());
-                    newCategory.setName(data.get("category").toString());
-                    newCategory.setLevel(1);
-                    return categoryRepository.save(newCategory);
-                });
 
-                Optional<Category> categoryOpt2 = categoryRepository.findByCategoryId(data.get("category2").toString());
-                Category category2 = categoryOpt2.orElseGet(() -> {
-                    Category newCategory = new Category();
-                    newCategory.setCategoryId(data.get("category2").toString());
-                    newCategory.setName(data.get("category2").toString());
-                    newCategory.setLevel(2);
-                    newCategory.setParentCategory(category1);
-                    return categoryRepository.save(newCategory);
-                });
+                Category category1 = categoryRepository.findByCategoryId(data.get("category").toString())
+                        .orElseGet(() -> {
+                            Category newCategory = new Category();
+                            newCategory.setCategoryId(data.get("category").toString());
+                            newCategory.setName(data.get("category").toString());
+                            newCategory.setLevel(1);
+                            return categoryRepository.save(newCategory);
+                        });
 
-                Optional<Category> categoryOpt3 = categoryRepository.findByCategoryId(data.get("category3").toString());
-                Category category3 = categoryOpt3.orElseGet(() -> {
-                    Category newCategory = new Category();
-                    newCategory.setCategoryId(data.get("category3").toString());
-                    newCategory.setName(data.get("category3").toString());
-                    newCategory.setLevel(3);
-                    newCategory.setParentCategory(category2);
-                    return categoryRepository.save(newCategory);
-                });
+                Category category2 = categoryRepository.findByCategoryId(data.get("category2").toString())
+                        .orElseGet(() -> {
+                            Category newCategory = new Category();
+                            newCategory.setCategoryId(data.get("category2").toString());
+                            newCategory.setName(data.get("category2").toString());
+                            newCategory.setLevel(2);
+                            newCategory.setParentCategory(category1);
+                            return categoryRepository.save(newCategory);
+                        });
 
+                Category category3 = categoryRepository.findByCategoryId(data.get("category3").toString())
+                        .orElseGet(() -> {
+                            Category newCategory = new Category();
+                            newCategory.setCategoryId(data.get("category3").toString());
+                            newCategory.setName(data.get("category3").toString());
+                            newCategory.setLevel(3);
+                            newCategory.setParentCategory(category2);
+                            return categoryRepository.save(newCategory);
+                        });
+
+                product.setCategory(category3);
                 product.setSizes((String) data.get("sizes"));
                 product.setSeller(seller);
 
