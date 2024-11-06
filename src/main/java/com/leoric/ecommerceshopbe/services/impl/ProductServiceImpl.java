@@ -53,33 +53,41 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(CreateProductReq productReq, Seller seller) {
         Optional<Category> categoryOpt1 = categoryRepository.findByCategoryId(productReq.getCategory());
-        Category category1 = new Category();
+        Category category1;
         if (categoryOpt1.isEmpty()) {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory());
             category.setLevel(1);
             category1 = categoryRepository.save(category);
+        } else {
+            category1 = categoryOpt1.get();
         }
         Optional<Category> categoryOpt2 = categoryRepository.findByCategoryId(productReq.getCategory2());
-        Category category2 = new Category();
+        Category category2;
         if (categoryOpt2.isEmpty()) {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory2());
             category.setLevel(2);
             category.setParentCategory(category1);
-            category2 = categoryRepository.save(category);
+            category2 = category;
+            categoryRepository.save(category);
+        } else {
+            category2 = categoryOpt2.get();
         }
+        Product createdProduct;
         Optional<Category> categoryOpt3 = categoryRepository.findByCategoryId(productReq.getCategory3());
-        Category category3 = new Category();
+        Category category3;
         if (categoryOpt3.isEmpty()) {
             Category category = new Category();
             category.setCategoryId(productReq.getCategory3());
             category.setLevel(3);
             category.setParentCategory(category2);
             category3 = categoryRepository.save(category);
-        }
-        Product createdProduct = getCreatedProduct(productReq, seller, category3);
 
+            createdProduct = getCreatedProduct(productReq, seller, category3);
+        } else {
+            createdProduct = getCreatedProduct(productReq, seller, categoryOpt3.get());
+        }
         return productRepository.save(createdProduct);
     }
 

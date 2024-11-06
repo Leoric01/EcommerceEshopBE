@@ -88,6 +88,7 @@ public class DatabaseInitializer {
                 product.setMaxPrice((int) data.get("maxPrice"));
                 product.setSellingPrice((int) data.get("sellingPrice"));
                 product.setColor((String) data.get("color"));
+
                 if (data.get("images") instanceof List<?> tempList) {
                     List<String> imagesList = new ArrayList<>();
                     for (Object o : tempList) {
@@ -98,7 +99,8 @@ public class DatabaseInitializer {
                     product.setImage(imagesList);
                 }
 
-                Category category1 = categoryRepository.findByCategoryId(data.get("category").toString())
+                // Retrieve or create category hierarchy
+                Category category1 = categoryRepository.findByCategoryIdAndLevel(data.get("category").toString(), 1)
                         .orElseGet(() -> {
                             Category newCategory = new Category();
                             newCategory.setCategoryId(data.get("category").toString());
@@ -107,7 +109,8 @@ public class DatabaseInitializer {
                             return categoryRepository.save(newCategory);
                         });
 
-                Category category2 = categoryRepository.findByCategoryId(data.get("category2").toString())
+                Category category2 = categoryRepository.findByCategoryIdAndLevel(data.get("category2").toString(), 2)
+                        .filter(cat -> category1.equals(cat.getParentCategory()))  // Check parent category
                         .orElseGet(() -> {
                             Category newCategory = new Category();
                             newCategory.setCategoryId(data.get("category2").toString());
@@ -117,7 +120,8 @@ public class DatabaseInitializer {
                             return categoryRepository.save(newCategory);
                         });
 
-                Category category3 = categoryRepository.findByCategoryId(data.get("category3").toString())
+                Category category3 = categoryRepository.findByCategoryIdAndLevel(data.get("category3").toString(), 3)
+                        .filter(cat -> category2.equals(cat.getParentCategory()))  // Check parent category
                         .orElseGet(() -> {
                             Category newCategory = new Category();
                             newCategory.setCategoryId(data.get("category3").toString());
@@ -130,10 +134,8 @@ public class DatabaseInitializer {
                 product.setCategory(category3);
                 product.setSizes((String) data.get("sizes"));
                 product.setSeller(seller);
-
                 productRepository.save(product);
             }
-
             System.out.println("Products loaded successfully.");
         } catch (Exception e) {
             System.err.println("Failed to load products from JSON: " + e.getMessage());

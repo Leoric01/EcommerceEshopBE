@@ -28,10 +28,10 @@ public class ECommerceShopBeApplication {
         databaseInitializer.initUsers(5, 2);
         databaseInitializer.initAdmins(2);
         databaseInitializer.initSellers(6);
+        databaseInitializer.initCategories();
+        databaseInitializer.initCreateCoupons();
+        databaseInitializer.initProducts(6);
         databaseInitializer.initHomeCategories();
         databaseInitializer.initDeals();
-        databaseInitializer.initCreateCoupons();
-        databaseInitializer.initCategories();
-        databaseInitializer.initProducts(6);
     }
 }
