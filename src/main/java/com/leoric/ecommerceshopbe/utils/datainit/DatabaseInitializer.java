@@ -151,9 +151,15 @@ public class DatabaseInitializer {
 
         // Load Level 2 Categories
         loadCategoriesFromJson("/initData/leveltwo/menLevelTwo.json", "$.menleveltwo", 2);
+        loadCategoriesFromJson("/initData/leveltwo/womenLevelTwo.json", "$.womenleveltwo", 2);
+        loadCategoriesFromJson("/initData/leveltwo/furnitureLevelTwo.json", "$.furnitureleveltwo", 2);
+        loadCategoriesFromJson("/initData/leveltwo/electronicsLevelTwo.json", "$.electronicsleveltwo", 2);
 
         // Load Level 3 Categories
         loadCategoriesFromJson("/initData/levelthree/menLevelThree.json", "$.menlevelthree", 3);
+        loadCategoriesFromJson("/initData/levelthree/womenLevelThree.json", "$.womenlevelthree", 3);
+        loadCategoriesFromJson("/initData/levelthree/furnitureLevelThree.json", "$.funiturelevelthree", 3);
+        loadCategoriesFromJson("/initData/levelthree/electronicsLevelThree.json", "$.electronicslevelthree", 3);
     }
 
     private void loadCategoriesFromJson(String jsonFilePath, String jsonPath, int level) {

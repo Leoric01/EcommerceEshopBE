@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,8 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartItem addCartItem(User user, Product product, String size, int quantity) {
         Cart cart = findUserCart(user);
-        CartItem isPresent = cartItemRepository.findByCartAndProductAndSize(cart, product, size);
-        if (isPresent == null) {
+        Optional<CartItem> cartItemOpt = cartItemRepository.findByCartAndProductAndSize(cart, product, size);
+        if (cartItemOpt.isEmpty()) {
             CartItem cartItem = new CartItem();
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
@@ -39,7 +40,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setCart(cart);
             return cartItemRepository.save(cartItem);
         }
-        return isPresent;
+        return cartItemOpt.get();
     }
 
     @Override
