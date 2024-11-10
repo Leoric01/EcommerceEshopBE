@@ -53,7 +53,6 @@ public class Seller extends Account implements UserDetails, Principal {
     @JsonManagedReference
     @Builder.Default
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @EqualsAndHashCode.Exclude
     private Address pickupAddress = new Address();
 
     private String VAT;

@@ -6,6 +6,7 @@ import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -30,6 +31,14 @@ public class GlobalExceptionHandler {
                 .body(Result.failure(INVALID_INPUT.getCode(), "Order was already cancel;ed: " + exp.getMessage()));
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Result<Void>> handleAccessDenied(AccessDeniedException exp) {
+        log.warn("Access denied: {}", exp.getMessage());
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(Result.failure(FORBIDDEN_ACCESS_ADMIN.getCode(),
+                        BusinessErrorCodes.FORBIDDEN_ACCESS_ADMIN.getDescription()));
+    }
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Result<Void>> handleEntityNotFound(EntityNotFoundException exp) {
         log.warn("Entity not found: {}", exp.getMessage());

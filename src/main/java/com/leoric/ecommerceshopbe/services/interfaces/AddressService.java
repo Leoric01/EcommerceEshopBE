@@ -26,4 +26,10 @@ public interface AddressService {
     Address addSellerAddress(Long sellerId, AddAddressRequestDTO address);
 
     void deleteAddress(Authentication authentication, Long addressId);
+
+    Address editUserAddress(Long id, AddAddressRequestDTO address, Long addressId);
+
+    Address editSellerAddress(Authentication authentication, AddAddressRequestDTO address);
+
+    Set<AddressDtoResponse> findSellerAddress(Authentication connectedAccount);
 }

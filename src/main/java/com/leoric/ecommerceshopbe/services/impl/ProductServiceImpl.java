@@ -5,7 +5,7 @@ import com.leoric.ecommerceshopbe.models.Product;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.repositories.CategoryRepository;
 import com.leoric.ecommerceshopbe.repositories.ProductRepository;
-import com.leoric.ecommerceshopbe.requests.CreateProductReq;
+import com.leoric.ecommerceshopbe.requests.dto.CreateProductReqDto;
 import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
 import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product createProduct(CreateProductReq productReq, Seller seller) {
+    public Product createProduct(CreateProductReqDto productReq, Seller seller) {
         Optional<Category> categoryOpt1 = categoryRepository.findByCategoryId(productReq.getCategory());
         Category category1;
         if (categoryOpt1.isEmpty()) {
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(createdProduct);
     }
 
-    private Product getCreatedProduct(CreateProductReq productReq, Seller seller, Category category3) {
+    private Product getCreatedProduct(CreateProductReqDto productReq, Seller seller, Category category3) {
         int discountPercentage = calculateDiscountPercentage(productReq.getMaxPrice(), productReq.getSellingPrice());
         Product createdProduct = new Product();
         createdProduct.setSeller(seller);
@@ -102,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
         createdProduct.setSellingPrice(productReq.getSellingPrice());
         createdProduct.setImage(productReq.getImages());
         createdProduct.setMaxPrice(productReq.getMaxPrice());
-        createdProduct.setSizes(productReq.getSizes());
+        createdProduct.setSize(productReq.getSizes());
         createdProduct.setDiscountPercentage(discountPercentage);
         return createdProduct;
     }

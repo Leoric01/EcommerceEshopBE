@@ -8,7 +8,6 @@ import org.mapstruct.*;
 public interface UserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
     void updateUserFromUserUpdateReqDto(UserUpdateReqDto newData, @MappingTarget User connectedUser);
 
 }

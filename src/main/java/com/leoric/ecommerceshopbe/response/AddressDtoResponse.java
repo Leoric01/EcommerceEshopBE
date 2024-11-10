@@ -1,8 +1,11 @@
 package com.leoric.ecommerceshopbe.response;
 
+import com.leoric.ecommerceshopbe.models.Order;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +20,7 @@ public class AddressDtoResponse {
     private String city;
     private String country;
     private String mobile;
-    private Long order_id;
+    private List<Order> orders;
     private Long seller_id;
     private Long user_id;
 }

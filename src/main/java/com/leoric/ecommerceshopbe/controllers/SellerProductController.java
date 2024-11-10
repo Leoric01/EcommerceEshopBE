@@ -2,7 +2,7 @@ package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.Product;
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.requests.CreateProductReq;
+import com.leoric.ecommerceshopbe.requests.dto.CreateProductReqDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class SellerProductController {
 
     @PostMapping("")
     public ResponseEntity<Result<Product>> createProduct(Authentication connectedUser,
-                                                         @RequestBody CreateProductReq request) {
+                                                         @RequestBody CreateProductReqDto request) {
         Seller seller = (Seller) connectedUser.getPrincipal();
         Product product = productService.createProduct(request, seller);
         Result<Product> response = Result.success(product, "Product created succesfully", CREATED.value());

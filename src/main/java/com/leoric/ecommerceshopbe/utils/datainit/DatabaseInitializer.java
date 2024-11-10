@@ -170,7 +170,7 @@ public class DatabaseInitializer {
                     });
 
             product.setCategory(category3);
-            product.setSizes((String) data.get("sizes"));
+            product.setSize((String) data.get("sizes"));
             product.setSeller(seller);
             productRepository.save(product);
         }

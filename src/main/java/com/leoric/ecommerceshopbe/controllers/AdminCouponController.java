@@ -2,6 +2,7 @@ package com.leoric.ecommerceshopbe.controllers;
 
 import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Coupon;
+import com.leoric.ecommerceshopbe.requests.dto.CouponRequestDto;
 import com.leoric.ecommerceshopbe.response.CouponDtoResponse;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
@@ -51,8 +52,8 @@ public class AdminCouponController {
     }
 
     @PostMapping("/admin/create")
-    public ResponseEntity<Result<Coupon>> createCoupon(@RequestBody Coupon coupon) {
-        Coupon createdCoupon = couponService.createCoupon(coupon);
+    public ResponseEntity<Result<Coupon>> createCoupon(@RequestBody CouponRequestDto couponDto) {
+        Coupon createdCoupon = couponService.createCoupon(couponDto);
         Result<Coupon> response = Result.success(createdCoupon, "Coupon successfully created", HttpStatus.OK.value());
         return ResponseEntity.ok(response);
     }
@@ -68,7 +69,6 @@ public class AdminCouponController {
     public ResponseEntity<Result<Void>> deleteCoupon(@PathVariable Long couponId) {
         couponService.deleteCouponById(couponId);
         Result<Void> response = Result.success("Coupon successfully deleted", NO_CONTENT.value());
-        return ResponseEntity.status(NO_CONTENT).body(response);
+        return ResponseEntity.ok().body(response);
     }
-
 }

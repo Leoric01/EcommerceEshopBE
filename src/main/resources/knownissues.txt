@@ -20,7 +20,8 @@ createdeal has some issues
 categoryId in deal doesn't corespond with categody ids in db
 product - percantage shows 0 when item maxPrice is clearly higher then sellingPrice
 address - deleting selectableaddresscard in checkout need manual page refresh
-
+address - created edit endpoints for seller user, shoulda implement to frontend
+coupon - apply coupon for cart ? try if it works, fix if not
 
 
 // fixed // wishlist is blank page

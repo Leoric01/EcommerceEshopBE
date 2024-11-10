@@ -6,6 +6,7 @@ import com.leoric.ecommerceshopbe.models.Coupon;
 import com.leoric.ecommerceshopbe.models.constants.CouponStatus;
 import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.repositories.CouponRepository;
+import com.leoric.ecommerceshopbe.requests.dto.CouponRequestDto;
 import com.leoric.ecommerceshopbe.response.CouponDtoResponse;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
@@ -81,7 +82,14 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Coupon createCoupon(Coupon coupon) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public Coupon createCoupon(CouponRequestDto couponReq) {
+        Coupon coupon = new Coupon();
+        coupon.setCode(couponReq.getCode());
+        coupon.setDiscountPercentage(couponReq.getDiscountPercentage());
+        coupon.setValidityStartDate(couponReq.getValidityStartDate());
+        coupon.setValidityEndDate(couponReq.getValidityEndDate());
+        coupon.setMinimumOrderValue(couponReq.getMinimumOrderValue());
         return couponRepository.save(coupon);
     }
 
@@ -139,18 +147,19 @@ public class CouponServiceImpl implements CouponService {
         if (couponId == null || status == null || status.isBlank()) {
             throw new IllegalArgumentException("Coupon id and status are required both");
         }
-        if (status.equals(CouponStatus.SUSPENDED.name())) {
+        if (status.equalsIgnoreCase(CouponStatus.SUSPENDED.name())) {
             Coupon coupon = findCouponByid(couponId);
             if (coupon.isActive()) {
                 coupon.setActive(false);
-                return save(coupon);
             }
-        } else if (status.equals(CouponStatus.ACTIVE.name())) {
+            return save(coupon);
+
+        } else if (status.equalsIgnoreCase(CouponStatus.ACTIVE.name())) {
             Coupon coupon = findCouponByid(couponId);
             if (!coupon.isActive()) {
                 coupon.setActive(true);
-                return save(coupon);
             }
+            return save(coupon);
         }
         throw new OperationNotPermittedException("Coupon update params does not meet the conditions");
     }

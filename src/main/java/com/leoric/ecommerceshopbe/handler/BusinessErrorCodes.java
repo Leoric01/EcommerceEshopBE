@@ -17,6 +17,7 @@ public enum BusinessErrorCodes {
     INVALID_INPUT(400, BAD_REQUEST, "Invalid input provided"),
     ENTITY_NOT_FOUND(404, NOT_FOUND, "Entity was not found"),
     SELLER_RELATED_PROBLEM(601, I_AM_A_TEAPOT, "Seller related problem"),
+    FORBIDDEN_ACCESS_ADMIN(413, HttpStatus.FORBIDDEN, "Access denied: You do not have admin role"),
     ;
     private final int code;
     private final HttpStatus httpStatus;

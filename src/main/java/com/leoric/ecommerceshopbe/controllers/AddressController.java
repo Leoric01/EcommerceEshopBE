@@ -8,6 +8,7 @@ import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import com.leoric.ecommerceshopbe.utils.GlobalUtil;
+import com.leoric.ecommerceshopbe.utils.abstracts.Account;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,11 +36,26 @@ public class AddressController {
         return ResponseEntity.status(CREATED).body(result);
     }
 
+    @PatchMapping("/user/{addressId}")
+    public ResponseEntity<Result<Address>> editUserAddress(Authentication authentication, @RequestBody AddAddressRequestDTO address, @PathVariable Long addressId) {
+        User user = globalUtil.getPrincipalAsUser(authentication);
+        Address editedAddress = addressService.editUserAddress(user.getId(), address, addressId);
+        Result<Address> result = Result.success(editedAddress, "Address created success", CREATED.value());
+        return ResponseEntity.status(CREATED).body(result);
+    }
+
     @GetMapping
     public ResponseEntity<Set<AddressDtoResponse>> getAll(
-            Authentication connectedUser
+            Authentication connectedAccount
     ) {
-        return ResponseEntity.ok(addressService.findAllUsersAddresses(connectedUser));
+        Account account = globalUtil.getAccountFromAuthentication(connectedAccount);
+        if (account instanceof User) {
+            return ResponseEntity.ok(addressService.findAllUsersAddresses(connectedAccount));
+        } else if (account instanceof Seller) {
+            return ResponseEntity.ok(addressService.findSellerAddress(connectedAccount));
+        } else {
+            throw new IllegalStateException("Unknown account type");
+        }
     }
 
     @PostMapping("/seller")
@@ -47,6 +63,13 @@ public class AddressController {
         Seller seller = globalUtil.getPrincipalAsSeller(authentication);
         Address createdAddress = addressService.addSellerAddress(seller.getId(), address);
         Result<Address> result = Result.success(createdAddress, "Address created success", CREATED.value());
+        return ResponseEntity.status(CREATED).body(result);
+    }
+
+    @PatchMapping("/seller")
+    public ResponseEntity<Result<Address>> editSellerAddress(Authentication authentication, @RequestBody AddAddressRequestDTO address) {
+        Address editedAddress = addressService.editSellerAddress(authentication, address);
+        Result<Address> result = Result.success(editedAddress, "Sellers address edit success", CREATED.value());
         return ResponseEntity.status(CREATED).body(result);
     }
 

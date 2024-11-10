@@ -22,10 +22,8 @@ public class Wishlist {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonBackReference
-    @EqualsAndHashCode.Exclude
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @EqualsAndHashCode.Exclude
     private Set<Product> products = new HashSet<>();
 }

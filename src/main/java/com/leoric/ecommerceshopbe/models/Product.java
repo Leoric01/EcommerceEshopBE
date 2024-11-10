@@ -55,5 +55,5 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    private String sizes;
+    private String size;
 }

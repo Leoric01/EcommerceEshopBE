@@ -2,7 +2,7 @@ package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.Product;
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.requests.CreateProductReq;
+import com.leoric.ecommerceshopbe.requests.dto.CreateProductReqDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 public interface ProductService {
-    Product createProduct(CreateProductReq productReq, Seller seller);
+    Product createProduct(CreateProductReqDto productReq, Seller seller);
 
     void deleteById(Long id);
 
