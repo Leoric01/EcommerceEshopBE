@@ -5,35 +5,35 @@
       "discount": 10,
       "validFrom": "2024-01-01",
       "validTo": "2024-12-31",
-      "maxAmount": 100
+      "minOrderValue": 100
     },
     {
       "couponCode": "WELCOME20",
       "discount": 20,
       "validFrom": "2024-02-01",
       "validTo": "2024-11-30",
-      "maxAmount": 200
+      "minOrderValue": 200
     },
     {
       "couponCode": "HOLIDAY30",
       "discount": 30,
       "validFrom": "2024-03-15",
       "validTo": "2024-06-15",
-      "maxAmount": 300
+      "minOrderValue": 300
     },
     {
       "couponCode": "SUMMER15",
       "discount": 15,
       "validFrom": "2024-06-01",
       "validTo": "2024-09-01",
-      "maxAmount": 150
+      "minOrderValue": 150
     },
     {
       "couponCode": "BLACKFRIDAY50",
       "discount": 50,
       "validFrom": "2024-11-25",
       "validTo": "2024-11-30",
-      "maxAmount": 500
+      "minOrderValue": 500
     }
   ]
 }

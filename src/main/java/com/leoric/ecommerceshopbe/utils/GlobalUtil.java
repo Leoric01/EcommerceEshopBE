@@ -1,5 +1,7 @@
 package com.leoric.ecommerceshopbe.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leoric.ecommerceshopbe.handler.InvalidAccountTypeAccessException;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
@@ -10,6 +12,11 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +37,35 @@ public class GlobalUtil {
         throw new IllegalArgumentException("Unknown principal type");
     }
 
+    public static void duplicatedFieldsFinder(String path, String rootNodePath) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(Paths.get(path).toFile());
+        Set<String> uniqueCategories = new HashSet<>();
+        Set<String> parentCategoryIds = new HashSet<>();
+        int counter = 0;
+        for (JsonNode catNode : rootNode.path(rootNodePath)) {
+            String categoryId = catNode.path("categoryId").asText();
+            String parentCategoryId = catNode.path("parentCategoryId").asText();
+
+            if (parentCategoryId.isEmpty()) {
+                System.out.println("Invalid parentCategory in:" + categoryId);
+                counter++;
+            }
+            parentCategoryIds.add(parentCategoryId);
+
+            if (!uniqueCategories.add(categoryId)) {
+                System.out.println("Duplicate categoryId found: " + categoryId);
+                counter++;
+            }
+        }
+        for (String catId : uniqueCategories) {
+            if (!parentCategoryIds.add(catId)) {
+                System.out.println("Duplicate between categoryId and parrentId found: " + catId);
+                counter++;
+            }
+        }
+        System.out.println("Check duplicates finished with " + counter + " duplicates found");
+    }
     public Account getAccountFromAuthentication(Authentication authentication) {
         if (authentication == null) {
             throw new IllegalArgumentException("No authentication found");

@@ -11,12 +11,13 @@ import com.leoric.ecommerceshopbe.requests.dto.AddAddressRequestDTO;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -68,78 +69,112 @@ public class DatabaseInitializer {
         createCategories();
     }
 
-    public void initProducts(int amountOfSellers) {
-        Random rnd = new Random();
-        long randomSellerId = rnd.nextLong(1, amountOfSellers);
-        createProducts(randomSellerId);
+    public void initProducts() {
+
+        createProducts();
     }
 
-    private void createProducts(Long sellerId) {
-        Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new EntityNotFoundException("Seller not found, id: " + sellerId));
+    private void createProducts() {
 
-        InputStream productStream = getClass().getResourceAsStream("/initData/products/products.json");
-        try {
-            List<Map<String, Object>> productsData = JsonPath.read(productStream, "$.products");
-            for (Map<String, Object> data : productsData) {
-                Product product = new Product();
-                product.setTitle((String) data.get("title"));
-                product.setDescription((String) data.get("description"));
-                product.setMaxPrice((int) data.get("maxPrice"));
-                product.setSellingPrice((int) data.get("sellingPrice"));
-                product.setColor((String) data.get("color"));
-
-                if (data.get("images") instanceof List<?> tempList) {
-                    List<String> imagesList = new ArrayList<>();
-                    for (Object o : tempList) {
-                        if (o instanceof String image) {
-                            imagesList.add(image);
-                        }
-                    }
-                    product.setImage(imagesList);
-                }
-
-                // Retrieve or create category hierarchy
-                Category category1 = categoryRepository.findByCategoryIdAndLevel(data.get("category").toString(), 1)
-                        .orElseGet(() -> {
-                            Category newCategory = new Category();
-                            newCategory.setCategoryId(data.get("category").toString());
-                            newCategory.setName(data.get("category").toString());
-                            newCategory.setLevel(1);
-                            return categoryRepository.save(newCategory);
-                        });
-
-                Category category2 = categoryRepository.findByCategoryIdAndLevel(data.get("category2").toString(), 2)
-                        .filter(cat -> category1.equals(cat.getParentCategory()))  // Check parent category
-                        .orElseGet(() -> {
-                            Category newCategory = new Category();
-                            newCategory.setCategoryId(data.get("category2").toString());
-                            newCategory.setName(data.get("category2").toString());
-                            newCategory.setLevel(2);
-                            newCategory.setParentCategory(category1);
-                            return categoryRepository.save(newCategory);
-                        });
-
-                Category category3 = categoryRepository.findByCategoryIdAndLevel(data.get("category3").toString(), 3)
-                        .filter(cat -> category2.equals(cat.getParentCategory()))  // Check parent category
-                        .orElseGet(() -> {
-                            Category newCategory = new Category();
-                            newCategory.setCategoryId(data.get("category3").toString());
-                            newCategory.setName(data.get("category3").toString());
-                            newCategory.setLevel(3);
-                            newCategory.setParentCategory(category2);
-                            return categoryRepository.save(newCategory);
-                        });
-
-                product.setCategory(category3);
-                product.setSizes((String) data.get("sizes"));
-                product.setSeller(seller);
-                productRepository.save(product);
+        String jsonContent;
+        try (InputStream productStream = getClass().getResourceAsStream("/initData/products/products.json")) {
+            if (productStream == null) {
+                System.err.println("Product JSON file not found.");
+                return;
             }
-            System.out.println("Products loaded successfully.");
-        } catch (Exception e) {
-            System.err.println("Failed to load products from JSON: " + e.getMessage());
+            jsonContent = new String(productStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            System.err.println("Failed to read products from JSON: " + e.getMessage());
+            return;
         }
+
+        try {
+            List<Map<String, Object>> womenProductsData = JsonPath.read(jsonContent, "$.women-products");
+            loopThruProductCategory(womenProductsData);
+        } catch (Exception e) {
+            System.err.println("Failed to load women's products from JSON: " + e.getMessage());
+        }
+        try {
+            System.out.println("Saving FURNITURE products to DB...");
+            List<Map<String, Object>> furnitureProductsData = JsonPath.read(jsonContent, "$.furniture-products");
+            loopThruProductCategory(furnitureProductsData);
+        } catch (Exception e) {
+            System.err.println("Failed to load furniture products from JSON: " + e.getMessage());
+        }
+        try {
+            List<Map<String, Object>> womenProductsData = JsonPath.read(jsonContent, "$.men-products");
+            loopThruProductCategory(womenProductsData);
+        } catch (Exception e) {
+            System.err.println("Failed to load women's products from JSON: " + e.getMessage());
+        }
+        try {
+            List<Map<String, Object>> womenProductsData = JsonPath.read(jsonContent, "$.electronics-products");
+            loopThruProductCategory(womenProductsData);
+        } catch (Exception e) {
+            System.err.println("Failed to load women's products from JSON: " + e.getMessage());
+        }
+    }
+
+    private void loopThruProductCategory(List<Map<String, Object>> productsData) {
+        List<Seller> sellers = sellerRepository.findAll();
+        for (Map<String, Object> data : productsData) {
+            Random rnd = new Random();
+            int randomSellerId = rnd.nextInt(0, sellers.size());
+            Seller seller = sellers.get(randomSellerId);
+            Product product = new Product();
+            product.setTitle((String) data.get("title"));
+            product.setDescription((String) data.get("description"));
+            product.setMaxPrice((int) data.get("maxPrice"));
+            product.setSellingPrice((int) data.get("sellingPrice"));
+            product.setColor((String) data.get("color"));
+
+            if (data.get("images") instanceof List<?> tempList) {
+                List<String> imagesList = new ArrayList<>();
+                for (Object o : tempList) {
+                    if (o instanceof String image) {
+                        imagesList.add(image);
+                    }
+                }
+                product.setImage(imagesList);
+            }
+
+            Category category1 = categoryRepository.findByCategoryIdAndLevel(data.get("category").toString(), 1)
+                    .orElseGet(() -> {
+                        Category newCategory = new Category();
+                        newCategory.setCategoryId(data.get("category").toString());
+                        newCategory.setName(data.get("category").toString());
+                        newCategory.setLevel(1);
+                        return categoryRepository.save(newCategory);
+                    });
+
+            Category category2 = categoryRepository.findByCategoryIdAndLevel(data.get("category2").toString(), 2)
+                    .filter(cat -> category1.equals(cat.getParentCategory()))
+                    .orElseGet(() -> {
+                        Category newCategory = new Category();
+                        newCategory.setCategoryId(data.get("category2").toString());
+                        newCategory.setName(data.get("category2").toString());
+                        newCategory.setLevel(2);
+                        newCategory.setParentCategory(category1);
+                        return categoryRepository.save(newCategory);
+                    });
+
+            Category category3 = categoryRepository.findByCategoryIdAndLevel(data.get("category3").toString(), 3)
+                    .filter(cat -> category2.equals(cat.getParentCategory()))
+                    .orElseGet(() -> {
+                        Category newCategory = new Category();
+                        newCategory.setCategoryId(data.get("category3").toString());
+                        newCategory.setName(data.get("category3").toString());
+                        newCategory.setLevel(3);
+                        newCategory.setParentCategory(category2);
+                        return categoryRepository.save(newCategory);
+                    });
+
+            product.setCategory(category3);
+            product.setSizes((String) data.get("sizes"));
+            product.setSeller(seller);
+            productRepository.save(product);
+        }
+        System.out.println("Products loaded successfully.");
     }
 
     private void createCategories() {
@@ -202,7 +237,7 @@ public class DatabaseInitializer {
                     double discountPercentage = ((Number) data.get("discount")).doubleValue();
                     LocalDate validityStartDate = LocalDate.parse((String) data.get("validFrom"), DateTimeFormatter.ISO_DATE);
                     LocalDate validityEndDate = LocalDate.parse((String) data.get("validTo"), DateTimeFormatter.ISO_DATE);
-                    double minimumOrderValue = ((Number) data.get("maxAmount")).doubleValue();
+                    double minimumOrderValue = ((Number) data.get("minOrderValue")).doubleValue();
                     return new Coupon(code, discountPercentage, validityStartDate, validityEndDate, minimumOrderValue);
                 }).collect(Collectors.toList());
 
@@ -352,24 +387,20 @@ public class DatabaseInitializer {
     }
 
     private void createAdminsAccounts(int adminsCount) {
-        if (adminsCount < 10) {
-            for (int i = 1; i <= adminsCount; i++) {
-                if (userRepository.existsById((long) i)) {
-                    adminsCount++;
-                    i++;
-                    continue;
-                }
-                String adminEmail = i == 1 ? "a@a" : i + "a@a";
-                User userAdmin = User.builder()
-                        .email(adminEmail)
-                        .password(passwordEncoder.encode("cccc"))
-                        .firstName("Admin F " + i)
-                        .lastName("Admin ")
-                        .enabled(true)
-                        .role(USER_ROLE.ROLE_ADMIN)
-                        .build();
-                userRepository.save(userAdmin);
+        for (int i = 1; i <= adminsCount; i++) {
+            String adminEmail = i == 1 ? "a@a" : i + "a@a";
+            if (userRepository.existsByEmail(adminEmail)) {
+                continue;
             }
+            User userAdmin = User.builder()
+                    .email(adminEmail)
+                    .password(passwordEncoder.encode("cccc"))
+                    .firstName("Admin F " + i)
+                    .lastName("Admin ")
+                    .enabled(true)
+                    .role(USER_ROLE.ROLE_ADMIN)
+                    .build();
+            userRepository.save(userAdmin);
         }
     }
 }

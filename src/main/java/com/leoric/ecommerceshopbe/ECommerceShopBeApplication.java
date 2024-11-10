@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.io.IOException;
+
 @EnableAsync
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -15,8 +17,10 @@ public class ECommerceShopBeApplication {
 
     private final DatabaseInitializer databaseInitializer;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         SpringApplication.run(ECommerceShopBeApplication.class, args);
+//        GlobalUtil.duplicatedFieldsFinder("pathfromroot", "womenlevelthree
+//        ");
     }
 
     @Bean
@@ -25,13 +29,13 @@ public class ECommerceShopBeApplication {
     }
 
     private void run(String... args) {
-        databaseInitializer.initUsers(5, 2);
-        databaseInitializer.initAdmins(2);
         databaseInitializer.initSellers(6);
         databaseInitializer.initCategories();
+        databaseInitializer.initUsers(5, 5);
+        databaseInitializer.initAdmins(2);
         databaseInitializer.initCreateCoupons();
-        databaseInitializer.initProducts(6);
         databaseInitializer.initHomeCategories();
         databaseInitializer.initDeals();
+        databaseInitializer.initProducts();
     }
 }

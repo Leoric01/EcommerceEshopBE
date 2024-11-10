@@ -1,5 +1,151 @@
 {
-  "products": [
+  "furniture-products": [
+    {
+      "title": "Luxurious Shag Carpet",
+      "description": "Indulge in ultimate comfort with our plush shag carpet, perfect for living rooms and bedrooms.",
+      "maxPrice": 800,
+      "sellingPrice": 500,
+      "color": "Green",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731255098/nqwmwntsz4fvjirjo6uz.png",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731255099/adg33yecokejtpxngvel.png",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731255102/jdbplclmnrp0bdwmkdpp.jpg"
+      ],
+      "category": "home_furniture",
+      "category2": "flooring",
+      "category3": "carpets",
+      "sizes": "Various"
+    },
+    {
+      "title": "Luxurious Shag Carpet 2",
+      "description": "Indulge in ultimate comfort with our plush shag carpet, perfect for living rooms and bedrooms.",
+      "maxPrice": 1800,
+      "sellingPrice": 1200,
+      "color": "Green",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731255100/nqnpaqbjd76twalqpsxh.jpg",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731255101/z8mtg8vcg4m7bid8yahx.jpg",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731255102/djg5xifznbs53kzivqig.jpg"
+      ],
+      "category": "home_furniture",
+      "category2": "flooring",
+      "category3": "carpets",
+      "sizes": "Various"
+    },
+    {
+      "title": "Anti-Fatigue Kitchen Mat",
+      "description": "Reduce foot fatigue with our durable and comfortable anti-fatigue kitchen mat.",
+      "maxPrice": 150,
+      "sellingPrice": 99,
+      "color": "Black",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247789/d3jemej0osv3kaikvsql.webp",
+        "",
+        ""
+      ],
+      "category": "home_furniture",
+      "category2": "flooring",
+      "category3": "floor_mats",
+      "sizes": "Various"
+    },
+    {
+      "title": "Soft Cotton Bath Towels",
+      "description": "Luxurious and absorbent cotton bath towels for a spa-like experience.",
+      "maxPrice": 100,
+      "sellingPrice": 75,
+      "color": "White",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247796/glivuj7k76gxf64lobxu.avif",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247795/yisp2mvmufebqxwhqfwe.avif",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247798/t8yfrwctd10mnpqoxkp2.avif"
+      ],
+      "category": "home_furniture",
+      "category2": "bath",
+      "category3": "towels",
+      "sizes": "Various"
+    },
+    {
+      "title": "Soap Dispenser and Tumbler Set",
+      "description": "Elegant soap dispenser and tumbler set to complement your bathroom decor.",
+      "maxPrice": 50,
+      "sellingPrice": 35,
+      "color": "Chrome",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731248073/qr2tzzlendbaieur0ovq.avif",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731248074/zdfhf0y6hoqlfnbvdgva.avif",
+        ""
+      ],
+      "category": "home_furniture",
+      "category2": "bath",
+      "category3": "bathroom_accessories",
+      "sizes": "Various"
+    },
+    {
+      "title": "NO STAIN protector",
+      "description": "Protect your mattress from spills and stains with this waterproof mattress protector.",
+      "maxPrice": 333,
+      "sellingPrice": 99,
+      "color": "gray",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247794/orky8lb64fiplt2hciqh.avif",
+        "",
+        ""
+      ],
+      "category": "home_furniture",
+      "category2": "bed_linen_furnishing",
+      "category3": "mattress_protectors",
+      "sizes": ""
+    },
+    {
+      "title": "Breathable Cool Mattress Protector",
+      "description": "A breathable mattress protector that keeps your mattress cool and comfortable.",
+      "maxPrice": 299,
+      "sellingPrice": 79,
+      "color": "white",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247793/dwigbq1xbm92byrxuwap.avif",
+        "",
+        ""
+      ],
+      "category": "home_furniture",
+      "category2": "bed_linen_furnishing",
+      "category3": "mattress_protectors",
+      "sizes": ""
+    },
+    {
+      "title": "Luxurious Faux Fur Bed Runner",
+      "description": "Add a touch of elegance to your bedroom with this soft and cozy faux fur bed runner.",
+      "maxPrice": 199,
+      "sellingPrice": 49,
+      "color": "black",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247790/omgjdjfsmpuk0xh93g8y.jpg",
+        "",
+        ""
+      ],
+      "category": "home_furniture",
+      "category2": "bed_linen_furnishing",
+      "category3": "bed_runners",
+      "sizes": ""
+    },
+    {
+      "title": "Cotton Bed Runner with Tassels",
+      "description": "A classic cotton bed runner with tassels, perfect for adding a touch of texture and style.",
+      "maxPrice": 149,
+      "sellingPrice": 39,
+      "color": "blue",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731247803/whm91n40hbl5hghgy59a.jpg",
+        "",
+        ""
+      ],
+      "category": "home_furniture",
+      "category2": "bed_linen_furnishing",
+      "category3": "bed_runners",
+      "sizes": ""
+    }
+  ],
+  "women-products": [
     {
       "title": "Women's Casual Tank-top",
       "description": "Cozy and stylish sleveless tank-top.",
@@ -11,9 +157,43 @@
         "http://res.cloudinary.com/dz7uwudvw/image/upload/v1730849287/bwdwftwtivn81e2kgbgt.avif",
         "http://res.cloudinary.com/dz7uwudvw/image/upload/v1730849288/tzb8hsgkf3tprifhm6cx.jpg"
       ],
-      "category": "Clothing",
-      "category2": "Women",
-      "category3": "Hoodies",
+      "category": "women",
+      "category2": "women_topwear",
+      "category3": "women_tank_top",
+      "sizes": "XS, S, M, L, XL"
+    }
+  ],
+  "men-products": [
+    {
+      "title": "Men's Casual Shirt",
+      "description": "Cozy and stylish shirt.",
+      "maxPrice": 400,
+      "sellingPrice": 339,
+      "color": "Yellow",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731256101/dpbmle8l3xq6fkjthdd8.png",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731256104/im0a2f2gt30suuauknn8.png",
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731256104/ptpwzo6oc0cf6qyofjue.jpg"
+      ],
+      "category": "men",
+      "category2": "men_topwear",
+      "category3": "men_casual_shirts",
+      "sizes": "XS, S, M, L, XL"
+    },
+    {
+      "title": "Men's Casual Shirt",
+      "description": "Cozy and stylish shirt.",
+      "maxPrice": 400,
+      "sellingPrice": 339,
+      "color": "Gray",
+      "images": [
+        "http://res.cloudinary.com/dz7uwudvw/image/upload/v1731256103/cxa5kiwgrglqulm9emxk.png",
+        "",
+        ""
+      ],
+      "category": "men",
+      "category2": "men_topwear",
+      "category3": "men_casual_shirts",
       "sizes": "XS, S, M, L, XL"
     }
   ]

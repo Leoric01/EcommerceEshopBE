@@ -1,99 +1,99 @@
 {
   "womenlevelthree": [
     {
-      "name": "Women Kurtas & Suits",
-      "categoryId": "women_kurtas_and_suits",
-      "parentCategoryName": "Traditional & fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Dresses",
+      "categoryId": "women_dresses",
+      "parentCategoryName": "Women Social Occasions Cloths",
+      "parentCategoryId": "women_social_occasions_cloths",
       "level": 3
     },
     {
-      "name": "Women Kurtis, Tunics & Tops",
-      "categoryId": "women_kurtis_tunics_tops",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Blouses & Shirts",
+      "categoryId": "women_blouses_shirts",
+      "parentCategoryName": "Casual & Formal Wear",
+      "parentCategoryId": "women_casual_formal_wear",
       "level": 3
     },
     {
-      "name": "Women Sarees",
-      "categoryId": "women_sarees",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Jeans & Pants",
+      "categoryId": "women_jeans_pants",
+      "parentCategoryName": "Bottomwear",
+      "parentCategoryId": "women_bottomwear",
       "level": 3
     },
     {
-      "name": "Women Ethnic Wear",
-      "categoryId": "women_ethnic_wear",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Skirts",
+      "categoryId": "women_skirts",
+      "parentCategoryName": "Bottomwear",
+      "parentCategoryId": "women_bottomwear",
       "level": 3
     },
     {
-      "name": "Women Leggings, Salwars & Churidars",
-      "categoryId": "women_leggings_salwars_churidars",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Tank Tops",
+      "categoryId": "women_tank_tops",
+      "parentCategoryName": "Topwear",
+      "parentCategoryId": "women_topwear",
       "level": 3
     },
     {
-      "name": "Women Skirts & Palazzos",
-      "categoryId": "women_skirts_palazzos",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Leggings & Tights",
+      "categoryId": "women_leggings_tights",
+      "parentCategoryName": "Bottomwear",
+      "parentCategoryId": "women_bottomwear",
       "level": 3
     },
     {
-      "name": "Women Dress Materials",
-      "categoryId": "women_dress_materials",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Sweaters & Hoodies",
+      "categoryId": "women_sweaters_hoodies",
+      "parentCategoryName": "Casual & Formal Wear",
+      "parentCategoryId": "women_casual_formal_wear",
       "level": 3
     },
     {
-      "name": "Women Lehenga Cholis",
-      "categoryId": "women_lehenga_cholis",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Jackets & Coats",
+      "categoryId": "women_jackets_coats",
+      "parentCategoryName": "Casual & Formal Wear",
+      "parentCategoryId": "women_casual_formal_wear",
       "level": 3
     },
     {
-      "name": "Women Dupattas & Shawls",
-      "categoryId": "women_dupattas_shawls",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "name": "Women Activewear",
+      "categoryId": "women_activewear",
+      "parentCategoryName": "Sports & Active Wear",
+      "parentCategoryId": "women_sports_active_wear",
+      "level": 3
+    },
+    {
+      "name": "Women Scarves & Wraps",
+      "categoryId": "women_scarves_wraps",
+      "parentCategoryName": "Accessories",
+      "parentCategoryId": "women_accessories",
       "level": 3
     },
     {
       "name": "Women Jackets",
       "categoryId": "women_jackets",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "parentCategoryName": "Casual & Formal Wear",
+      "parentCategoryId": "women_social_occasions_cloths",
       "level": 3
     },
     {
       "name": "Women Belts, Scarves & More",
       "categoryId": "women_belts_scarves_more",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "parentCategoryName": "Women Social Occasions Cloths",
+      "parentCategoryId": "women_social_occasions_cloths",
       "level": 3
     },
     {
       "name": "Women Watches & Wearables",
       "categoryId": "women_watches_wearables",
-      "parentCategoryName": "Traditional & Fusion Wear",
-      "parentCategoryId": "women_traditional_and_fusion_wear",
+      "parentCategoryName": "Gadgets",
+      "parentCategoryId": "women_gadgets",
       "level": 3
     },
     {
-      "name": "Women Western Wear",
-      "categoryId": "women_western_wear",
-      "parentCategoryName": "Western Wear",
-      "parentCategoryId": "women_western_wear",
-      "level": 3
-    },
-    {
-      "name": "Women Dresses",
-      "categoryId": "women_dresses",
+      "name": "Women Western Costume Wear",
+      "categoryId": "women_western_costume_wear",
       "parentCategoryName": "Western Wear",
       "parentCategoryId": "women_western_wear",
       "level": 3
@@ -169,13 +169,6 @@
       "level": 3
     },
     {
-      "name": "Women Jackets & Coats",
-      "categoryId": "women_jackets_coats",
-      "parentCategoryName": "Western Wear",
-      "parentCategoryId": "women_western_wear",
-      "level": 3
-    },
-    {
       "name": "Women Blazers & Waistcoats",
       "categoryId": "women_blazers_waistcoats",
       "parentCategoryName": "Western Wear",
@@ -201,13 +194,6 @@
       "categoryId": "women_sunglasses_frames",
       "parentCategoryName": "Western Wear",
       "parentCategoryId": "women_western_wear",
-      "level": 3
-    },
-    {
-      "name": "Women Footwear",
-      "categoryId": "women_footwear",
-      "parentCategoryName": "Footwear",
-      "parentCategoryId": "women_footwear",
       "level": 3
     },
     {
@@ -246,22 +232,8 @@
       "level": 3
     },
     {
-      "name": "Women Sports & Active Wear",
-      "categoryId": "women_sports_active_wear",
-      "parentCategoryName": "Sports & Active Wear",
-      "parentCategoryId": "women_sports_active_wear",
-      "level": 3
-    },
-    {
       "name": "Women Clothing",
       "categoryId": "women_clothing",
-      "parentCategoryName": "Sports & Active Wear",
-      "parentCategoryId": "women_sports_active_wear",
-      "level": 3
-    },
-    {
-      "name": "Women Footwear",
-      "categoryId": "women_footwear",
       "parentCategoryName": "Sports & Active Wear",
       "parentCategoryId": "women_sports_active_wear",
       "level": 3
@@ -281,8 +253,8 @@
       "level": 3
     },
     {
-      "name": "Women Lingerie & Sleepwear",
-      "categoryId": "women_lingerie_sleepwear",
+      "name": "Women Erotic Lingerie",
+      "categoryId": "women_erotic_lingerie",
       "parentCategoryName": "Lingerie & Sleepwear",
       "parentCategoryId": "women_lingerie_sleepwear",
       "level": 3
@@ -330,8 +302,8 @@
       "level": 3
     },
     {
-      "name": "Women Beauty & Personal Care",
-      "categoryId": "women_beauty_personal_care",
+      "name": "Personal Care",
+      "categoryId": "personal_care",
       "parentCategoryName": "Beauty & Personal Care",
       "parentCategoryId": "women_beauty_personal_care",
       "level": 3
@@ -372,8 +344,8 @@
       "level": 3
     },
     {
-      "name": "Women Gadgets",
-      "categoryId": "women_gadgets",
+      "name": "Infra Red Lamp",
+      "categoryId": "infra_red_lamp",
       "parentCategoryName": "Gadgets",
       "parentCategoryId": "women_gadgets",
       "level": 3
@@ -407,8 +379,8 @@
       "level": 3
     },
     {
-      "name": "Women Jewellery",
-      "categoryId": "women_jewellery",
+      "name": "Women Neklaces",
+      "categoryId": "women_neklaces",
       "parentCategoryName": "Jewellery",
       "parentCategoryId": "women_jewellery",
       "level": 3
@@ -438,12 +410,12 @@
       "name": "Women Backpacks",
       "categoryId": "women_backpacks",
       "parentCategoryName": "Handbags, Bags & Wallets",
-      "parentCategoryId": "women_backpacks_bags_wallets",
+      "parentCategoryId": "women_handbags_bags_wallets",
       "level": 3
     },
     {
-      "name": "Women Handbags, Bags & Wallets",
-      "categoryId": "women_handbags_bags_wallets",
+      "name": "Women Wallets",
+      "categoryId": "women_wallets",
       "parentCategoryName": "Handbags, Bags & Wallets",
       "parentCategoryId": "women_handbags_bags_wallets",
       "level": 3

@@ -85,8 +85,8 @@
       "level": 3
     },
     {
-      "name": "Floor Mats & Dhurries",
-      "categoryId": "floor_mats_dhurries",
+      "name": "Floor Mats",
+      "categoryId": "floor_mats",
       "parentCategoryName": "Flooring",
       "parentCategoryId": "flooring",
       "level": 3
@@ -96,13 +96,6 @@
       "categoryId": "door_mats",
       "parentCategoryName": "Flooring",
       "parentCategoryId": "flooring",
-      "level": 3
-    },
-    {
-      "name": "Bath Towels",
-      "categoryId": "bath_towels",
-      "parentCategoryName": "Bath",
-      "parentCategoryId": "bath",
       "level": 3
     },
     {
@@ -120,8 +113,8 @@
       "level": 3
     },
     {
-      "name": "Towels Set",
-      "categoryId": "towels_set",
+      "name": "Towels",
+      "categoryId": "towels",
       "parentCategoryName": "Bath",
       "parentCategoryId": "bath",
       "level": 3

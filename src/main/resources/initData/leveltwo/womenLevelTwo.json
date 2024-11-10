@@ -2,57 +2,94 @@
   "womenleveltwo": [
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
-      "name": "Traditional & fusion Wear",
-      "categoryId": "women_traditional_and_fusion_wear"
+      "name": "Women Social Occasions Cloths",
+      "categoryId": "women_social_occasions_cloths"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
+      "level": 2,
+      "name": "Casual & Formal Wear",
+      "categoryId": "women_casual_formal_wear"
+    },
+    {
+      "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "western wear",
       "categoryId": "women_western_wear"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "Footwear",
       "categoryId": "women_footwear"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
+      "level": 2,
+      "name": "Bottomwear",
+      "categoryId": "women_bottomwear"
+    },
+    {
+      "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
+      "level": 2,
+      "name": "Topwear",
+      "categoryId": "women_topwear"
+    },
+    {
+      "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "Sports & Active Wear",
       "categoryId": "women_sports_active_wear"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "Lingerie Sleepwear",
       "categoryId": "women_lingerie_sleepwear"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
-      "name": "Buauty & Personal Care",
+      "name": "Beauty & Personal Care",
       "categoryId": "women_beauty_personal_care"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "Gadgets",
       "categoryId": "women_gadgets"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "Jewellery",
       "categoryId": "women_jewellery"
     },
     {
       "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
       "level": 2,
       "name": "Handbags, Bags & wallets",
       "categoryId": "women_handbags_bags_wallets"
+    },
+    {
+      "parentCategoryId": "women",
+      "parrentCategoryName": "Women",
+      "level": 2,
+      "name": "Accessories",
+      "categoryId": "women_accessories"
     }
   ]
 }
