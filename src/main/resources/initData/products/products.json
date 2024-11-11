@@ -14,7 +14,8 @@
       "category": "home_furniture",
       "category2": "flooring",
       "category3": "carpets",
-      "sizes": "Various"
+      "sizes": "Various",
+      "quantity": 2
     },
     {
       "title": "Luxurious Shag Carpet 2",
@@ -30,7 +31,8 @@
       "category": "home_furniture",
       "category2": "flooring",
       "category3": "carpets",
-      "sizes": "Various"
+      "sizes": "Various",
+      "quantity": 4
     },
     {
       "title": "Anti-Fatigue Kitchen Mat",
@@ -46,7 +48,8 @@
       "category": "home_furniture",
       "category2": "flooring",
       "category3": "floor_mats",
-      "sizes": "Various"
+      "sizes": "Various",
+      "quantity": 5
     },
     {
       "title": "Soft Cotton Bath Towels",
@@ -62,7 +65,8 @@
       "category": "home_furniture",
       "category2": "bath",
       "category3": "towels",
-      "sizes": "Various"
+      "sizes": "Various",
+      "quantity": 6
     },
     {
       "title": "Soap Dispenser and Tumbler Set",
@@ -78,7 +82,8 @@
       "category": "home_furniture",
       "category2": "bath",
       "category3": "bathroom_accessories",
-      "sizes": "Various"
+      "sizes": "Various",
+      "quantity": 12
     },
     {
       "title": "NO STAIN protector",
@@ -94,7 +99,8 @@
       "category": "home_furniture",
       "category2": "bed_linen_furnishing",
       "category3": "mattress_protectors",
-      "sizes": ""
+      "sizes": "",
+      "quantity": 4
     },
     {
       "title": "Breathable Cool Mattress Protector",
@@ -110,7 +116,8 @@
       "category": "home_furniture",
       "category2": "bed_linen_furnishing",
       "category3": "mattress_protectors",
-      "sizes": ""
+      "sizes": "",
+      "quantity": 18
     },
     {
       "title": "Luxurious Faux Fur Bed Runner",
@@ -126,7 +133,8 @@
       "category": "home_furniture",
       "category2": "bed_linen_furnishing",
       "category3": "bed_runners",
-      "sizes": ""
+      "sizes": "",
+      "quantity": 9
     },
     {
       "title": "Cotton Bed Runner with Tassels",
@@ -142,7 +150,8 @@
       "category": "home_furniture",
       "category2": "bed_linen_furnishing",
       "category3": "bed_runners",
-      "sizes": ""
+      "sizes": "",
+      "quantity": 8
     }
   ],
   "women-products": [
@@ -159,8 +168,9 @@
       ],
       "category": "women",
       "category2": "women_topwear",
-      "category3": "women_tank_top",
-      "sizes": "XS, S, M, L, XL"
+      "category3": "women_tank_tops",
+      "sizes": "XS, S, M, L, XL",
+      "quantity": 15
     }
   ],
   "men-products": [
@@ -178,7 +188,8 @@
       "category": "men",
       "category2": "men_topwear",
       "category3": "men_casual_shirts",
-      "sizes": "XS, S, M, L, XL"
+      "sizes": "XS, S, M, L, XL",
+      "quantity": 20
     },
     {
       "title": "Men's Casual Shirt",
@@ -194,7 +205,8 @@
       "category": "men",
       "category2": "men_topwear",
       "category3": "men_casual_shirts",
-      "sizes": "XS, S, M, L, XL"
+      "sizes": "XS, S, M, L, XL",
+      "quantity": 50
     }
   ]
 }

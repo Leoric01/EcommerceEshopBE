@@ -11,8 +11,7 @@ import java.util.List;
 
 @Service
 public interface ProductService {
-    Product createProduct(CreateProductReqDto productReq, Seller seller);
-
+    List<Product> createProduct(CreateProductReqDto productReq, Seller seller);
     void deleteById(Long id);
 
     Product updateProduct(Long productId, Product productReq);
@@ -34,7 +33,7 @@ public interface ProductService {
 
     List<Product> getProductsBySellerId(Long sellerId);
 
-    List<Product> getProductsOfCurrentUser(Authentication authentication);
+    List<Product> getProductsOfCurrentSeller(Authentication authentication);
     Product findProductById(Long id);
 
     Product save(Product entity);

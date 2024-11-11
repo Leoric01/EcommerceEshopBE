@@ -102,7 +102,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User createUserFromDto(SignupRequest request) {
-        // Check if the email is already in use
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyInUseException("This email is already in use by another user");
         }

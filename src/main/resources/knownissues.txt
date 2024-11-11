@@ -23,6 +23,10 @@ address - deleting selectableaddresscard in checkout need manual page refresh
 address - created edit endpoints for seller user, shoulda implement to frontend
 coupon - apply coupon for cart ? try if it works, fix if not
 mapstruct build messed up for both address and seller
+createproduct - test with new categories not yet existing in db
+electronics - add some dummy data
+add click on seller and see his other products
+
 
 // fixed // wishlist is blank page
 // fixed // homeCategory - all fields are duplicated. data source is ok tho

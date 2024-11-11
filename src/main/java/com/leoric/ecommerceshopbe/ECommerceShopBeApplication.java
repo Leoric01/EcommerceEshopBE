@@ -19,8 +19,7 @@ public class ECommerceShopBeApplication {
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(ECommerceShopBeApplication.class, args);
-//        GlobalUtil.duplicatedFieldsFinder("pathfromroot", "womenlevelthree
-//        ");
+//        GlobalUtil.duplicatedFieldsFinder("pathfromroot", "womenlevelthree");
     }
 
     @Bean

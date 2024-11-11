@@ -25,24 +25,23 @@ public class SellerProductController {
 
     @GetMapping("")
     public ResponseEntity<Result<List<Product>>> getProductsOfCurrentSeller(Authentication auth) {
-        List<Product> products = productService.getProductsOfCurrentUser(auth);
+        List<Product> products = productService.getProductsOfCurrentSeller(auth);
         Result<List<Product>> response = Result.success(products, "Product's searched by specific sellers id and fetched succesfully", OK.value());
         return ResponseEntity.status(OK).body(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Result<List<Product>>> getProductsBySellerId(@PathVariable Long id, Authentication connectedUser) {
+    public ResponseEntity<Result<List<Product>>> getProductsBySellerId(@PathVariable Long id) {
         List<Product> products = productService.getProductsBySellerId(id);
         Result<List<Product>> response = Result.success(products, "Product's searched by connected users id and fetched succesfully", OK.value());
         return ResponseEntity.status(OK).body(response);
     }
 
     @PostMapping("")
-    public ResponseEntity<Result<Product>> createProduct(Authentication connectedUser,
-                                                         @RequestBody CreateProductReqDto request) {
+    public ResponseEntity<Result<List<Product>>> createProduct(Authentication connectedUser, @RequestBody CreateProductReqDto request) {
         Seller seller = (Seller) connectedUser.getPrincipal();
-        Product product = productService.createProduct(request, seller);
-        Result<Product> response = Result.success(product, "Product created succesfully", CREATED.value());
+        List<Product> product = productService.createProduct(request, seller);
+        Result<List<Product>> response = Result.success(product, "Product created succesfully", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }
 

@@ -24,5 +24,22 @@ public class CreateProductReqDto {
     private String category2;
     private String category3;
     private String sizes;
-    private int amount;
+    private int quantity;
+
+    @Override
+    public String toString() {
+        return "CreateProductReqDto{" +
+               "title='" + title + '\'' +
+               ", description='" + description + '\'' +
+               ", maxPrice=" + maxPrice +
+               ", sellingPrice=" + sellingPrice +
+               ", color='" + color + '\'' +
+               ", images=" + images +
+               ", category='" + category + '\'' +
+               ", category2='" + category2 + '\'' +
+               ", category3='" + category3 + '\'' +
+               ", sizes='" + sizes + '\'' +
+               ", quantity=" + quantity +
+               '}';
+    }
 }

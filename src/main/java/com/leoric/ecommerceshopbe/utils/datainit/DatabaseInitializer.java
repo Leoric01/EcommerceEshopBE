@@ -8,10 +8,13 @@ import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
 import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
 import com.leoric.ecommerceshopbe.repositories.*;
 import com.leoric.ecommerceshopbe.requests.dto.AddAddressRequestDTO;
+import com.leoric.ecommerceshopbe.requests.dto.CreateProductReqDto;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
+import com.leoric.ecommerceshopbe.services.interfaces.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DatabaseInitializer {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,7 +42,7 @@ public class DatabaseInitializer {
     private final HomeCategoryRepository homeCategoryRepository;
     private final DealRepository dealRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private int userCount = 0;
 
     public void initUsers(int numberOfUsers, int addressessPerUser) {
@@ -75,7 +79,6 @@ public class DatabaseInitializer {
     }
 
     private void createProducts() {
-
         String jsonContent;
         try (InputStream productStream = getClass().getResourceAsStream("/initData/products/products.json")) {
             if (productStream == null) {
@@ -102,16 +105,16 @@ public class DatabaseInitializer {
             System.err.println("Failed to load furniture products from JSON: " + e.getMessage());
         }
         try {
-            List<Map<String, Object>> womenProductsData = JsonPath.read(jsonContent, "$.men-products");
-            loopThruProductCategory(womenProductsData);
+            List<Map<String, Object>> menProductsData = JsonPath.read(jsonContent, "$.men-products");
+            loopThruProductCategory(menProductsData);
         } catch (Exception e) {
-            System.err.println("Failed to load women's products from JSON: " + e.getMessage());
+            System.err.println("Failed to load men's products from JSON: " + e.getMessage());
         }
         try {
-            List<Map<String, Object>> womenProductsData = JsonPath.read(jsonContent, "$.electronics-products");
-            loopThruProductCategory(womenProductsData);
+            List<Map<String, Object>> electronicsProductsData = JsonPath.read(jsonContent, "$.electronics-products");
+            loopThruProductCategory(electronicsProductsData);
         } catch (Exception e) {
-            System.err.println("Failed to load women's products from JSON: " + e.getMessage());
+            System.err.println("Failed to load electronics products from JSON: " + e.getMessage());
         }
     }
 
@@ -121,13 +124,17 @@ public class DatabaseInitializer {
             Random rnd = new Random();
             int randomSellerId = rnd.nextInt(0, sellers.size());
             Seller seller = sellers.get(randomSellerId);
-            Product product = new Product();
-            product.setTitle((String) data.get("title"));
-            product.setDescription((String) data.get("description"));
-            product.setMaxPrice((int) data.get("maxPrice"));
-            product.setSellingPrice((int) data.get("sellingPrice"));
-            product.setColor((String) data.get("color"));
+            CreateProductReqDto productReq = new CreateProductReqDto();
 
+            productReq.setTitle((String) data.get("title"));
+            productReq.setDescription((String) data.get("description"));
+            productReq.setMaxPrice((int) data.get("maxPrice"));
+            productReq.setSellingPrice((int) data.get("sellingPrice"));
+            productReq.setColor((String) data.get("color"));
+            productReq.setCategory((String) data.get("category"));
+            productReq.setCategory2((String) data.get("category2"));
+            productReq.setCategory3((String) data.get("category3"));
+            productReq.setSizes((String) data.get("sizes"));
             if (data.get("images") instanceof List<?> tempList) {
                 List<String> imagesList = new ArrayList<>();
                 for (Object o : tempList) {
@@ -135,46 +142,11 @@ public class DatabaseInitializer {
                         imagesList.add(image);
                     }
                 }
-                product.setImage(imagesList);
+                productReq.setImages(imagesList);
             }
-
-            Category category1 = categoryRepository.findByCategoryIdAndLevel(data.get("category").toString(), 1)
-                    .orElseGet(() -> {
-                        Category newCategory = new Category();
-                        newCategory.setCategoryId(data.get("category").toString());
-                        newCategory.setName(data.get("category").toString());
-                        newCategory.setLevel(1);
-                        return categoryRepository.save(newCategory);
-                    });
-
-            Category category2 = categoryRepository.findByCategoryIdAndLevel(data.get("category2").toString(), 2)
-                    .filter(cat -> category1.equals(cat.getParentCategory()))
-                    .orElseGet(() -> {
-                        Category newCategory = new Category();
-                        newCategory.setCategoryId(data.get("category2").toString());
-                        newCategory.setName(data.get("category2").toString());
-                        newCategory.setLevel(2);
-                        newCategory.setParentCategory(category1);
-                        return categoryRepository.save(newCategory);
-                    });
-
-            Category category3 = categoryRepository.findByCategoryIdAndLevel(data.get("category3").toString(), 3)
-                    .filter(cat -> category2.equals(cat.getParentCategory()))
-                    .orElseGet(() -> {
-                        Category newCategory = new Category();
-                        newCategory.setCategoryId(data.get("category3").toString());
-                        newCategory.setName(data.get("category3").toString());
-                        newCategory.setLevel(3);
-                        newCategory.setParentCategory(category2);
-                        return categoryRepository.save(newCategory);
-                    });
-
-            product.setCategory(category3);
-            product.setSize((String) data.get("sizes"));
-            product.setSeller(seller);
-            productRepository.save(product);
+            productService.createProduct(productReq, seller);
         }
-        System.out.println("Products loaded successfully.");
+        log.info("Products loaded successfully.");
     }
 
     private void createCategories() {
