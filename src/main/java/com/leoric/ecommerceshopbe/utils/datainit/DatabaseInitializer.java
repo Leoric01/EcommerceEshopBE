@@ -135,6 +135,7 @@ public class DatabaseInitializer {
             productReq.setCategory2((String) data.get("category2"));
             productReq.setCategory3((String) data.get("category3"));
             productReq.setSizes((String) data.get("sizes"));
+            productReq.setQuantity((int) data.get("quantity"));
             if (data.get("images") instanceof List<?> tempList) {
                 List<String> imagesList = new ArrayList<>();
                 for (Object o : tempList) {

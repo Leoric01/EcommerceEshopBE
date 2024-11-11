@@ -51,59 +51,80 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product createProduct(CreateProductReqDto productReq, Seller seller) {
-        Optional<Category> categoryOpt1 = categoryRepository.findByCategoryId(productReq.getCategory());
+    public List<Product> createProduct(CreateProductReqDto productReq, Seller seller) {
+        String sanitizedCategoryId1 = globalUtil.sanitizeCategoryId(productReq.getCategory());
+        Optional<Category> categoryOpt1 = categoryRepository.findByCategoryId(sanitizedCategoryId1);
         Category category1;
         if (categoryOpt1.isEmpty()) {
             Category category = new Category();
-            category.setCategoryId(productReq.getCategory());
+            String categoryName = globalUtil.sanitizeCategoryName(productReq.getCategory());
+
+            category.setCategoryId(sanitizedCategoryId1);
+            category.setName(categoryName);
             category.setLevel(1);
+
             category1 = categoryRepository.save(category);
         } else {
             category1 = categoryOpt1.get();
         }
-        Optional<Category> categoryOpt2 = categoryRepository.findByCategoryId(productReq.getCategory2());
+
+        String sanitizedCategoryId2 = globalUtil.sanitizeCategoryId(productReq.getCategory2());
+        Optional<Category> categoryOpt2 = categoryRepository.findByCategoryId(sanitizedCategoryId2);
         Category category2;
         if (categoryOpt2.isEmpty()) {
             Category category = new Category();
-            category.setCategoryId(productReq.getCategory2());
+            String categoryName = globalUtil.sanitizeCategoryName(productReq.getCategory2());
+
+            category.setCategoryId(sanitizedCategoryId2);
+            category.setName(categoryName);
             category.setLevel(2);
             category.setParentCategory(category1);
-            category2 = category;
-            categoryRepository.save(category);
+
+            category2 = categoryRepository.save(category);
         } else {
             category2 = categoryOpt2.get();
         }
-        Product createdProduct;
-        Optional<Category> categoryOpt3 = categoryRepository.findByCategoryId(productReq.getCategory3());
+
+        String sanitizedCategoryId3 = globalUtil.sanitizeCategoryId(productReq.getCategory3());
+        Optional<Category> categoryOpt3 = categoryRepository.findByCategoryId(sanitizedCategoryId3);
         Category category3;
         if (categoryOpt3.isEmpty()) {
             Category category = new Category();
-            category.setCategoryId(productReq.getCategory3());
+            String categoryName = globalUtil.sanitizeCategoryName(productReq.getCategory3());
+
+            category.setCategoryId(sanitizedCategoryId3);
+            category.setName(categoryName);
             category.setLevel(3);
             category.setParentCategory(category2);
-            category3 = categoryRepository.save(category);
 
-            createdProduct = getCreatedProduct(productReq, seller, category3);
+            category3 = categoryRepository.save(category);
         } else {
-            createdProduct = getCreatedProduct(productReq, seller, categoryOpt3.get());
+            category3 = categoryOpt3.get();
         }
-        return productRepository.save(createdProduct);
+        List<Product> createdProducts = new ArrayList<>();
+        String[] sizes = productReq.getSizes().replaceAll(" ", "").split(",");
+        for (String size : sizes) {
+            String trimmedSize = size.trim();
+            Product createdProduct = getCreatedProduct(productReq, seller, category3, trimmedSize);
+            createdProducts.add(createdProduct);
+        }
+        return productRepository.saveAll(createdProducts);
     }
 
-    private Product getCreatedProduct(CreateProductReqDto productReq, Seller seller, Category category3) {
+    private Product getCreatedProduct(CreateProductReqDto productReq, Seller seller, Category category, String size) {
         int discountPercentage = calculateDiscountPercentage(productReq.getMaxPrice(), productReq.getSellingPrice());
         Product createdProduct = new Product();
         createdProduct.setSeller(seller);
-        createdProduct.setCategory(category3);
+        createdProduct.setCategory(category);
         createdProduct.setDescription(productReq.getDescription());
         createdProduct.setTitle(productReq.getTitle());
         createdProduct.setColor(productReq.getColor());
         createdProduct.setSellingPrice(productReq.getSellingPrice());
         createdProduct.setImage(productReq.getImages());
         createdProduct.setMaxPrice(productReq.getMaxPrice());
-        createdProduct.setSize(productReq.getSizes());
+        createdProduct.setSize(size);
         createdProduct.setDiscountPercentage(discountPercentage);
+        createdProduct.setQuantity(productReq.getQuantity());
         return createdProduct;
     }
 
@@ -182,7 +203,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsOfCurrentUser(Authentication authentication) {
+    public List<Product> getProductsOfCurrentSeller(Authentication authentication) {
         Seller seller = globalUtil.getPrincipalAsSeller(authentication);
         return getProductsBySellerId(seller.getId());
     }

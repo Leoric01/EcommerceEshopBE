@@ -66,6 +66,23 @@ public class GlobalUtil {
         }
         System.out.println("Check duplicates finished with " + counter + " duplicates found");
     }
+
+    public String sanitizeCategoryId(String categoryId) {
+        String processed = categoryId.trim().replaceAll("\\s+", "_");
+        processed = processed.replaceAll("[^a-zA-Z0-9_]", "");
+        processed = processed.replaceAll("^_+|_+$", "");
+        processed = processed.replaceAll("_+", "_");
+        return processed.toLowerCase();
+    }
+
+    public String sanitizeCategoryName(String categoryName) {
+        String processed = categoryName.trim().replaceAll("_+", "_");
+        processed = processed.replaceAll("[^a-zA-Z0-9_]", "");
+        processed = processed.replaceAll("_", " ");
+        processed = processed.replaceAll("\\s+", " ");
+        processed = capitalizeEachWord(processed);
+        return processed;
+    }
     public Account getAccountFromAuthentication(Authentication authentication) {
         if (authentication == null) {
             throw new IllegalArgumentException("No authentication found");
@@ -89,5 +106,20 @@ public class GlobalUtil {
                     .orElseThrow(() -> new EntityNotFoundException("Seller not found"));
         }
         throw new InvalidAccountTypeAccessException("Your account is not of type Seller");
+    }
+
+    private String capitalizeEachWord(String input) {
+        String[] words = input.split(" ");
+        StringBuilder capitalized = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                capitalized.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+
+        return capitalized.toString().trim();
     }
 }
