@@ -1,5 +1,6 @@
 package com.leoric.ecommerceshopbe.handler;
 
+import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.stripe.exception.StripeException;
 import jakarta.mail.MessagingException;
@@ -29,6 +30,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(Result.failure(INVALID_INPUT.getCode(), "Order was already cancel;ed: " + exp.getMessage()));
+    }
+
+    @ExceptionHandler(SellerAlreadyHasAddressException.class)
+    public ResponseEntity<Result<Address>> handleSellerAlreadyHasAddress(SellerAlreadyHasAddressException exp) {
+        Address existingAddress = exp.getExistingAddress();
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(Result.failure(INVALID_INPUT.getCode(), exp.getMessage(), existingAddress));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
