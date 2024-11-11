@@ -316,7 +316,7 @@ public class DatabaseInitializer {
                         .email(email)
                         .password(passwordEncoder.encode("cccc"))
                         .sellerName("Seller " + i)
-                        .VAT(generateVat(getRandomCountryCode()))
+                        .vat(generateVat(getRandomCountryCode()))
                         .isEmailVerified(true)
                         .businessDetails(businessDetails)
                         .bankDetails(bankDetails)

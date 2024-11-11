@@ -1,10 +1,7 @@
 package com.leoric.ecommerceshopbe.security.auth;
 
-import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
 import com.leoric.ecommerceshopbe.handler.OtpVerificationException;
-import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.Seller;
-import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.security.auth.dto.AuthenticationResponse;
@@ -33,8 +30,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_SELLER;
-import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_USER;
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
 
 @Service
@@ -44,7 +39,6 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final CartRepository cartRepository;
     private final VerificationCodeService verificationCodeService;
     private final UserService userService;
     private final EmailService emailService;
@@ -59,29 +53,11 @@ public class AuthServiceImpl implements AuthService {
         String accountType = request.getAccount();
 
         if (accountType.equalsIgnoreCase("seller")) {
-            if (sellerService.existsByEmail(email)) {
-                throw new EmailAlreadyInUseException("Email is already in use");
-            }
-            Seller seller = new Seller();
-            seller.setEmail(email);
-            seller.setSellerName(request.getFullName());
-            seller.setRole(ROLE_SELLER);
-            sellerService.save(seller);
+            Seller seller = sellerService.createSellerFromDto(request);
             sendOtp(email, seller, true);
             return;
         } else if (accountType.equalsIgnoreCase("user")) {
-            if (userService.existsByEmail(email)) {
-                throw new EmailAlreadyInUseException("Email is already in use");
-            }
-            User user = User.builder()
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .email(email)
-                    .role(ROLE_USER)
-                    .build();
-            Cart cart = new Cart();
-            cart.setUser(userService.save(user));
-            cartRepository.save(cart);
+            User user = userService.createUserFromDto(request);
             sendOtp(email, user, false);
             return;
         }
@@ -118,7 +94,6 @@ public class AuthServiceImpl implements AuthService {
         String email = req.getEmail();
         VerificationCode verificationCode;
 
-        // Check if the user exists
         if (userService.existsByEmail(email)) {
             verificationCode = verificationCodeService.findByEmail(email);
             User user = userService.findByEmail(email);

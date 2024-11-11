@@ -1,11 +1,15 @@
 package com.leoric.ecommerceshopbe.services.impl;
 
+import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
+import com.leoric.ecommerceshopbe.models.Cart;
 import com.leoric.ecommerceshopbe.models.mapstruct.UserMapper;
+import com.leoric.ecommerceshopbe.repositories.CartRepository;
 import com.leoric.ecommerceshopbe.requests.dto.UserUpdateReqDto;
 import com.leoric.ecommerceshopbe.response.AccountDetailDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
 import com.leoric.ecommerceshopbe.security.auth.User;
 import com.leoric.ecommerceshopbe.security.auth.UserRepository;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignupRequest;
 import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_USER;
 import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
 
 @Service
@@ -25,6 +30,7 @@ import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipa
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
     private final JwtProvider jwtProvider;
     private final UserMapper userMapper;
     private final GlobalUtil globalUtil;
@@ -91,6 +97,29 @@ public class UserServiceImpl implements UserService {
         User current = getUserProfile(connectedUser);
         userMapper.updateUserFromUserUpdateReqDto(userReq, current);
         return userRepository.save(current);
+    }
+
+    @Override
+    @Transactional
+    public User createUserFromDto(SignupRequest request) {
+        // Check if the email is already in use
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyInUseException("This email is already in use by another user");
+        }
+
+        User newUser = User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .role(ROLE_USER)
+                .build();
+
+        User savedUser = userRepository.save(newUser);
+        Cart cart = new Cart();
+        cart.setUser(savedUser);
+        cartRepository.save(cart);
+
+        return savedUser;
     }
 
     private AccountDetailDto getAccountDto(Account account) {

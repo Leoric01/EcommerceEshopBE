@@ -4,12 +4,16 @@ import com.leoric.ecommerceshopbe.handler.EmailAlreadyInUseException;
 import com.leoric.ecommerceshopbe.models.Address;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
+import com.leoric.ecommerceshopbe.models.embeded.BankDetails;
+import com.leoric.ecommerceshopbe.models.embeded.BusinessDetails;
 import com.leoric.ecommerceshopbe.models.mapstruct.SellerMapper;
 import com.leoric.ecommerceshopbe.repositories.SellerRepository;
+import com.leoric.ecommerceshopbe.requests.dto.SellerEditRequestDto;
 import com.leoric.ecommerceshopbe.security.JwtProvider;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignupRequest;
 import com.leoric.ecommerceshopbe.services.interfaces.AddressService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
-import com.leoric.ecommerceshopbe.utils.abstracts.Account;
+import com.leoric.ecommerceshopbe.utils.GlobalUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.leoric.ecommerceshopbe.utils.GlobalUtil.getAccountFromPrincipal;
+import static com.leoric.ecommerceshopbe.models.constants.USER_ROLE.ROLE_SELLER;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class SellerServiceImpl implements SellerService {
     private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
     private final SellerMapper sellerMapper;
+    private final GlobalUtil globalUtil;
 
     @Override
     public List<Seller> findAll() {
@@ -98,15 +103,12 @@ public class SellerServiceImpl implements SellerService {
 
     @Override
     @Transactional
-    public Seller updateSeller(Authentication connectedUser, Seller newDataSeller) {
-        Account account = getAccountFromPrincipal(connectedUser.getPrincipal());
-        Seller connectedSeller = (Seller) account;
-        sellerMapper.updateSellerFromSeller(newDataSeller, connectedSeller);
-        if (connectedSeller.getPickupAddress() != null) {
-            addressService.save(connectedSeller.getPickupAddress());
-        }
+    public Seller updateSeller(Authentication connectedUser, SellerEditRequestDto dto) {
+        Seller connectedSeller = globalUtil.getPrincipalAsSeller(connectedUser);
+        updateSellerFromDtoWithFieldsCheck(dto, connectedSeller);
         return sellerRepository.save(connectedSeller);
     }
+
 
     @Override
     public Seller updateSellerById(Long id, Seller seller) {
@@ -120,10 +122,22 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
+    @Transactional
+    public Seller createSellerFromDto(SignupRequest request) {
+        if (sellerRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyInUseException("This email is already in use by another seller");
+        }
+        Seller newSeller = new Seller();
+        newSeller.setEmail(request.getEmail());
+        newSeller.setSellerName(request.getFullName());
+        newSeller.setRole(ROLE_SELLER);
+        return sellerRepository.save(newSeller);
+    }
+
+    @Override
     public void deleteSeller(Long id) {
         sellerRepository.deleteById(id);
     }
-
 
     @Override
     public Seller updateSellerAccountStatus(Long sellerId, AccountStatus status) {
@@ -136,4 +150,80 @@ public class SellerServiceImpl implements SellerService {
     public boolean existsByEmail(String email) {
         return sellerRepository.existsByEmail(email);
     }
+
+    private void updateSellerFromDtoWithFieldsCheck(SellerEditRequestDto dto, Seller connectedSeller) {
+        if (dto.getSellerName() != null && !dto.getSellerName().isBlank()) {
+            connectedSeller.setSellerName(dto.getSellerName());
+        }
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            connectedSeller.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            connectedSeller.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        if (dto.getVat() != null && !dto.getVat().isBlank()) {
+            connectedSeller.setVat(dto.getVat());
+        }
+
+        if (dto.getBusinessDetails() != null) {
+            BusinessDetails businessDetails = connectedSeller.getBusinessDetails();
+            if (dto.getBusinessDetails().getBusinessName() != null && !dto.getBusinessDetails().getBusinessName().isBlank()) {
+                businessDetails.setBusinessName(dto.getBusinessDetails().getBusinessName());
+            }
+            if (dto.getBusinessDetails().getBusinessAddress() != null && !dto.getBusinessDetails().getBusinessAddress().isBlank()) {
+                businessDetails.setBusinessAddress(dto.getBusinessDetails().getBusinessAddress());
+            }
+            if (dto.getBusinessDetails().getBusinessEmail() != null && !dto.getBusinessDetails().getBusinessEmail().isBlank()) {
+                businessDetails.setBusinessEmail(dto.getBusinessDetails().getBusinessEmail());
+            }
+            if (dto.getBusinessDetails().getBusinessMobile() != null && !dto.getBusinessDetails().getBusinessMobile().isBlank()) {
+                businessDetails.setBusinessMobile(dto.getBusinessDetails().getBusinessMobile());
+            }
+            if (dto.getBusinessDetails().getLogo() != null && !dto.getBusinessDetails().getLogo().isBlank()) {
+                businessDetails.setLogo(dto.getBusinessDetails().getLogo());
+            }
+            if (dto.getBusinessDetails().getBanner() != null && !dto.getBusinessDetails().getBanner().isBlank()) {
+                businessDetails.setBanner(dto.getBusinessDetails().getBanner());
+            }
+        }
+
+        if (dto.getBankDetails() != null) {
+            BankDetails bankDetails = connectedSeller.getBankDetails();
+            if (dto.getBankDetails().getAccountNumber() != null && !dto.getBankDetails().getAccountNumber().isBlank()) {
+                bankDetails.setAccountNumber(dto.getBankDetails().getAccountNumber());
+            }
+            if (dto.getBankDetails().getAccountHolderName() != null && !dto.getBankDetails().getAccountHolderName().isBlank()) {
+                bankDetails.setAccountHolderName(dto.getBankDetails().getAccountHolderName());
+            }
+            if (dto.getBankDetails().getIban() != null && !dto.getBankDetails().getIban().isBlank()) {
+                bankDetails.setIban(dto.getBankDetails().getIban());
+            }
+        }
+
+        if (dto.getPickupAddress() != null) {
+            Address pickupAddress = connectedSeller.getPickupAddress();
+            if (dto.getPickupAddress().getName() != null && !dto.getPickupAddress().getName().isBlank()) {
+                pickupAddress.setName(dto.getPickupAddress().getName());
+            }
+            if (dto.getPickupAddress().getStreet() != null && !dto.getPickupAddress().getStreet().isBlank()) {
+                pickupAddress.setStreet(dto.getPickupAddress().getStreet());
+            }
+            if (dto.getPickupAddress().getLocality() != null && !dto.getPickupAddress().getLocality().isBlank()) {
+                pickupAddress.setLocality(dto.getPickupAddress().getLocality());
+            }
+            if (dto.getPickupAddress().getCity() != null && !dto.getPickupAddress().getCity().isBlank()) {
+                pickupAddress.setCity(dto.getPickupAddress().getCity());
+            }
+            if (dto.getPickupAddress().getCountry() != null && !dto.getPickupAddress().getCountry().isBlank()) {
+                pickupAddress.setCountry(dto.getPickupAddress().getCountry());
+            }
+            if (dto.getPickupAddress().getZip() != null && !dto.getPickupAddress().getZip().isBlank()) {
+                pickupAddress.setZip(dto.getPickupAddress().getZip());
+            }
+            if (dto.getPickupAddress().getMobile() != null && !dto.getPickupAddress().getMobile().isBlank()) {
+                pickupAddress.setMobile(dto.getPickupAddress().getMobile());
+            }
+        }
+    }
+
 }

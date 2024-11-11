@@ -2,6 +2,8 @@ package com.leoric.ecommerceshopbe.services.interfaces;
 
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
+import com.leoric.ecommerceshopbe.requests.dto.SellerEditRequestDto;
+import com.leoric.ecommerceshopbe.security.auth.dto.SignupRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public interface SellerService {
 
     List<Seller> getAllSellers(AccountStatus status);
 
-    Seller updateSeller(Authentication connectedUser, Seller seller);
+    Seller updateSeller(Authentication connectedUser, SellerEditRequestDto seller);
 
     void deleteSeller(Long id);
 
@@ -37,4 +39,6 @@ public interface SellerService {
     boolean existsByEmail(String email);
 
     Seller updateSellerById(Long id, Seller seller);
+
+    Seller createSellerFromDto(SignupRequest request);
 }

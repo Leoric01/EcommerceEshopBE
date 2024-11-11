@@ -3,6 +3,7 @@ package com.leoric.ecommerceshopbe.controllers;
 import com.leoric.ecommerceshopbe.models.Seller;
 import com.leoric.ecommerceshopbe.models.SellerReport;
 import com.leoric.ecommerceshopbe.models.constants.AccountStatus;
+import com.leoric.ecommerceshopbe.requests.dto.SellerEditRequestDto;
 import com.leoric.ecommerceshopbe.response.common.Result;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerReportService;
 import com.leoric.ecommerceshopbe.services.interfaces.SellerService;
@@ -52,8 +53,8 @@ public class SellerController {
 
     @PatchMapping()
     public ResponseEntity<Result<Seller>> updateSeller(Authentication connectedUser,
-                                                       @RequestBody Seller seller) {
-        Seller updatedSeller = sellerService.updateSeller(connectedUser, seller);
+                                                       @RequestBody SellerEditRequestDto sellerReq) {
+        Seller updatedSeller = sellerService.updateSeller(connectedUser, sellerReq);
         Result<Seller> response = Result.success(updatedSeller, "Seller's details updated succesfully", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
     }

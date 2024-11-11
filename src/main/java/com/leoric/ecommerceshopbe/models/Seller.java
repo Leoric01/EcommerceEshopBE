@@ -31,10 +31,6 @@ public class Seller extends Account implements UserDetails, Principal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Builder.Default
-    private boolean isSignedOut = false;
-
     private String sellerName;
 
     @Column(unique = true, nullable = false)
@@ -55,13 +51,16 @@ public class Seller extends Account implements UserDetails, Principal {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address pickupAddress = new Address();
 
-    private String VAT;
+    private String vat;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private USER_ROLE role = USER_ROLE.ROLE_SELLER;
     @Builder.Default
     private boolean isEmailVerified = false;
+
+    @Builder.Default
+    private boolean isSignedOut = false;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default

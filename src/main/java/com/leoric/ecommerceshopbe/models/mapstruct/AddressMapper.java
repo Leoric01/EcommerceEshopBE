@@ -22,7 +22,7 @@ public interface AddressMapper {
     void updateAddressFromDto(AddAddressRequestDTO addressDto, @MappingTarget Address address);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(source = "user.id", target = "user_id")
-    @Mapping(source = "seller.id", target = "seller_id")
+//    @Mapping(source = "user.id", target = "user_id")
+//    @Mapping(source = "seller.id", target = "seller_id")
     AddressDtoResponse toAddressDtoResponse(Address address);
 }

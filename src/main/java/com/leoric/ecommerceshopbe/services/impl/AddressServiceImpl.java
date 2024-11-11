@@ -71,6 +71,15 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public Address addUserAddress(Long userId, AddAddressRequestDTO addressDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Address address = addressMapper.toAddress(addressDto);
+        address.setUser(user);
+        return addressRepository.save(address);
+    }
+
+    @Override
     public Address editUserAddress(Long userId, AddAddressRequestDTO addressDto, Long addressId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
@@ -91,15 +100,6 @@ public class AddressServiceImpl implements AddressService {
         addressRepository.save(addressEdit);
         sellerRepository.save(seller);
         return addressEdit;
-    }
-
-    @Override
-    public Address addUserAddress(Long userId, AddAddressRequestDTO addressDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Address address = addressMapper.toAddress(addressDto);
-        address.setUser(user);
-        return addressRepository.save(address);
     }
 
     @Override
