@@ -15,12 +15,11 @@ import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import com.leoric.ecommerceshopbe.services.interfaces.VerificationCodeService;
 import com.leoric.ecommerceshopbe.utils.OtpUtil;
 import com.leoric.ecommerceshopbe.utils.abstracts.Account;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
             sendOtp(email, user, false);
             return;
         }
-        throw new BadCredentialsException("Invalid account type");
+        throw new IllegalArgumentException("Unknown account type. Options so far - user, seller");
     }
 
     private void sendOtp(String email, Object user, boolean isSeller) {
@@ -90,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AccountDetailDto setupPwFromOtp(SetupPwFromOtpReq req) throws BadRequestException {
+    public AccountDetailDto setupPwFromOtp(SetupPwFromOtpReq req) {
         String email = req.getEmail();
         VerificationCode verificationCode;
 
@@ -138,8 +137,7 @@ public class AuthServiceImpl implements AuthService {
                     savedSeller.getRole()
             );
         }
-
-        throw new BadRequestException("Invalid email address or role");
+        throw new EntityNotFoundException("Not registered email address");
     }
 
     @Override

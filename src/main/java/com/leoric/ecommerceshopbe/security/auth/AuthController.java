@@ -11,7 +11,6 @@ import com.leoric.ecommerceshopbe.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -53,8 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/set-pw")
-    public ResponseEntity<Result<AccountDetailDto>> setUpPassword(
-            @RequestBody @Valid SetupPwFromOtpReq req) throws BadRequestException {
+    public ResponseEntity<Result<AccountDetailDto>> setUpPassword(@RequestBody @Valid SetupPwFromOtpReq req) {
         AccountDetailDto accountDetailDto = authService.setupPwFromOtp(req);
         Result<AccountDetailDto> response = Result.success(accountDetailDto, "Password set up successfully", CREATED.value());
         return ResponseEntity.status(CREATED).body(response);
